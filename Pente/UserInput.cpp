@@ -22,7 +22,7 @@ string UserInput::GetPlayLocation(Board a_board)
 		//Valid locations can only be 2-3 characters in length. Some examples: A8, B19, S4.
 		if (location.length() < 2 || location.length() > 3)
 		{
-			cout << "Invalid location. Please follow the correct format and re-enter a location to place a stone: ";
+			cout << "Invalid location length. Please follow the correct format and re-enter a location to place a stone (Ex: J12): ";
 			cin >> location;
 		}
 		//Valid columns are from A-S.
