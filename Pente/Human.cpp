@@ -1,6 +1,13 @@
 #include "Human.h"
 
+//Default Constructor
 Human::Human()
+{
+
+}
+
+//Parametric Constructor to start a new game
+Human::Human(char a_humanColor): Player(a_humanColor, 0, 0)
 {
 }
 

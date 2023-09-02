@@ -12,7 +12,7 @@ public:
 	//Default constructor - By default, the player's color is set to white if none is provided.
 	Player();
 
-	//Parametric contructor
+	//Parametric contructor to start a new game
 	Player(char a_color, unsigned int a_score, unsigned int a_capturedPairs);
 
 	//Destructor

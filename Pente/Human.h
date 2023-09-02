@@ -7,6 +7,9 @@ class Human: public Player
 public:
 	//Default Constructor
 	Human();
+
+	//Parametric Constructor used to start a new game.
+	Human(char a_humanColor);
 	
 	//Destructor
 	~Human() {};

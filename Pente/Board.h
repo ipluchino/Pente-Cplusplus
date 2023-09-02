@@ -26,7 +26,6 @@ public:
 	void PlaceStone(char a_column, int a_row, char a_pieceColor);
 	void RemoveStone(char a_column, int a_row);
 
-
 	//Utility Functions
 	void DisplayBoard();
 
