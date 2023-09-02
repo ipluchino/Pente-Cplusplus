@@ -22,13 +22,19 @@ string UserInput::GetPlayLocation(Board a_board)
 		//Valid locations can only be 2-3 characters in length. Some examples: A8, B19, S4.
 		if (location.length() < 2 || location.length() > 3)
 		{
-			cout << "Invalid location length. Please follow the correct format and re-enter a location to place a stone (Ex: J12): ";
+			cout << "Invalid location length, locations must be 2-3 characters in length. Please re-enter a location to place a stone: ";
 			cin >> location;
 		}
 		//Valid columns are from A-S.
 		else if (location[0] < 'A' || location[0] > 'S') 
 		{
 			cout << "Invalid column, columns must from A-S. Please re-enter a location to place a stone: ";
+			cin >> location;
+		}
+		//Valid rows must be numerical and cannot be letters or symbols.
+		else if (!isdigit(location[1]) || (location.length() == 3 && !isdigit(location[2])))
+		{
+			cout << "Invalid row, rows must be numerical from 1-19. Please re-enter a location to place a stone: ";
 			cin >> location;
 		}
 		//Valid rows are from 1-19. The substring after the first character represents the row, and should be converted to an int before comparison.
