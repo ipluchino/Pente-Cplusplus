@@ -44,7 +44,10 @@ Round::~Round()
 //Runs through one round of Pente.
 void Round::StartRound()
 {
-	//Determine first turn HERE
+	//Determine first turn HERE. for now TEMPORARY COLORS.
+	m_playerList[0]->SetColor('W');
+	m_playerList[1]->SetColor('B');
+
 	cout << "Round starting!" << endl;
 	m_turn = 'H';
 
@@ -60,7 +63,6 @@ void Round::StartRound()
 			m_playerList[0]->MakePlay(m_board);
 			m_turn = 'C';
 
-			m_board.DisplayBoard();
 		}
 		else
 		{
@@ -71,7 +73,7 @@ void Round::StartRound()
 			//continueRound = false;
 		}
 
-		
+		m_board.DisplayBoard();
 
 	} while (continueRound); //Should be while(!RoundOver())
 

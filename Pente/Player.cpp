@@ -33,8 +33,9 @@ pair<string, string> Player::OptimalPlay(Board a_board)
 
 	} while (!a_board.IsEmpty(location[0], stoi(location.substr(1, 2))));
 
+	string reasoning = "The computer placed a stone on " + location + " because it played randomly.";
 
-
+	return pair<string, string>(location, reasoning);
 }
 
 
