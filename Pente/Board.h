@@ -15,6 +15,12 @@ public:
 	//Default Constructor
 	Board();
 
+	//Copy Constructor
+	Board(const Board& a_board);
+
+	//Copy Assignment
+	Board& operator=(const Board& a_board);
+
 	//Destructor
 	~Board() {};
 
