@@ -28,6 +28,8 @@ public:
 
 	//Utility Functions
 	void DisplayBoard();
+	bool IsEmpty(char a_column, int a_row);
+	
 
 private:
 	//Holds all of the data for the entire board.

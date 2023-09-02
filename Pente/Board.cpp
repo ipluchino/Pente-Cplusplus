@@ -16,7 +16,6 @@ void Board::PlaceStone(char a_column, int a_row, char a_pieceColor)
 	//Must convert the location's row to its correct numeric value since the rows are labeled 1-19 starting from the bottom.
 	a_row = 19 - a_row;
 
-	cout << a_row << "    " << numericColumn << endl;
 	m_board[a_row][numericColumn] = a_pieceColor;
 }
 
@@ -57,4 +56,10 @@ void Board::DisplayBoard()
 		cout << "\n";
 	}
 	cout << "\n";
+}
+
+//Checks to see whether a board location is empty or not.
+bool Board::IsEmpty(char a_column, int a_row)
+{
+	return m_board[19 - a_row][a_column - 'A'] == '-';
 }

@@ -32,7 +32,7 @@ private:
 	//Holds a list of the players currently playing the game. In this case, there will be one human player and one computer player.
 	vector<Player*> m_playerList;
 
-	//Determins the current turn of the player. Will be either 'H' for human or 'C' for computer.
+	//The current player whos turn it is. Will be either 'H' for human or 'C' for computer.
 	char m_Turn;
 
 };
