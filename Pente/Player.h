@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include "Board.h"
 
 using namespace std;
@@ -13,7 +14,7 @@ public:
 	Player();
 
 	//Parametric contructor to start a new game
-	Player(char a_color, unsigned int a_score, unsigned int a_capturedPairs);
+	//Player(char a_color, unsigned int a_score, unsigned int a_capturedPairs);
 
 	//Destructor
 	~Player() {};
@@ -30,8 +31,8 @@ public:
 
 	//Utility Functions
 	virtual void MakePlay(Board& a_board);
+	pair<string, string> OptimalPlay(Board a_board);
 
-	//Strategy Function
 
 protected:
 	//The color of the stones (black or white) that the player is playing as.

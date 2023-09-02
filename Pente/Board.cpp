@@ -5,6 +5,7 @@ Board::Board() : m_board(vector<vector<char>>(19, vector<char>(19, '-')))
 {
 }
 
+/*
 //Copy Constructor
 Board::Board(const Board& a_board)
 {
@@ -34,6 +35,7 @@ Board& Board::operator=(const Board& a_board)
 
 	return *this;
 }
+*/
 
 //Places a stone, given a row, column and color onto the board.
 void Board::PlaceStone(char a_column, int a_row, char a_pieceColor)

@@ -15,15 +15,6 @@ public:
 	//Default Constructor
 	Round();
 
-	//Parametric Constructor for starting a new game
-	Round(char a_humanColor, char a_computerColor);
-
-	//Copy Constructor
-	Round(const Round& a_round);
-
-	//Copy Assignment
-	Round& operator=(const Round& a_round);
-
 	//TO DO: Serialize constructor
 
 	//Destructor

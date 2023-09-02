@@ -6,10 +6,7 @@ using namespace std;
 int main()
 {
     Tournament t;
-    t.StartNewGame();
-
-
-
+    t.StartTournament();
 }
 
 

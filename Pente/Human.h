@@ -11,7 +11,7 @@ public:
 	Human();
 
 	//Parametric Constructor used to start a new game.
-	Human(char a_humanColor);
+	//Human(char a_humanColor);
 	
 	//Destructor
 	~Human() {};

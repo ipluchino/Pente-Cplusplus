@@ -13,9 +13,10 @@ public:
 	Tournament();
 
 	//Utility Functions
-	void StartNewGame();
+	void CreateNewGame();
 	void LoadGame();
 	void Continue();
+	void StartTournament();
 
 private:
 	//Round object used to play one round of Pente.
