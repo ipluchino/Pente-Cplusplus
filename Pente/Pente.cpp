@@ -11,14 +11,15 @@ int main()
     Board b;
     UserInput u;
 
-    b.PlaceStone('A', 14, 'B');
-    b.PlaceStone('C', 9, 'B');
-    b.PlaceStone('J', 1, 'B');
-    b.PlaceStone('Q', 7, 'B');
+   
+    b.DisplayBoard();
+    h.MakePlay(b);
+    b.DisplayBoard();
+    h.MakePlay(b);
+    b.DisplayBoard();
+    h.MakePlay(b);
     b.DisplayBoard();
 
-    string location = u.GetPlayLocation(b);
-    cout << "Valid location: " << location << endl;
 
 
 }

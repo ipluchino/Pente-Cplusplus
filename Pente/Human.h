@@ -1,6 +1,8 @@
 #pragma once
 
+#include <string>
 #include "Player.h"
+#include "UserInput.h"
 
 class Human: public Player
 {
@@ -22,6 +24,7 @@ public:
 	void MakePlay(Board& a_board);
 
 private:
-
+	//UserInput object used to obtain input from the human player.
+	UserInput m_UserInput;
 };
 

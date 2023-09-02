@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include "Board.h"
 #include "Player.h"
 #include "Human.h"
 #include "Computer.h"
@@ -32,8 +33,11 @@ private:
 	//Holds a list of the players currently playing the game. In this case, there will be one human player and one computer player.
 	vector<Player*> m_playerList;
 
+	//The board for the round.
+	Board m_board;
+
 	//The current player whos turn it is. Will be either 'H' for human or 'C' for computer.
-	char m_Turn;
+	char m_turn;
 
 };
 
