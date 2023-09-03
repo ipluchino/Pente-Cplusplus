@@ -21,10 +21,21 @@ void Player::MakePlay(Board& a_board)
 //Assistance Received: https://www.digitalocean.com/community/tutorials/random-number-generator-c-plus-plus
 pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 {
+	//Location represents the location on the board of the most optimal play, while reasoning represents the explanation why it is the most optimal.
+	string location, reasoning;
+	
+	//If the board is empty, the only play is the center position, J10. 
+	if (a_board.IsEmptyBoard())
+	{
+		location = "J10";
+		reasoning = "The computer placed a stone on " + location + " because it is going first and the first play must be on J10.";
+
+		return pair<string, string>(location, reasoning);
+	}
+
 	//ALL STRATEGY WILL GO HERE, FOR NOW COMPUTER PLAYS RANDOMLY
 	srand((unsigned)time(NULL));
 
-	string location;
 	do {
 		int row = 1 +(rand() % 19);
 		char col = 'A' + rand() % 19;
@@ -33,7 +44,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 
 	} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
 
-	string reasoning = "The computer placed a stone on " + location + " because it played randomly.";
+	reasoning = "The computer placed a stone on " + location + " because it played randomly.";
 
 	return pair<string, string>(location, reasoning);
 }

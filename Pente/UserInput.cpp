@@ -12,6 +12,7 @@ string UserInput::GetPlayLocation(Board a_board)
 	//Location should be in the format J12 where J is a column on the board (A-S) and 12 is a row on the board (1-19)
 	string location;
 	bool validLocation = false;
+	bool handicap = a_board.CountPieces('W') == 1 && a_board.CountPieces('B') == 1;
 
 	cout << "Please enter a location on the board that you would like to place a stone (Ex: J12): ";
 	cin >> location;
