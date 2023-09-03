@@ -19,7 +19,7 @@ void Player::MakePlay(Board& a_board)
 
 //Determines the optimal play and returns its location as well as the reasoning why it is the optimal play.
 //Assistance Received: https://www.digitalocean.com/community/tutorials/random-number-generator-c-plus-plus
-pair<string, string> Player::OptimalPlay(Board a_board)
+pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 {
 	//ALL STRATEGY WILL GO HERE, FOR NOW COMPUTER PLAYS RANDOMLY
 	srand((unsigned)time(NULL));

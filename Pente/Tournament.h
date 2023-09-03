@@ -14,8 +14,8 @@ public:
 
 	//Utility Functions
 	void CreateNewGame();
-	void LoadGame();
-	void Continue();
+	bool LoadGame();
+	bool Continue();
 	void StartTournament();
 
 private:

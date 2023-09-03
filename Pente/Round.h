@@ -26,9 +26,13 @@ public:
 
 	//Utility Functions
 	void StartRound();
+	void DetermineFirstPlayer();
+	bool CoinToss();
 
 private:
 	//Holds a list of the players currently playing the game. In this case, there will be one human player and one computer player.
+	//m_playerList[0] will be the human player.
+	//m_playerList[1] will be the computer player.
 	vector<Player*> m_playerList;
 
 	//The board for the round.

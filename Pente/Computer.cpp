@@ -14,7 +14,7 @@ void Computer::MakePlay(Board& a_board)
 {
 	//Obtain the optimal play given the current board. 
 	//playInfo.first is the location of the play, while playInfo.second is the reasoning for that play. 
-	pair<string, string> playInfo = OptimalPlay(a_board);
+	pair<string, string> playInfo = OptimalPlay(a_board, m_color);
 	string location = playInfo.first;
 	string reasoning = playInfo.second;
 

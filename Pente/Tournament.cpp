@@ -14,11 +14,24 @@ void Tournament::CreateNewGame()
 
 }
 
+//Loads the tournament from a file.
+bool Tournament::LoadGame()
+{
+	cout << "Must implement LoadGame()!" << endl;
+	return true;
+}
+
 //Main game 
 void Tournament::StartTournament()
 {
-	CreateNewGame();
-	cout << "Starting Tournament!" << endl;
+	string choice = m_UserInput.GetTournamentChoice();
+
+	//If the user decides to load from a file, obtain the file name and load the game.
+	//Otherwise, start a new game. The default constructors for each class are used in this case.
+	if (choice == "2")
+	{
+		LoadGame();
+	}
 
 	do 
 	{

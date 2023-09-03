@@ -10,7 +10,6 @@ UserInput::UserInput()
 string UserInput::GetPlayLocation(Board a_board)
 {
 	//Location should be in the format J12 where J is a column on the board (A-S) and 12 is a row on the board (1-19)
-	
 	string location;
 	bool validLocation = false;
 
@@ -58,4 +57,61 @@ string UserInput::GetPlayLocation(Board a_board)
 	
 
 	return location;
+}
+
+//Gets input from the user regarding whether or not they want to start a new game or load a game.
+string UserInput::GetTournamentChoice()
+{
+	string response;
+	bool valid = false;
+
+	cout << "Welcome to Pente!" << endl;
+	cout << "Options:" << endl;
+	cout << "1. Start a new tournament." << endl;
+	cout << "2. Load a tournament from a file." << endl << endl;
+
+	cout << "Enter your choice (1 or 2): ";
+	cin >> response;
+
+	while (!valid) 
+	{
+		if (response != "1" && response != "2")
+		{
+			cout << "Invalid input. Please enter 1 or 2: ";
+			cin >> response;
+		}
+		else
+		{
+			valid = true;
+		}
+	}
+
+	return response;
+}
+
+//Gets input form the user regarding the coin toss call to determine the first player.
+string UserInput::GetCoinTossCall()
+{
+	string response;
+	bool valid = false;
+
+	cout << "The first player must be determined using a coin toss." << endl << endl;
+	
+	cout << "Enter 'H' for Heads or 'T' for tails: ";
+	cin >> response;
+	
+	while (!valid)
+	{
+		if (response != "H" && response != "T")
+		{
+			cout << "Invalid input. Please enter H or T: ";
+			cin >> response;
+		}
+		else
+		{
+			valid = true;
+		}
+	}
+
+	return response;
 }

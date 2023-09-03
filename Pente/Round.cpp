@@ -44,13 +44,12 @@ Round::~Round()
 //Runs through one round of Pente.
 void Round::StartRound()
 {
-	//Determine first turn HERE. for now TEMPORARY COLORS.
-	m_playerList[0]->SetColor('W');
-	m_playerList[1]->SetColor('B');
+	//Before the round starts, the first player and respective colors must be determined.
+	//NOTE IF YOU LOAD THE GAME YOU SHOULD NOT CALL THIS. MUST CHECK IF BOARD IS EMPTY BEFORE AND M_TURN HASNT BEEN DECIDED!!!
+	cout << "\nRound starting! Since the round is just starting, the player who goes first must be determined." << endl;
+	DetermineFirstPlayer();
 
-	cout << "Round starting!" << endl;
-	m_turn = 'H';
-
+	//Display the board for the first time if the human is going first?
 	m_board.DisplayBoard();
 
 	bool continueRound = true;
@@ -63,6 +62,7 @@ void Round::StartRound()
 			m_playerList[0]->MakePlay(m_board);
 			m_turn = 'C';
 
+			//Ask the user to save and exit?
 		}
 		else
 		{
@@ -71,10 +71,87 @@ void Round::StartRound()
 
 			m_turn = 'H';
 			//continueRound = false;
+
+			//Ask the user to save and exit?
 		}
 
 		m_board.DisplayBoard();
 
 	} while (continueRound); //Should be while(!RoundOver())
 
+}
+
+//Determines the first player of the round, and sets the colors of the players.
+void Round::DetermineFirstPlayer()
+{
+	//The player who has the higher score gets to play first for the round.
+	//If the scores or tied, or a new tournament tournament is started, the first player is determined via coin toss.
+
+	if (m_playerList[0]->GetScore() > m_playerList[1]->GetScore())
+	{
+		m_playerList[0]->SetColor('W');
+		m_playerList[1]->SetColor('B');
+		m_turn = 'H';
+
+		cout << "You will be going first since you have a higher score." << endl;
+	}
+	else if (m_playerList[1]->GetScore() > m_playerList[0]->GetScore())
+	{
+		m_playerList[1]->SetColor('W');
+		m_playerList[0]->SetColor('B');
+		m_turn = 'C';
+
+		cout << "The computer will be going first because the computer has a higher score." << endl;
+	}
+	else
+	{
+		bool correctCall = CoinToss();
+
+		if (correctCall)
+		{
+			m_playerList[0]->SetColor('W');
+			m_playerList[1]->SetColor('B');
+			m_turn = 'H';
+
+			cout << " You will be going first because you called the coin toss correctly." << endl << endl;
+		}
+		else
+		{
+			m_playerList[1]->SetColor('W');
+			m_playerList[0]->SetColor('B');
+			m_turn = 'C';
+
+			cout << " The computer will be going first because you called the coin toss incorrectly." << endl << endl;
+		}
+	}
+}
+
+//Runs a coin toss to determine the first player. The human player is asked to call the toss.
+bool Round::CoinToss()
+{
+	string choice = m_UserInput.GetCoinTossCall();
+	
+	//Randomly generate either 1 or 2. 1 Represents heads, while 2 represents tails.
+	srand((unsigned)time(NULL));
+	int coin = 1 + (rand() % 2);
+
+	//Output the coin toss result to the screen so the user can see if it was heads or tails.
+	if (coin == 1)
+	{
+		cout << "The result of the coin toss was Heads!";
+	}
+	else
+	{
+		cout << "The result of the coin toss was Tails!";
+	}
+
+	//If the user correctly called the toss, return true, otherwise return false.
+	if ((choice == "H" && coin == 1) || (choice == "T" && coin == 2))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

@@ -31,7 +31,7 @@ public:
 
 	//Utility Functions
 	virtual void MakePlay(Board& a_board);
-	pair<string, string> OptimalPlay(Board a_board);
+	pair<string, string> OptimalPlay(Board a_board, char a_color);
 
 
 protected:
