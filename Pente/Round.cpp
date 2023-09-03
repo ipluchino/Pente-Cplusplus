@@ -1,7 +1,7 @@
 #include "Round.h"
 
-//Default Constructor.
-Round::Round()
+//Default Constructor. m_turn is initially set to 'U' to represent undefined.
+Round::Round(): m_turn('U')
 {
 	m_playerList.push_back(new Human());
 	m_playerList.push_back(new Computer());
