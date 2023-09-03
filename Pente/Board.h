@@ -10,7 +10,7 @@ class Board
 {
 public:
 	//Constants
-	const unsigned int BOARD_SIZE = 19;
+	const int BOARD_SIZE = 19;		//Should be unsigned?
 	
 	//Default Constructor
 	Board();
@@ -28,9 +28,10 @@ public:
 
 	//Utility Functions
 	void DisplayBoard();
-	bool IsEmpty(char a_column, int a_row);
+	bool IsEmptyLocation(char a_column, int a_row);
+	int CountPieces(char a_color);
+	bool IsEmptyBoard();
 	
-
 private:
 	//Holds all of the data for the entire board.
 	vector<vector<char>> m_board;

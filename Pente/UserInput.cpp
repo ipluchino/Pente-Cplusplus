@@ -43,7 +43,7 @@ string UserInput::GetPlayLocation(Board a_board)
 			cin >> location;
 		}
 		//Lastly, a valid location has to be empty on the game board.
-		else if (!a_board.IsEmpty(location[0], stoi(location.substr(1, 2))))
+		else if (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))))
 		{
 			cout << "This location already has a stone placed here. Please re-enter a location to place a stone: ";
 			cin >> location;

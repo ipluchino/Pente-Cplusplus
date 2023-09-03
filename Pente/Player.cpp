@@ -31,7 +31,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 
 		location = col + to_string(row);
 
-	} while (!a_board.IsEmpty(location[0], stoi(location.substr(1, 2))));
+	} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
 
 	string reasoning = "The computer placed a stone on " + location + " because it played randomly.";
 

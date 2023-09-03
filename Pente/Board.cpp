@@ -91,7 +91,34 @@ void Board::DisplayBoard()
 }
 
 //Checks to see whether a board location is empty or not.
-bool Board::IsEmpty(char a_column, int a_row)
+bool Board::IsEmptyLocation(char a_column, int a_row)
 {
 	return m_board[19 - a_row][a_column - 'A'] == '-';
+}
+
+//Counts the number of pieces on the board that corresponds to the color passed.
+int Board::CountPieces(char a_color)
+{
+	int total = 0;
+
+	//Loop through the entire board and count up the number of pieces that are the color passed.
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			if (m_board[i][j] == a_color)
+			{
+				total++;
+			}
+		}
+	}
+
+	return total;
+}
+
+
+//Determines if the entire board is empty.
+bool Board::IsEmptyBoard()
+{
+	return CountPieces('W') == 0 && CountPieces('B') == 0;
 }
