@@ -132,7 +132,7 @@ bool Round::CoinToss()
 	string choice = m_UserInput.GetCoinTossCall();
 	
 	//Randomly generate either 1 or 2. 1 Represents heads, while 2 represents tails.
-	srand((unsigned)time(NULL));
+	srand(time(NULL));
 	int coin = 1 + (rand() % 2);
 
 	//Output the coin toss result to the screen so the user can see if it was heads or tails.

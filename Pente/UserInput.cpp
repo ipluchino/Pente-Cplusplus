@@ -12,6 +12,8 @@ string UserInput::GetPlayLocation(Board a_board)
 	//Location should be in the format J12 where J is a column on the board (A-S) and 12 is a row on the board (1-19)
 	string location;
 	bool validLocation = false;
+
+	//There is a handicap for the second turn of the first player. The play must be within three intersections of the center piece.
 	bool handicap = a_board.CountPieces('W') == 1 && a_board.CountPieces('B') == 1;
 
 	cout << "Please enter a location on the board that you would like to place a stone (Ex: J12): ";
@@ -41,6 +43,13 @@ string UserInput::GetPlayLocation(Board a_board)
 		else if (stoi(location.substr(1, 2)) < 1 || stoi(location.substr(1, 2)) > 19)
 		{
 			cout << "Invalid row, rows must be from 1-19. Please re-enter a location to place a stone: ";
+			cin >> location;
+		}
+		//The second turn of the player who went first must place their piece within three intersections of the center piece (J10).
+		//Column must be from G-M and location must be from 7-13.
+		else if (handicap && (location[0] < 'G' || location[0] > 'M' || stoi(location.substr(1, 2)) < 7 || stoi(location.substr(1, 2)) > 13))
+		{
+			cout << "On the second turn of the first player, the location must be no more than three intersections away from the center piece. Please re-enter a location to place a stone: ";
 			cin >> location;
 		}
 		//Lastly, a valid location has to be empty on the game board.

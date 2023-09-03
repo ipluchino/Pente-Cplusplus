@@ -20,7 +20,7 @@ void Computer::MakePlay(Board& a_board)
 
 	//Place the stone on the board.
 	a_board.PlaceStone(location[0], stoi(location.substr(1, 2)), m_color);
-	
+
 	//Explain the play to the user.
 	cout << reasoning << endl << endl;
 }

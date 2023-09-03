@@ -21,6 +21,9 @@ void Player::MakePlay(Board& a_board)
 //Assistance Received: https://www.digitalocean.com/community/tutorials/random-number-generator-c-plus-plus
 pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 {
+	//ALL STRATEGY WILL GO HERE, FOR NOW COMPUTER PLAYS RANDOMLY
+	srand(time(NULL));
+	
 	//Location represents the location on the board of the most optimal play, while reasoning represents the explanation why it is the most optimal.
 	string location, reasoning;
 	
@@ -33,16 +36,27 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
-	//ALL STRATEGY WILL GO HERE, FOR NOW COMPUTER PLAYS RANDOMLY
-	srand((unsigned)time(NULL));
+	//If it is the second turn of the first player, you can only play within 3 intersections of the center piece (j10).
+	if (a_board.CountPieces('W') == 1 && a_board.CountPieces('B') == 1)
+	{
+		do {
+			int row = 7 + (rand() % 7);
+			char col = 'G' + (rand() % 7);
 
-	do {
-		int row = 1 +(rand() % 19);
-		char col = 'A' + rand() % 19;
+			location = col + to_string(row);
 
-		location = col + to_string(row);
+		} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
+	}
+	else
+	{
+		do {
+			int row = 1 + (rand() % 19);
+			char col = 'A' + (rand() % 19);
 
-	} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
+			location = col + to_string(row);
+
+		} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
+	}
 
 	reasoning = "The computer placed a stone on " + location + " because it played randomly.";
 
