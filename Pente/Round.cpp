@@ -50,7 +50,7 @@ void Round::StartRound()
 	DetermineFirstPlayer();
 
 	//Display the board for the first time if the human is going first?
-	m_board.DisplayBoard();
+	DisplayGame();
 
 	bool continueRound = true;
 	//Round robin turns until the game ends
@@ -70,12 +70,11 @@ void Round::StartRound()
 			m_playerList[1]->MakePlay(m_board);
 
 			m_turn = 'H';
-			//continueRound = false;
 
 			//Ask the user to save and exit?
 		}
 
-		m_board.DisplayBoard();
+		DisplayGame();
 
 	} while (continueRound); //Should be while(!RoundOver())
 
@@ -93,7 +92,7 @@ void Round::DetermineFirstPlayer()
 		m_playerList[1]->SetColor('B');
 		m_turn = 'H';
 
-		cout << "You will be going first since you have a higher score." << endl;
+		cout << "You will be going first since you have a higher score." << endl << endl;
 	}
 	else if (m_playerList[1]->GetScore() > m_playerList[0]->GetScore())
 	{
@@ -101,7 +100,7 @@ void Round::DetermineFirstPlayer()
 		m_playerList[0]->SetColor('B');
 		m_turn = 'C';
 
-		cout << "The computer will be going first because the computer has a higher score." << endl;
+		cout << "The computer will be going first because the computer has a higher score." << endl << endl;
 	}
 	else
 	{
@@ -154,4 +153,21 @@ bool Round::CoinToss()
 	{
 		return false;
 	}
+}
+
+//Displays the Information on the current round, including the board, player scores, player captures, and player colors.
+void Round::DisplayGame()
+{
+	//Display the board first.
+	m_board.DisplayBoard();
+
+	//Dislpay the Human's information.
+	cout << "Human:" << endl;
+	cout << "Captured Pairs: " << m_playerList[0]->GetCapturedPairs() << endl;
+	cout << "Tournament Score: " << m_playerList[0]->GetScore() << endl << endl;
+
+	//Display the Computer's information.
+	cout << "Computer:" << endl;
+	cout << "Captured Pairs: " << m_playerList[1]->GetCapturedPairs() << endl;
+	cout << "Tournament Score: " << m_playerList[1]->GetScore() << endl << endl;
 }

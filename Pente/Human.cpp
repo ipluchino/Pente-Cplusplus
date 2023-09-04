@@ -28,4 +28,6 @@ void Human::MakePlay(Board& a_board)
 
 	//Place the stone on the board.
 	a_board.PlaceStone(location[0], stoi(location.substr(1,2)), m_color);
+
+	//Clear any captures and update the player's capture count, if any occur.
 }

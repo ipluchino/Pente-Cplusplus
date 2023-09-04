@@ -28,6 +28,7 @@ public:
 	void StartRound();
 	void DetermineFirstPlayer();
 	bool CoinToss();
+	void DisplayGame();
 
 private:
 	//Holds a list of the players currently playing the game. In this case, there will be one human player and one computer player.

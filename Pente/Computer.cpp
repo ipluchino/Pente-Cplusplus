@@ -23,4 +23,6 @@ void Computer::MakePlay(Board& a_board)
 
 	//Explain the play to the user.
 	cout << reasoning << endl << endl;
+
+	//Clear any captures and update the player's capture count, if any occur.
 }
