@@ -18,7 +18,7 @@ void Computer::MakePlay(Board& a_board)
 	string location = playInfo.first;
 	string reasoning = playInfo.second;
 
-	//Place the stone on the board.
+	//Place the stone on the board. location[0] represents the column and location.substr(1, 2) represents the row.
 	a_board.PlaceStone(location[0], stoi(location.substr(1, 2)), m_color);
 
 	//Explain the play to the user.

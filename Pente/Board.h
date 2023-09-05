@@ -19,7 +19,7 @@ public:
 	~Board() {};
 
 	//Selectors
-	vector<vector<char>> GetBoard() { return m_board; }
+	vector<vector<char>> GetBoard() const { return m_board; }
 
 	//Mutators
 	void SetBoard(vector<vector<char>> a_board) { m_board = a_board; }

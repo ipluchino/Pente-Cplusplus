@@ -1,7 +1,7 @@
 #include "Round.h"
 
-//Default Constructor. m_turn is initially set to 'U' to represent undefined.
-Round::Round(): m_turn('U')
+//Default Constructor. m_nextPlayerIndex is initially set to '-1' to represent undefined.
+Round::Round() : m_nextPlayerIndex(-1)
 {
 	m_playerList.push_back(new Human());
 	m_playerList.push_back(new Computer());
@@ -31,7 +31,6 @@ Round& Round::operator=(const Round& a_round)
 }
 */
 
-
 //Destructor
 Round::~Round()
 {
@@ -53,31 +52,17 @@ void Round::StartRound()
 	DisplayGame();
 
 	bool continueRound = true;
-	//Round robin turns until the game ends
-	do 
+
+	while (continueRound) //Should be while(!RoundOver())
 	{
-		if (m_turn == 'H')
-		{
-			//Human turn
-			m_playerList[0]->MakePlay(m_board);
-			m_turn = 'C';
+		m_playerList[m_nextPlayerIndex]->MakePlay(m_board);
+		m_nextPlayerIndex = (m_nextPlayerIndex + 1) % NUM_PLAYERS;
 
-			//Ask the user to save and exit?
-		}
-		else
-		{
-			//Computer turn
-			m_playerList[1]->MakePlay(m_board);
-
-			m_turn = 'H';
-
-			//Ask the user to save and exit?
-		}
-
+		//Display the game after each player's turn.
 		DisplayGame();
 
-	} while (continueRound); //Should be while(!RoundOver())
-
+		//Ask the user to save and exit after each player's turn?
+	}
 }
 
 //Determines the first player of the round, and sets the colors of the players.
@@ -90,7 +75,7 @@ void Round::DetermineFirstPlayer()
 	{
 		m_playerList[0]->SetColor('W');
 		m_playerList[1]->SetColor('B');
-		m_turn = 'H';
+		m_nextPlayerIndex = 0;
 
 		cout << "You will be going first since you have a higher score." << endl << endl;
 	}
@@ -98,7 +83,7 @@ void Round::DetermineFirstPlayer()
 	{
 		m_playerList[1]->SetColor('W');
 		m_playerList[0]->SetColor('B');
-		m_turn = 'C';
+		m_nextPlayerIndex = 1;
 
 		cout << "The computer will be going first because the computer has a higher score." << endl << endl;
 	}
@@ -110,7 +95,7 @@ void Round::DetermineFirstPlayer()
 		{
 			m_playerList[0]->SetColor('W');
 			m_playerList[1]->SetColor('B');
-			m_turn = 'H';
+			m_nextPlayerIndex = 0;
 
 			cout << " You will be going first because you called the coin toss correctly." << endl << endl;
 		}
@@ -118,7 +103,7 @@ void Round::DetermineFirstPlayer()
 		{
 			m_playerList[1]->SetColor('W');
 			m_playerList[0]->SetColor('B');
-			m_turn = 'C';
+			m_nextPlayerIndex = 1;
 
 			cout << " The computer will be going first because you called the coin toss incorrectly." << endl << endl;
 		}

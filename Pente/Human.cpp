@@ -26,7 +26,7 @@ void Human::MakePlay(Board& a_board)
 	//Obtain the location the human player wants to place the stone.
 	string location = m_UserInput.GetPlayLocation(a_board);
 
-	//Place the stone on the board.
+	//Place the stone on the board. location[0] represents the column and location.substr(1, 2) represents the row.
 	a_board.PlaceStone(location[0], stoi(location.substr(1,2)), m_color);
 
 	//Clear any captures and update the player's capture count, if any occur.

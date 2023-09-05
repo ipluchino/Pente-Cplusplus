@@ -12,6 +12,9 @@ using namespace std;
 class Round
 {
 public:
+	//Constants
+	const int NUM_PLAYERS = 2;
+
 	//Default Constructor
 	Round();
 
@@ -40,7 +43,7 @@ private:
 	Board m_board;
 
 	//The current player whos turn it is. Will be either 'H' for human or 'C' for computer.
-	char m_turn;
+	int m_nextPlayerIndex;
 
 	//UserInput object used to obtain input from the human player.
 	UserInput m_UserInput;
