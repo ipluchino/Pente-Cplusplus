@@ -30,4 +30,7 @@ void Human::MakePlay(Board& a_board)
 	a_board.PlaceStone(location[0], stoi(location.substr(1,2)), m_color);
 
 	//Clear any captures and update the player's capture count, if any occur.
+	int captures = a_board.ClearCaptures(location[0], stoi(location.substr(1, 2)), m_color);
+	cout << "Captures: " << captures << endl;
+	m_capturedPairs += captures;
 }

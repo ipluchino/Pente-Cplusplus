@@ -18,6 +18,9 @@ public:
 	
 	//Represents the total number of possible directions, in this case 8.
 	const int NUM_DIRECTIONS = 8;
+
+	//Represents the number of spaces needed to search from a current location on the board to find a capture.
+	const int CAPTURE_DISTANCE = 3;
 	
 	//Default Constructor
 	Board();
@@ -35,11 +38,16 @@ public:
 
 	//Utility Functions
 	void DisplayBoard();
+	bool IsValidLocation(char a_column, int a_row);
 	bool IsEmptyLocation(char a_column, int a_row);
 	int CountPieces(char a_color);
 	bool IsEmptyBoard();
+	int ClearCaptures(char a_column, int a_row, char a_color);
+	char OpponentColor(char a_color);
 	
 private:
+
+
 	//Holds all of the data for the entire board.
 	vector<vector<char>> m_board;
 
