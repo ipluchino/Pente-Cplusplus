@@ -25,4 +25,6 @@ void Computer::MakePlay(Board& a_board)
 	cout << reasoning << endl << endl;
 
 	//Clear any captures and update the player's capture count, if any occur.
+	int captures = a_board.ClearCaptures(location[0], stoi(location.substr(1, 2)), m_color);
+	m_capturedPairs += captures;
 }

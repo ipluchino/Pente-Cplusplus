@@ -5,12 +5,10 @@ using namespace std;
 
 int main()
 {
-    //Tournament t;
-    //t.StartTournament();
-
-    /*
-
+    Tournament t;
+    t.StartTournament();
     
+    /*
     Board b;
     b.PlaceStone('J', 11, 'B');
     b.PlaceStone('J', 12, 'B');
@@ -49,10 +47,9 @@ int main()
    
     int captures = b.ClearCaptures('J', 10, 'W');
     
-    //b.DisplayBoard();
+    b.DisplayBoard();
     cout << captures << endl;
     */
-
 }
 
 

@@ -40,10 +40,8 @@ Board& Board::operator=(const Board& a_board)
 //Places a stone, given a row, column and color onto the board.
 void Board::PlaceStone(char a_column, int a_row, char a_pieceColor)
 {
-	//PLAY MUST BE VALIDATED BEFORE PLACING (DONE BEFORE IT GETS TO THIS FUNCTION)
-
 	//Must convert the location's column as a character to its numeric value so it can be located on the board.
-	int numericColumn = a_column - 'A';
+	int numericColumn = CharacterToInt(a_column);
 
 	//Must convert the location's row to its correct numeric value since the rows are labeled 1-19 starting from the bottom.
 	a_row = 19 - a_row;
@@ -53,10 +51,8 @@ void Board::PlaceStone(char a_column, int a_row, char a_pieceColor)
 
 void Board::RemoveStone(char a_column, int a_row)
 {
-	//REMOVE MUST BE VALIDATED BEFORE REMOVING (DONE BEFORE IT GETS TO THIS FUNCTION)
-
 	//Must convert the location's column as a character to its numeric value so it can be located on the board.
-	int numericColumn = a_column - 'A';
+	int numericColumn = CharacterToInt(a_column);
 
 	//Must convert the location's row to its correct numeric value since the rows are labeled 1-19 starting from the bottom.
 	a_row = 19 - a_row;
@@ -99,7 +95,7 @@ bool Board::IsValidLocation(char a_column, int a_row)
 //Checks to see whether a board location is empty or not.
 bool Board::IsEmptyLocation(char a_column, int a_row)
 {
-	return m_board[19 - a_row][a_column - 'A'] == '-';
+	return m_board[19 - a_row][CharacterToInt(a_column)] == '-';
 }
 
 //Counts the number of pieces on the board that corresponds to the color passed.
@@ -139,7 +135,7 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 	char opponentColor = OpponentColor(a_color);
 	
 	//Represents the numerical representation of the alphabetical column and correctly converted index of the row.
-	int convertedColumn = a_column - 'A';
+	int convertedColumn = CharacterToInt(a_column);
 	int convertedRow = 19 - a_row;
 
 	//Must loop through all 8 of the possible directions starting from the location passed since captures can happen in any direction.
@@ -155,31 +151,21 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 			int newCol = convertedColumn + (DIRECTIONS[i][1] * j);
 
 			//If the location is valid, it must be stored so the pieces there can be removed if it turns out to be a successful capture.
-			if (IsValidLocation(newCol + 'A', newRow)) newLocations.push_back({ newRow, newCol });
+			if (IsValidLocation(IntToCharacter(newCol), 19 - newRow)) newLocations.push_back({ newRow, newCol });
 		}
 
 		//There must be at least 3 valid board spaces going in the current direction being evaluated for a capture to be possible.
 		if (newLocations.size() == CAPTURE_DISTANCE)
 		{
-			cout << DIRECTIONS[i][0] << " " << DIRECTIONS[i][1] << endl;
-			//cout << newLocations[0][0] << " " << newLocations[0][1] << endl;
-			//cout << newLocations[1][0] << " " << newLocations[1][1] << endl;
-			//cout << newLocations[2][0] << " " << newLocations[2][1] << endl << endl;
-			
 			if (m_board[newLocations[0][0]][newLocations[0][1]] == opponentColor &&
 				m_board[newLocations[1][0]][newLocations[1][1]] == opponentColor &&
 				m_board[newLocations[2][0]][newLocations[2][1]] == a_color)
 			{
 				numCaptures++;
 
-				//Remove the two captured pieces from the board.
-				char x = newLocations[0][1] + 'A';
-				char y = newLocations[1][1] + 'A';
-				
-				cout << x << " " << 19 - newLocations[0][0] << endl;
-				cout << y << " " << 19 - newLocations[1][0] << endl << endl;
-				//RemoveStone(newLocations[0][1] + 'A', newLocations[0][0]);
-				//RemoveStone(newLocations[1][1] + 'A', newLocations[1][0]);
+				//Remove the two captured pieces from the board. The first and second indexes of 'newLocations' are the two pieces being captured.
+				RemoveStone(IntToCharacter(newLocations[0][1]), 19 - newLocations[0][0]);
+				RemoveStone(IntToCharacter(newLocations[1][1]), 19 - newLocations[1][0]);
 			}
 		}
 	}
@@ -198,5 +184,23 @@ char Board::OpponentColor(char a_color)
 	{
 		return 'W';
 	}
+}
+
+//Converts a alphabetical column to its numerical counterpart.
+int Board::CharacterToInt(char a_column)
+{
+	return a_column - 'A';
+}
+
+//Converts a numerical column into its alphabetical counterpart.
+char Board::IntToCharacter(int a_column)
+{
+	return a_column + 'A';
+}
+
+//Converts a row from its vector index to board view index or vice verca.
+int Board::ConvertRow(int a_row)
+{
+	return 19 - a_row;
 }
 

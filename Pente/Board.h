@@ -44,12 +44,16 @@ public:
 	bool IsEmptyBoard();
 	int ClearCaptures(char a_column, int a_row, char a_color);
 	char OpponentColor(char a_color);
+
+	//Conversion Functions
+	int CharacterToInt(char a_column);
+	char IntToCharacter(int a_column);
+	int ConvertRow(int a_row);
+
+
 	
 private:
-
-
 	//Holds all of the data for the entire board.
 	vector<vector<char>> m_board;
-
 };
 
