@@ -87,9 +87,9 @@ void Board::DisplayBoard()
 }
 
 //Determins if a column and row passed is valid within the constraints of the board.
-bool Board::IsValidLocation(char a_column, int a_row)
+bool Board::IsValidIndices(int a_row, int a_column)
 {
-	return (a_column >= 'A' && a_column <= 'S') && (a_row >= 1 && a_row <= 19);
+	return (a_row >= 0 && a_row <= 18) && (a_column >= 0 && a_column <= 18);
 }
 
 //Checks to see whether a board location is empty or not.
@@ -151,7 +151,7 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 			int newCol = convertedColumn + (DIRECTIONS[i][1] * j);
 
 			//If the location is valid, it must be stored so the pieces there can be removed if it turns out to be a successful capture.
-			if (IsValidLocation(IntToCharacter(newCol), 19 - newRow)) newLocations.push_back({ newRow, newCol });
+			if (IsValidIndices(newRow, newCol)) newLocations.push_back({ newRow, newCol });
 		}
 
 		//There must be at least 3 valid board spaces going in the current direction being evaluated for a capture to be possible.
@@ -163,7 +163,7 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 			{
 				numCaptures++;
 
-				//Remove the two captured pieces from the board. The first and second indexes of 'newLocations' are the two pieces being captured.
+				//Remove the two captured pieces from the board. The first and second row/col pairs of 'newLocations' are the two pieces being captured.
 				RemoveStone(IntToCharacter(newLocations[0][1]), 19 - newLocations[0][0]);
 				RemoveStone(IntToCharacter(newLocations[1][1]), 19 - newLocations[1][0]);
 			}

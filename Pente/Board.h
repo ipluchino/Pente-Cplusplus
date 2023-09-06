@@ -38,7 +38,7 @@ public:
 
 	//Utility Functions
 	void DisplayBoard();
-	bool IsValidLocation(char a_column, int a_row);
+	bool IsValidIndices(int a_row, int a_column);
 	bool IsEmptyLocation(char a_column, int a_row);
 	int CountPieces(char a_color);
 	bool IsEmptyBoard();
