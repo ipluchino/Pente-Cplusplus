@@ -199,7 +199,7 @@ char Board::IntToCharacter(int a_column)
 }
 
 //Converts a row from its vector index to board view index or vice verca.
-int Board::ConvertRow(int a_row)
+int Board::ConvertRowIndex(int a_row)
 {
 	return 19 - a_row;
 }

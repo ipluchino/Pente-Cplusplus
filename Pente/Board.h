@@ -48,7 +48,7 @@ public:
 	//Conversion Functions
 	int CharacterToInt(char a_column);
 	char IntToCharacter(int a_column);
-	int ConvertRow(int a_row);
+	int ConvertRowIndex(int a_row);
 
 
 	
