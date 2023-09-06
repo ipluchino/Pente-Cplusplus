@@ -51,9 +51,7 @@ void Round::StartRound()
 	//Display the board for the first time if the human is going first?
 	DisplayGame();
 
-	bool continueRound = true;
-
-	while (continueRound) //Should be while(!RoundOver())
+	while (!RoundOver()) //Should be while(!RoundOver())
 	{
 		m_playerList[m_nextPlayerIndex]->MakePlay(m_board);
 		m_nextPlayerIndex = (m_nextPlayerIndex + 1) % NUM_PLAYERS;
@@ -155,4 +153,32 @@ void Round::DisplayGame()
 	cout << "Computer:" << endl;
 	cout << "Captured Pairs: " << m_playerList[1]->GetCapturedPairs() << endl;
 	cout << "Tournament Score: " << m_playerList[1]->GetScore() << endl << endl;
+}
+
+//Determines if the round is over.
+bool Round::RoundOver()
+{
+	//If one of the players has achieved five consecutive pieces in any direction, the round is over.
+	if (m_board.FiveConsecutive())
+	{
+		cout << "The round has ended because a player has placed five consecutive stones." << endl << endl;
+		return true;
+	}
+
+	//If one of the players has achieved at least 5 captured pairs, the round is over.
+	if (m_playerList[0]->GetCapturedPairs() >= 5 || m_playerList[1]->GetCapturedPairs() >= 5)
+	{
+		cout << "The round has ended because a player has at least 5 captured pairs." << endl << endl;
+		return true;
+	}
+
+	//If none of the above situations occured but the board is full, the round is over.
+	if (m_board.IsBoardFull()) 
+	{
+		cout << "The round has ended because the board is full." << endl << endl;
+		return true;
+	}
+	
+	//Otherwise, the round can continue.
+	return false;
 }

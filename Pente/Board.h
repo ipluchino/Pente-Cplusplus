@@ -21,6 +21,9 @@ public:
 
 	//Represents the number of spaces needed to search from a current location on the board to find a capture.
 	const int CAPTURE_DISTANCE = 3;
+
+	//Represents the incremement required to skip over opposite directions. Ex: When searching horizontals, left & right directions searches would be the same.
+	const int DIRECTIONAL_OFFSET = 2;
 	
 	//Default Constructor
 	Board();
@@ -44,6 +47,8 @@ public:
 	bool IsEmptyBoard();
 	int ClearCaptures(char a_column, int a_row, char a_color);
 	char OpponentColor(char a_color);
+	bool IsBoardFull();
+	bool FiveConsecutive();
 
 	//Conversion Functions
 	int CharacterToInt(char a_column);

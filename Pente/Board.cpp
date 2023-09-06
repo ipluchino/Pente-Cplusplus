@@ -44,7 +44,7 @@ void Board::PlaceStone(char a_column, int a_row, char a_pieceColor)
 	int numericColumn = CharacterToInt(a_column);
 
 	//Must convert the location's row to its correct numeric value since the rows are labeled 1-19 starting from the bottom.
-	a_row = 19 - a_row;
+	a_row = ConvertRowIndex(a_row);
 
 	m_board[a_row][numericColumn] = a_pieceColor;
 }
@@ -55,7 +55,7 @@ void Board::RemoveStone(char a_column, int a_row)
 	int numericColumn = CharacterToInt(a_column);
 
 	//Must convert the location's row to its correct numeric value since the rows are labeled 1-19 starting from the bottom.
-	a_row = 19 - a_row;
+	a_row = ConvertRowIndex(a_row);
 
 	m_board[a_row][numericColumn] = '-';
 }
@@ -95,7 +95,7 @@ bool Board::IsValidIndices(int a_row, int a_column)
 //Checks to see whether a board location is empty or not.
 bool Board::IsEmptyLocation(char a_column, int a_row)
 {
-	return m_board[19 - a_row][CharacterToInt(a_column)] == '-';
+	return m_board[ConvertRowIndex(a_row)][CharacterToInt(a_column)] == '-';
 }
 
 //Counts the number of pieces on the board that corresponds to the color passed.
@@ -136,7 +136,7 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 	
 	//Represents the numerical representation of the alphabetical column and correctly converted index of the row.
 	int convertedColumn = CharacterToInt(a_column);
-	int convertedRow = 19 - a_row;
+	int convertedRow = ConvertRowIndex(a_row);
 
 	//Must loop through all 8 of the possible directions starting from the location passed since captures can happen in any direction.
 	for (int i = 0; i < NUM_DIRECTIONS; i++)
@@ -184,6 +184,57 @@ char Board::OpponentColor(char a_color)
 	{
 		return 'W';
 	}
+}
+
+//Returns true if the board is full, false otherwise.
+bool Board::IsBoardFull()
+{
+	//Loop through every piece on the board, and if one is empty the board is not full. Otherwise, it is.
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			if (m_board[i][j] == '-') return false;
+		}
+	}
+	
+	return true;
+}
+
+//Returns true if either player has achieved a 5 in a row.
+bool Board::FiveConsecutive()
+{
+	//From every position on the board, every horizontal, vertical, and diagonal needs to be searched.
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			//Only have to loop through 4 of the directions, since searching opposite directions (left&right, up&down, etc. is redundant)
+            //All horizontals are checked with just left, all verticals with just up, etc.
+			for (int k = 0; k < NUM_DIRECTIONS; k += DIRECTIONAL_OFFSET)
+			{
+				int whiteCounter = 0;
+				int blackCounter = 0;
+
+				//For each direction, consider the current space and 4 spaces out (to make a consecutive 5).
+				for (int l = 0; l < 5; l++)
+				{
+					int newRow = i + (DIRECTIONS[k][0] * l);
+					int newCol = j + (DIRECTIONS[k][1] * l);
+
+					//No need to keep searching if the 5 spaces go out of the board's bounds.
+					if (!IsValidIndices(newRow, newCol)) break;
+
+					if (m_board[newRow][newCol] == 'W') whiteCounter++;
+					else if (m_board[newRow][newCol] == 'B') blackCounter++;
+				}
+
+				if (whiteCounter == 5 || blackCounter == 5) return true;
+			}
+		}
+	}
+	
+	return false;
 }
 
 //Converts a alphabetical column to its numerical counterpart.
