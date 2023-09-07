@@ -237,6 +237,86 @@ bool Board::FiveConsecutive()
 	return false;
 }
 
+//Returns the tallied up score of a provided color based on the current board and number of captured pairs they have.
+int Board::ScoreBoard(char a_color, int a_numCaptures)
+{
+	//Holds the overall score for a provided color (a_color).
+	int totalScore = 0;
+
+	for (int direction = 0; direction < DIRECTIONS.size(); direction += DIRECTIONAL_OFFSET)
+	{
+		//The first step in scoring is the find all 5 or more consecutives in each horizontal, vertical, and diagonal.
+		//NOTE: There can be multiple 5 or more consecutives in an L shape if the last piece placed connects the L together.
+
+		vector<vector<char>> boardCopy = GetBoard();
+
+		//Loop through every piece and search the current direction for any consecutive 5 or more stones. This is considered a "winning move".
+		for (int i = 0; i < BOARD_SIZE; i++)
+		{
+			for (int j = 0; j < BOARD_SIZE; j++)
+			{
+				int totalConsecutive = 0;
+				int row = i;
+				int col = j;
+				
+				//If there is a winning move found in the current direction, it will need to be saved to be marked later.
+				vector<vector<int>> seenLocations = {};
+
+				while (IsValidIndices(row, col) && boardCopy[row][col] == a_color) 
+				{
+					seenLocations.push_back({ row, col });
+
+					totalConsecutive++;
+
+					row += DIRECTIONS[direction][0];
+					col += DIRECTIONS[direction][1];
+				}
+
+				//If a winning move was found, the player is awarded 5 points.
+				if (totalConsecutive >= 5) 
+				{
+					totalScore += 5;
+
+					//Mark the winning move in this direction as "S" to represent seen. This ensures that the winning move does not also get counted as a consecutive 4.
+					for (int k = 0; k < seenLocations.size(); k++) 
+					{
+						boardCopy[seenLocations[k][0]][seenLocations[k][1]] = 'S';
+					}
+				}
+
+			}
+		}
+
+		//After the "winning move" in the current direction has been found and marked as seen, search for any consecutive 4s in that same direction.
+		for (int i = 0; i < BOARD_SIZE; i++)
+		{
+			for (int j = 0; j < BOARD_SIZE; j++)
+			{
+				int totalConsecutive = 0;
+
+				//Search 3 more spaces out from the current stone.
+				for (int k = 0; k <= CONSECUTIVE_4_DISTANCE; k++)
+				{
+					int row = i + DIRECTIONS[direction][0] * k;
+					int col = j + DIRECTIONS[direction][1] * k;
+
+					if (!IsValidIndices(row, col)) break;
+
+					if (boardCopy[row][col] == a_color) totalConsecutive++;
+				}
+
+				//If there was a consecutive 4 found, the player is awarded 1 point.
+				if (totalConsecutive == 4) totalScore++;
+			}
+		}
+	}
+
+	//Lastly, add 1 point for each captured pair.
+	totalScore += a_numCaptures;
+
+	return totalScore;
+}
+
 //Converts a alphabetical column to its numerical counterpart.
 int Board::CharacterToInt(char a_column)
 {
