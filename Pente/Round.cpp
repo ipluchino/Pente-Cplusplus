@@ -51,7 +51,7 @@ void Round::StartRound()
 	//Display the board for the first time if the human is going first?
 	DisplayGame();
 
-	while (!RoundOver()) //Should be while(!RoundOver())
+	while (!RoundOver())
 	{
 		m_playerList[m_nextPlayerIndex]->MakePlay(m_board);
 		m_nextPlayerIndex = (m_nextPlayerIndex + 1) % NUM_PLAYERS;
@@ -61,6 +61,13 @@ void Round::StartRound()
 
 		//Ask the user to save and exit after each player's turn?
 	}
+
+	//Once the round ends, update the scores for each player.
+	m_playerList[0]->SetScore(m_board.ScoreBoard(m_playerList[0]->GetColor(), m_playerList[0]->GetCapturedPairs()));
+	m_playerList[1]->SetScore(m_board.ScoreBoard(m_playerList[1]->GetColor(), m_playerList[1]->GetCapturedPairs()));
+
+	cout << m_playerList[0]->GetColor() << "  " << m_playerList[0]->GetScore() << endl;
+	cout << m_playerList[1]->GetColor() << "  " << m_playerList[1]->GetScore() << endl;
 }
 
 //Determines the first player of the round, and sets the colors of the players.
