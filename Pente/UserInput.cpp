@@ -65,6 +65,8 @@ string UserInput::GetPlayLocation(Board a_board)
 		}
 	}
 	
+	//Print out a newline for spacing purposes.
+	cout << endl;
 
 	return location;
 }
@@ -122,6 +124,63 @@ string UserInput::GetCoinTossCall()
 			valid = true;
 		}
 	}
+
+	return response;
+}
+
+string UserInput::GetHumanDecision()
+{
+	string response;
+	bool valid = false;
+
+	cout << "Options:" << endl;
+	cout << "1. Place a tile." << endl;
+	cout << "2. Ask for help." << endl;
+	cout << "3. Save and exit game." << endl << endl;
+
+	cout << "Enter your choice (1-3): ";
+	cin >> response;
+
+	while (!valid)
+	{
+		if (response != "1" && response != "2" && response != "3")
+		{
+			cout << "Invalid input. Please enter 1, 2, or 3: ";
+			cin >> response;
+		}
+		else
+		{
+			valid = true;
+		}
+	}
+
+	cout << endl;
+
+	return response;
+}
+
+string UserInput::GetSaveDecision()
+{
+	string response;
+	bool valid = false;
+
+	cout << "Would you like to save and exit the game or continue playing? Enter \"Y\" or \"N\": ";
+	cin >> response;
+
+	while (!valid)
+	{
+		if (response != "Y" && response != "N")
+		{
+			cout << "Invalid input. Please enter Y or N: ";
+			cin >> response;
+		}
+		else
+		{
+			valid = true;
+		}
+	}
+
+	cout << endl;
 
 	return response;
 }

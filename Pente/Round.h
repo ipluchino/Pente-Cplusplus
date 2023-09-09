@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include "Board.h"
 #include "Player.h"
 #include "Human.h"
@@ -33,6 +34,7 @@ public:
 	bool CoinToss();
 	void DisplayGame();
 	bool RoundOver();
+	void SaveGame();
 
 private:
 	//Holds a list of the players currently playing the game. In this case, there will be one human player and one computer player.

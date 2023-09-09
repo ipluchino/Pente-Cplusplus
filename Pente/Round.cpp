@@ -4,7 +4,7 @@
 Round::Round() : m_nextPlayerIndex(-1)
 {
 	m_playerList.push_back(new Human());
-	m_playerList.push_back(new Human());
+	m_playerList.push_back(new Computer());
 }
 
 /*
@@ -60,6 +60,12 @@ void Round::StartRound()
 		DisplayGame();
 
 		//Ask the user to save and exit after each player's turn?
+		string saveDecision = m_UserInput.GetSaveDecision();
+
+		if (saveDecision == "Y")
+		{
+			SaveGame();
+		}
 	}
 
 	//Once the round ends, update the scores for each player.
@@ -190,4 +196,66 @@ bool Round::RoundOver()
 	
 	//Otherwise, the round can continue.
 	return false;
+}
+
+//Saves the game to a file, and closes the program.
+void Round::SaveGame()
+{
+	string fileName;
+	fstream file;
+
+	cout << "Enter the name of the file you want the game saved to (without the .txt): ";
+	cin >> fileName;
+	fileName += ".txt";
+
+	file.open(fileName, std::ios::out);
+
+	//Write the board to the file.
+	vector<vector<char>> board = m_board.GetBoard();
+	
+	file << "Board:\n";
+	for (int i = 0; i < board.size(); i++)
+	{
+		for (int j = 0; j < board.size(); j++)
+		{
+			if (board[i][j] == '-')
+			{
+				file << 'O';
+			}
+			else
+			{
+				file << board[i][j];
+			}
+		}
+
+		file << "\n";
+	}
+	
+	//Write the human's game information to the file.
+	file << "\nHuman:\n";
+	file << "Captured Pairs: " << m_playerList[0]->GetCapturedPairs() << "\n";
+	file << "Score: " << m_playerList[0]->GetScore() << "\n\n";
+
+	//Write the computer's game information to the file.
+	file << "Computer:\n";
+	file << "Captured Pairs: " << m_playerList[1]->GetCapturedPairs() << "\n";
+	file << "Score: " << m_playerList[1]->GetScore() << "\n\n";
+
+	//Write the next player's turn to the file.
+	file << "Next Player: ";
+	if (m_nextPlayerIndex == 0)
+	{
+		file << "Human - " << m_playerList[0]->GetColor();
+	}
+	else
+	{
+		file << "Computer - " << m_playerList[1]->GetColor();
+	}
+
+	file.close();
+
+	cout << "Game successfully saved, thanks for playing!" << endl;
+
+	//Exit the program, no need to ask anything else of the user.
+	exit(0);
 }

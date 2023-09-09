@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <stdlib.h>
 #include "Board.h"
 
 using namespace std;

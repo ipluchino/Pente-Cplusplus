@@ -17,6 +17,8 @@ public:
 	string GetPlayLocation(Board a_board);
 	string GetTournamentChoice();
 	string GetCoinTossCall();
+	string GetHumanDecision();
+	string GetSaveDecision();
 
 private:
 

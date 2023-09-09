@@ -37,7 +37,6 @@ void Tournament::StartTournament()
 	{
 		m_round.StartRound();
 		
-		break;
 		//SCORE ROUND WHEN IT ENDS
 	} while (true);		// SHOULD BE while(Continue())
 

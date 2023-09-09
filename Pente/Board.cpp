@@ -164,8 +164,8 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 				numCaptures++;
 
 				//Remove the two captured pieces from the board. The first and second row/col pairs of 'newLocations' are the two pieces being captured.
-				RemoveStone(IntToCharacter(newLocations[0][1]), 19 - newLocations[0][0]);
-				RemoveStone(IntToCharacter(newLocations[1][1]), 19 - newLocations[1][0]);
+				RemoveStone(IntToCharacter(newLocations[0][1]), ConvertRowIndex(newLocations[0][0]));
+				RemoveStone(IntToCharacter(newLocations[1][1]), ConvertRowIndex(newLocations[1][0]));
 			}
 		}
 	}
