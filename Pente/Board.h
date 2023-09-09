@@ -53,6 +53,7 @@ public:
 	bool IsBoardFull();
 	bool FiveConsecutive();
 	int ScoreBoard(char a_color, int a_numCaptures);
+	void ClearBoard();
 
 	//Conversion Functions
 	int CharacterToInt(char a_column);

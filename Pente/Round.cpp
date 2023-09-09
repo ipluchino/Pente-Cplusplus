@@ -66,8 +66,10 @@ void Round::StartRound()
 	m_playerList[0]->SetScore(m_board.ScoreBoard(m_playerList[0]->GetColor(), m_playerList[0]->GetCapturedPairs()));
 	m_playerList[1]->SetScore(m_board.ScoreBoard(m_playerList[1]->GetColor(), m_playerList[1]->GetCapturedPairs()));
 
-	cout << m_playerList[0]->GetColor() << "  " << m_playerList[0]->GetScore() << endl;
-	cout << m_playerList[1]->GetColor() << "  " << m_playerList[1]->GetScore() << endl;
+	//Clear the board and reset the number of captured pairs for each player in case the user wishes to play another.
+	m_board.ClearBoard();
+	m_playerList[0]->SetCapturedPairs(0);
+	m_playerList[1]->SetCapturedPairs(0);
 }
 
 //Determines the first player of the round, and sets the colors of the players.

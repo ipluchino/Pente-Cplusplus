@@ -317,6 +317,12 @@ int Board::ScoreBoard(char a_color, int a_numCaptures)
 	return totalScore;
 }
 
+//Clears the entire board.
+void Board::ClearBoard()
+{
+	m_board = vector<vector<char>>(19, vector<char>(19, '-'));
+}
+
 //Converts a alphabetical column to its numerical counterpart.
 int Board::CharacterToInt(char a_column)
 {
