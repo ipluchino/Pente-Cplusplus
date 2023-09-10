@@ -78,8 +78,8 @@ void Round::StartRound()
 	}
 
 	//Once the round ends, update the scores for each player.
-	m_playerList[0]->SetScore(m_board.ScoreBoard(m_playerList[0]->GetColor(), m_playerList[0]->GetCapturedPairs()));
-	m_playerList[1]->SetScore(m_board.ScoreBoard(m_playerList[1]->GetColor(), m_playerList[1]->GetCapturedPairs()));
+	m_playerList[0]->SetScore(m_playerList[0]->GetScore() + m_board.ScoreBoard(m_playerList[0]->GetColor(), m_playerList[0]->GetCapturedPairs()));
+	m_playerList[1]->SetScore(m_playerList[1]->GetScore() + m_board.ScoreBoard(m_playerList[1]->GetColor(), m_playerList[1]->GetCapturedPairs()));
 
 	//Reset the round so that the user can play again if they choose to continue playing.
 	m_board.ClearBoard();
