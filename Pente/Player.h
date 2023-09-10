@@ -29,13 +29,13 @@ public:
 
 	//Selectors
 	char GetColor() const { return m_color; }
-	unsigned int GetScore() const { return m_score; }
-	unsigned int GetCapturedPairs() const { return m_capturedPairs; }
+	int GetScore() const { return m_score; }
+	int GetCapturedPairs() const { return m_capturedPairs; }
 
 	//Mutators
 	void SetColor(char a_color) { m_color = a_color; }
-	void SetScore(unsigned int a_score) { m_score = a_score; }
-	void SetCapturedPairs(unsigned int a_capturedPairs) { m_capturedPairs = a_capturedPairs; }
+	void SetScore(int a_score) { m_score = a_score; }
+	void SetCapturedPairs(int a_capturedPairs) { m_capturedPairs = a_capturedPairs; }
 
 	//Utility Functions
 	virtual void MakePlay(Board& a_board);
@@ -47,9 +47,9 @@ protected:
 	char m_color;
 
 	//The overall score for the player.
-	unsigned int m_score;
+	int m_score;
 
 	//The number of captured pairs for the player.
-	unsigned int m_capturedPairs;
+	int m_capturedPairs;
 };
 

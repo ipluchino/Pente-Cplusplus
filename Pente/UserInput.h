@@ -19,6 +19,9 @@ public:
 	string GetCoinTossCall();
 	string GetHumanDecision();
 	string GetSaveDecision();
+	string GetFileNameLoad();
+	string GetFileNameSave();
+	string GetContinueDecision();
 
 private:
 

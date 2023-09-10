@@ -77,7 +77,6 @@ string UserInput::GetTournamentChoice()
 	string response;
 	bool valid = false;
 
-	cout << "Welcome to Pente!" << endl;
 	cout << "Options:" << endl;
 	cout << "1. Start a new tournament." << endl;
 	cout << "2. Load a tournament from a file." << endl << endl;
@@ -107,9 +106,9 @@ string UserInput::GetCoinTossCall()
 	string response;
 	bool valid = false;
 
-	cout << "The first player must be determined using a coin toss." << endl << endl;
+	cout << "The first player must be determined using a coin toss since the tournament is just starting or the scores are tied." << endl << endl;
 	
-	cout << "Enter 'H' for Heads or 'T' for tails: ";
+	cout << "Enter \"H\" for Heads or \"T\" for tails: ";
 	cin >> response;
 	
 	while (!valid)
@@ -135,17 +134,16 @@ string UserInput::GetHumanDecision()
 
 	cout << "Options:" << endl;
 	cout << "1. Place a tile." << endl;
-	cout << "2. Ask for help." << endl;
-	cout << "3. Save and exit game." << endl << endl;
+	cout << "2. Ask for help." << endl << endl;
 
-	cout << "Enter your choice (1-3): ";
+	cout << "Enter your choice (1 or 2): ";
 	cin >> response;
 
 	while (!valid)
 	{
-		if (response != "1" && response != "2" && response != "3")
+		if (response != "1" && response != "2")
 		{
-			cout << "Invalid input. Please enter 1, 2, or 3: ";
+			cout << "Invalid input. Please enter 1 or 2: ";
 			cin >> response;
 		}
 		else
@@ -164,7 +162,7 @@ string UserInput::GetSaveDecision()
 	string response;
 	bool valid = false;
 
-	cout << "Would you like to save and exit the game or continue playing? Enter \"Y\" or \"N\": ";
+	cout << "Would you like to save and exit the game? Enter \"Y\" or \"N\": ";
 	cin >> response;
 
 	while (!valid)
@@ -181,6 +179,56 @@ string UserInput::GetSaveDecision()
 	}
 
 	cout << endl;
+
+	return response;
+}
+
+string UserInput::GetFileNameLoad()
+{
+	//Note: No input validation required for the file name.
+	string response;
+	
+	cout << "Please enter a file name to load the game from (without the .txt): ";
+	cin >> response;
+
+	cout << endl;
+
+	return response + ".txt";
+}
+
+string UserInput::GetFileNameSave()
+{
+	//Note: No input validation required for the file name.
+	string response;
+	
+	cout << "Please enter a file name to save the game to (without the .txt): ";
+	cin >> response;
+
+	cout << endl;
+
+	return response + ".txt";
+}
+
+string UserInput::GetContinueDecision()
+{
+	string response;
+	bool valid = false;
+
+	cout << "Would you like to keep playing and start another round? Enter \"Y\" or \"N\": ";
+	cin >> response;
+
+	while (!valid)
+	{
+		if (response != "Y" && response != "N")
+		{
+			cout << "Invalid input. Please enter Y or N: ";
+			cin >> response;
+		}
+		else
+		{
+			valid = true;
+		}
+	}
 
 	return response;
 }

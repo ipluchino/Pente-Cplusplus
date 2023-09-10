@@ -20,7 +20,7 @@ void Human::MakePlay(Board& a_board)
 
 	do 
 	{
-		decision = m_UserInput.GetHumanDecision();
+		decision = m_userInput.GetHumanDecision();
 
 		if (decision == "1")
 		{
@@ -33,18 +33,14 @@ void Human::MakePlay(Board& a_board)
 			}
 
 			//Obtain the location the human player wants to place the stone.
-			location = m_UserInput.GetPlayLocation(a_board);
+			location = m_userInput.GetPlayLocation(a_board);
 
 			//Place the stone on the board. location[0] represents the column and location.substr(1, 2) represents the row.
 			a_board.PlaceStone(location[0], stoi(location.substr(1, 2)), m_color);
 		}
-		else if (decision == "2")
-		{
-			cout << "Implement request help!" << endl;
-		}
 		else
 		{
-			cout << "Implement Save Game!" << endl;
+			cout << "Implement request help!" << endl;
 		}
 
 	} while (decision != "1");

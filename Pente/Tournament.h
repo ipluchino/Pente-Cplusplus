@@ -15,13 +15,13 @@ public:
 	//Utility Functions
 	void CreateNewGame();
 	bool LoadGame();
-	bool Continue();
 	void StartTournament();
+	bool Continue();
 
 private:
 	//Round object used to play one round of Pente.
 	Round m_round;
 
 	//UserInput object used to obtain input from the human player.
-	UserInput m_UserInput;
+	UserInput m_userInput;
 };

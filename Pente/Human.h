@@ -25,6 +25,6 @@ public:
 
 private:
 	//UserInput object used to obtain input from the human player.
-	UserInput m_UserInput;
+	UserInput m_userInput;
 };
 

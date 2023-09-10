@@ -38,29 +38,38 @@ Round::~Round()
 	{
 		delete m_playerList[i];
 	}
+
+	//Make sure the file is closed.
+	m_file.close();
 }
 
 //Runs through one round of Pente.
 void Round::StartRound()
 {
-	//Before the round starts, the first player and respective colors must be determined.
-	//NOTE IF YOU LOAD THE GAME YOU SHOULD NOT CALL THIS. MUST CHECK IF BOARD IS EMPTY BEFORE AND M_TURN HASNT BEEN DECIDED!!!
-	cout << "\nRound starting! Since the round is just starting, the player who goes first must be determined." << endl;
-	DetermineFirstPlayer();
+	//If the first player has not yet already been determined, decide who goes first.
+	if (m_nextPlayerIndex == -1)
+	{
+		cout << "\nSince the round is just starting, the player who goes first must be determined." << endl;
+		DetermineFirstPlayer();
+	}
 
-	//Display the board for the first time if the human is going first?
-	DisplayGame();
+	//Display the board for the first time if the human is going first so they can see the board.
+	if (m_nextPlayerIndex == 0) DisplayGame();
 
+	//Main round loop. Alternate turns between the human and the computer.
 	while (!RoundOver())
 	{
 		m_playerList[m_nextPlayerIndex]->MakePlay(m_board);
 		m_nextPlayerIndex = (m_nextPlayerIndex + 1) % NUM_PLAYERS;
 
+		//Clear the screen.
+		//system("cls");
+
 		//Display the game after each player's turn.
 		DisplayGame();
 
-		//Ask the user to save and exit after each player's turn?
-		string saveDecision = m_UserInput.GetSaveDecision();
+		//Ask the user to save and exit after each player's turn
+		string saveDecision = m_userInput.GetSaveDecision();
 
 		if (saveDecision == "Y")
 		{
@@ -72,10 +81,11 @@ void Round::StartRound()
 	m_playerList[0]->SetScore(m_board.ScoreBoard(m_playerList[0]->GetColor(), m_playerList[0]->GetCapturedPairs()));
 	m_playerList[1]->SetScore(m_board.ScoreBoard(m_playerList[1]->GetColor(), m_playerList[1]->GetCapturedPairs()));
 
-	//Clear the board and reset the number of captured pairs for each player in case the user wishes to play another.
+	//Reset the round so that the user can play again if they choose to continue playing.
 	m_board.ClearBoard();
 	m_playerList[0]->SetCapturedPairs(0);
 	m_playerList[1]->SetCapturedPairs(0);
+	m_nextPlayerIndex = -1;
 }
 
 //Determines the first player of the round, and sets the colors of the players.
@@ -126,7 +136,7 @@ void Round::DetermineFirstPlayer()
 //Runs a coin toss to determine the first player. The human player is asked to call the toss.
 bool Round::CoinToss()
 {
-	string choice = m_UserInput.GetCoinTossCall();
+	string choice = m_userInput.GetCoinTossCall();
 	
 	//Randomly generate either 1 or 2. 1 Represents heads, while 2 represents tails.
 	srand(time(NULL));
@@ -201,61 +211,192 @@ bool Round::RoundOver()
 //Saves the game to a file, and closes the program.
 void Round::SaveGame()
 {
-	string fileName;
-	fstream file;
+	string fileName = m_userInput.GetFileNameSave();
 
-	cout << "Enter the name of the file you want the game saved to (without the .txt): ";
-	cin >> fileName;
-	fileName += ".txt";
-
-	file.open(fileName, std::ios::out);
+	m_file.open(fileName, ios::out);
 
 	//Write the board to the file.
 	vector<vector<char>> board = m_board.GetBoard();
 	
-	file << "Board:\n";
+	m_file << "Board:\n";
 	for (int i = 0; i < board.size(); i++)
 	{
 		for (int j = 0; j < board.size(); j++)
 		{
 			if (board[i][j] == '-')
 			{
-				file << 'O';
+				m_file << 'O';
 			}
 			else
 			{
-				file << board[i][j];
+				m_file << board[i][j];
 			}
 		}
 
-		file << "\n";
+		m_file << "\n";
 	}
 	
 	//Write the human's game information to the file.
-	file << "\nHuman:\n";
-	file << "Captured Pairs: " << m_playerList[0]->GetCapturedPairs() << "\n";
-	file << "Score: " << m_playerList[0]->GetScore() << "\n\n";
+	m_file << "\nHuman:\n";
+	m_file << "Captured Pairs: " << m_playerList[0]->GetCapturedPairs() << "\n";
+	m_file << "Score: " << m_playerList[0]->GetScore() << "\n\n";
 
 	//Write the computer's game information to the file.
-	file << "Computer:\n";
-	file << "Captured Pairs: " << m_playerList[1]->GetCapturedPairs() << "\n";
-	file << "Score: " << m_playerList[1]->GetScore() << "\n\n";
+	m_file << "Computer:\n";
+	m_file << "Captured Pairs: " << m_playerList[1]->GetCapturedPairs() << "\n";
+	m_file << "Score: " << m_playerList[1]->GetScore() << "\n\n";
 
 	//Write the next player's turn to the file.
-	file << "Next Player: ";
+	m_file << "Next Player: ";
 	if (m_nextPlayerIndex == 0)
 	{
-		file << "Human - " << m_playerList[0]->GetColor();
+		m_file << "Human - " << m_playerList[0]->GetColor();
 	}
 	else
 	{
-		file << "Computer - " << m_playerList[1]->GetColor();
+		m_file << "Computer - " << m_playerList[1]->GetColor();
 	}
 
-	file.close();
+	m_file.close();
 
 	cout << "Game successfully saved, thanks for playing!" << endl;
 
 	//Exit the program, no need to ask anything else of the user.
 	exit(0);
+}
+
+//Loads game data from a file into the current round.
+bool Round::LoadGameData()
+{
+	string fileName = m_userInput.GetFileNameLoad();
+	
+	m_file.open(fileName, ios::in);
+
+	if (!m_file.is_open()) {
+		cout << "Error! Couldn't locate the file provided!" << endl << endl;
+		return false;
+	}
+
+	vector<vector<char>> board = {};
+	int humanCaptured = 0, computerCaptured = 0, humanScore = 0, computerScore = 0, nextPlayerIndex = 0, pos = 0;
+	char humanColor = ' ', computerColor = ' ';
+
+	string line;
+	while (getline(m_file, line))
+	{
+		//First read in the board.
+		if (line.find("Board:") != string::npos)
+		{
+			for (int i = 0; i < 19; i++)
+			{
+				getline(m_file, line);
+
+				vector<char> row = {};
+
+				//Loop through the entire line except the end, to ignore the \n character.
+				for (int j = 0; j < line.length(); j++)
+				{
+					if (line[j] == 'O')
+					{
+						row.push_back('-');
+					}
+					else
+					{
+						row.push_back(line[j]);
+					}
+
+				}
+
+				board.push_back(row);
+			}
+		}
+
+		//Next read in the human information
+		if (line.find("Human:") != string::npos)
+		{
+			getline(m_file, line);
+
+			//Obtaining the number of captures for the human player.
+			pos = line.find(":") + 1;
+			humanCaptured = stoi(line.substr(pos));
+
+			//Obtaining the score for the human player.
+			getline(m_file, line);
+			pos = line.find(":") + 1;
+			humanScore = stoi(line.substr(pos));
+		}
+
+		//Next read in the computer information
+		if (line.find("Computer:") != string::npos)
+		{
+			getline(m_file, line);
+
+			//Obtaining the number of captures for the human player.
+			pos = line.find(":") + 1;
+			computerCaptured = stoi(line.substr(pos));
+
+			//Obtaining the score for the human player.
+			getline(m_file, line);
+			pos = line.find(":") + 1;
+			computerScore = stoi(line.substr(pos));
+		}
+
+		//Last, read in the next player information.
+		if (line.find("Next Player:") != string::npos)
+		{
+			if (line.find("Human") != string::npos)
+			{
+				//Human plays next
+				nextPlayerIndex = 0;
+
+				char nextPlayerColor = line[line.size() - 1];
+
+				if (nextPlayerColor == 'B')
+				{
+					humanColor = 'B';
+					computerColor = 'W';
+				}
+				else
+				{
+					humanColor = 'W';
+					computerColor = 'B';
+				}
+
+			}
+			else
+			{
+				//Computer plays next
+				nextPlayerIndex = 1;
+
+				char nextPlayerColor = line[line.size() - 1];
+
+				if (nextPlayerColor == 'B')
+				{
+					computerColor = 'B';
+					humanColor = 'W';
+				}
+				else {
+					computerColor = 'W';
+					humanColor = 'B';
+				}
+			}
+		}
+	}
+
+	//Set the round's data to the variables read in.
+	m_board.SetBoard(board);
+
+	m_playerList[0]->SetCapturedPairs(humanCaptured);
+	m_playerList[0]->SetScore(humanScore);
+	m_playerList[0]->SetColor(humanColor);
+
+	m_playerList[1]->SetCapturedPairs(computerCaptured);
+	m_playerList[1]->SetScore(computerScore);
+	m_playerList[1]->SetColor(computerColor);
+
+	m_nextPlayerIndex = nextPlayerIndex;
+
+	m_file.close();
+
+	return true;
 }
