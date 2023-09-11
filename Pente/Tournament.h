@@ -13,7 +13,6 @@ public:
 	Tournament();
 
 	//Utility Functions
-	void CreateNewGame();
 	bool LoadGame();
 	void StartTournament();
 	bool Continue();

@@ -8,9 +8,6 @@ public:
 	//Default Constructor
 	Computer();
 
-	//Parametric Constructor to start a new game.
-	Computer(char a_computerColor);
-
 	//Destructor
 	~Computer() {};
 

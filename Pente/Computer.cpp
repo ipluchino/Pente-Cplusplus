@@ -5,11 +5,6 @@ Computer::Computer()
 {
 }
 
-//Parametric Constructor to start a new game
-Computer::Computer(char a_computerColor) : Player()
-{
-}
-
 void Computer::MakePlay(Board& a_board)
 {
 	//Obtain the optimal play given the current board. 

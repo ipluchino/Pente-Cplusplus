@@ -11,9 +11,9 @@ class Board
 public:
 	//Constants
 	//Size of the board will always be 19x19.
-	const int BOARD_SIZE = 19;								//Should be unsigned?
+	const int BOARD_SIZE = 19;								
 	
-	////Represents the "instructions" for the 8 possible directions on the board. Left, Right, Up, Down, and the four possible diagonals.
+	////Represents the "instructions" for the 8 possible directions on the board. Left, Right, Down, Up, and the four possible diagonals.
 	const vector<vector<int>> DIRECTIONS = { {0,-1}, {0,1}, {1,0}, {-1,0}, {1, 1}, {-1,-1}, {1,-1}, {-1,1} };
 	
 	//Represents the total number of possible directions, in this case 8.
@@ -61,7 +61,7 @@ public:
 	int ConvertRowIndex(int a_row);
 
 
-	
+
 private:
 	//Holds all of the data for the entire board.
 	vector<vector<char>> m_board;

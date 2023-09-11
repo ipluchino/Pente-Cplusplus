@@ -12,7 +12,7 @@ class Player
 {
 public:
 	//Constants
-	//Represents the "instructions" for the 8 possible directions on the board. Left, Right, Up, Down, and the four possible diagonals.
+	//Represents the "instructions" for the 8 possible directions on the board. Left, Right, Down, Up, and the four possible diagonals.
 	const vector<vector<int>> DIRECTIONS = { {0,-1}, {0,1}, {1,0}, {-1,0}, {1, 1}, {-1,-1}, {1,-1}, {-1,1} };
 
 	//Represents the total number of possible directions, in this case 8.
@@ -20,9 +20,6 @@ public:
 
 	//Default constructor - By default, the player's color is set to white if none is provided.
 	Player();
-
-	//Parametric contructor to start a new game
-	//Player(char a_color, unsigned int a_score, unsigned int a_capturedPairs);
 
 	//Destructor
 	~Player() {};

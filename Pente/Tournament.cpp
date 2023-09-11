@@ -5,15 +5,6 @@ Tournament::Tournament()
 {
 }
 
-//Creates a new Tournament.
-void Tournament::CreateNewGame()
-{
-	//Determine who is white/black.
-	//m_round = Round('W', 'B');
-
-
-}
-
 //Loads the tournament from a file.
 bool Tournament::LoadGame()
 {
@@ -47,9 +38,8 @@ void Tournament::StartTournament()
 	do 
 	{
 		m_round.StartRound();
-		
-		//SCORE ROUND WHEN IT ENDS
-	} while (Continue());		// SHOULD BE while(Continue())
+
+	} while (Continue());		
 }
 
 bool Tournament::Continue()

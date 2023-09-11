@@ -20,8 +20,6 @@ public:
 	//Default Constructor
 	Round();
 
-	//TO DO: Serialize constructor
-
 	//Destructor
 	~Round();
 
