@@ -37,6 +37,8 @@ public:
 	bool RoundOver();
 	void SaveGame();
 	bool LoadGameData();
+	void UpdateScores();
+	void ResetRound();
 
 private:
 	//Holds a list of the players currently playing the game. In this case, there will be one human player and one computer player.

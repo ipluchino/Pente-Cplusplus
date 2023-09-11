@@ -68,6 +68,9 @@ void Round::StartRound()
 		//Display the game after each player's turn.
 		DisplayGame();
 
+		//If the round ends after a player's move, don't ask the user to save.
+		//if (RoundOver()) break;
+
 		//Ask the user to save and exit after each player's turn
 		string saveDecision = m_userInput.GetSaveDecision();
 
@@ -78,14 +81,10 @@ void Round::StartRound()
 	}
 
 	//Once the round ends, update the scores for each player.
-	m_playerList[0]->SetScore(m_playerList[0]->GetScore() + m_board.ScoreBoard(m_playerList[0]->GetColor(), m_playerList[0]->GetCapturedPairs()));
-	m_playerList[1]->SetScore(m_playerList[1]->GetScore() + m_board.ScoreBoard(m_playerList[1]->GetColor(), m_playerList[1]->GetCapturedPairs()));
+	UpdateScores();
 
 	//Reset the round so that the user can play again if they choose to continue playing.
-	m_board.ClearBoard();
-	m_playerList[0]->SetCapturedPairs(0);
-	m_playerList[1]->SetCapturedPairs(0);
-	m_nextPlayerIndex = -1;
+	ResetRound();
 }
 
 //Determines the first player of the round, and sets the colors of the players.
@@ -399,4 +398,20 @@ bool Round::LoadGameData()
 	m_file.close();
 
 	return true;
+}
+
+//Updates the score of the round.
+void Round::UpdateScores()
+{
+	m_playerList[0]->SetScore(m_playerList[0]->GetScore() + m_board.ScoreBoard(m_playerList[0]->GetColor(), m_playerList[0]->GetCapturedPairs()));
+	m_playerList[1]->SetScore(m_playerList[1]->GetScore() + m_board.ScoreBoard(m_playerList[1]->GetColor(), m_playerList[1]->GetCapturedPairs()));
+}
+
+//Resets the round so another can be played.
+void Round::ResetRound()
+{
+	m_board.ClearBoard();
+	m_playerList[0]->SetCapturedPairs(0);
+	m_playerList[1]->SetCapturedPairs(0);
+	m_nextPlayerIndex = -1;
 }
