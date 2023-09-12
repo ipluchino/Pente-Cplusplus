@@ -26,6 +26,7 @@ public:
 	//Selectors
 
 	//Mutators
+	bool SetNextPlayerIndex(int a_index);
 
 	//Utility Functions
 	void StartRound();

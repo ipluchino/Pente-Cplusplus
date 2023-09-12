@@ -5,20 +5,45 @@ Board::Board() : m_board(vector<vector<char>>(19, vector<char>(19, '-')))
 {
 }
 
-//Places a stone, given a row, column and color onto the board.
-void Board::PlaceStone(char a_column, int a_row, char a_pieceColor)
+bool Board::SetBoard(vector<vector<char>> a_board)
 {
+	//The board must be 19x19 to be considered valid.
+	if (a_board.size() != 19) return false;
+
+	for (int i = 0; i < a_board.size(); i++)
+	{
+		if (a_board[i].size() != 19) return false;
+	}
+
+	m_board = a_board;
+
+	return true;
+}
+
+//Places a stone, given a row, column and color onto the board.
+bool Board::PlaceStone(char a_column, int a_row, char a_pieceColor)
+{
+	if (a_column < 'A' || a_column > 'S') return false;
+
+	if (a_row < 0 || a_row > 19) return false;
+	
 	//Must convert the location's column as a character to its numeric value so it can be located on the board.
 	int numericColumn = CharacterToInt(a_column);
 
-	//Must convert the location's row to its correct numeric value since the rows are labeled 1-19 starting from the bottom.
+	//Must convert the location's row to its correct numeric value since the rows are labeled 1-19 starting from the bottom (opposite of index order).
 	a_row = ConvertRowIndex(a_row);
 
 	m_board[a_row][numericColumn] = a_pieceColor;
+
+	return true;
 }
 
-void Board::RemoveStone(char a_column, int a_row)
+bool Board::RemoveStone(char a_column, int a_row)
 {
+	if (a_column < 'A' || a_column > 'S') return false;
+
+	if (a_row < 0 || a_row > 19) return false;
+	
 	//Must convert the location's column as a character to its numeric value so it can be located on the board.
 	int numericColumn = CharacterToInt(a_column);
 
@@ -26,6 +51,8 @@ void Board::RemoveStone(char a_column, int a_row)
 	a_row = ConvertRowIndex(a_row);
 
 	m_board[a_row][numericColumn] = '-';
+
+	return true;
 }
 
 //Displays the entire board to the screen
@@ -185,7 +212,7 @@ bool Board::FiveConsecutive()
 				int blackCounter = 0;
 
 				//For each direction, consider the current space and 4 spaces out (to make a consecutive 5).
-				for (int l = 0; l < 5; l++)
+				for (int l = 0; l < StrategyConstants::CONSECUTIVE_5_DISTANCE; l++)
 				{
 					int newRow = i + (StrategyConstants::DIRECTIONS[k][0] * l);
 					int newCol = j + (StrategyConstants::DIRECTIONS[k][1] * l);

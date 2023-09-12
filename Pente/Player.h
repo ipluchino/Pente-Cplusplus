@@ -24,9 +24,9 @@ public:
 	int GetCapturedPairs() const { return m_capturedPairs; }
 
 	//Mutators
-	void SetColor(char a_color) { m_color = a_color; }
-	void SetScore(int a_score) { m_score = a_score; }
-	void SetCapturedPairs(int a_capturedPairs) { m_capturedPairs = a_capturedPairs; }
+	bool SetColor(char a_color);
+	bool SetScore(int a_score);
+	bool SetCapturedPairs(int a_capturedPairs);
 
 	//Utility Functions
 	virtual void MakePlay(Board& a_board);

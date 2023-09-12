@@ -19,6 +19,15 @@ Round::~Round()
 	m_file.close();
 }
 
+bool Round::SetNextPlayerIndex(int a_index)
+{
+	if (a_index != 0 && a_index != 1) return false;
+
+	m_nextPlayerIndex = a_index;
+
+	return true;
+}
+
 //Runs through one round of Pente.
 void Round::StartRound()
 {
@@ -253,6 +262,7 @@ bool Round::LoadGameData()
 	}
 
 	vector<vector<char>> board = {};
+
 	int humanCaptured = 0, computerCaptured = 0, humanScore = 0, computerScore = 0, nextPlayerIndex = 0, pos = 0;
 	char humanColor = ' ', computerColor = ' ';
 
@@ -359,17 +369,30 @@ bool Round::LoadGameData()
 	}
 
 	//Set the round's data to the variables read in.
-	m_board.SetBoard(board);
+	
+	if (!m_board.SetBoard(board))
+	{
+		cout << "Could not load board!" << endl; 
+		return false;
+	}
 
-	m_playerList[0]->SetCapturedPairs(humanCaptured);
-	m_playerList[0]->SetScore(humanScore);
-	m_playerList[0]->SetColor(humanColor);
+	if (!m_playerList[0]->SetCapturedPairs(humanCaptured) || !m_playerList[0]->SetScore(humanScore) || !m_playerList[0]->SetColor(humanColor))
+	{
+		cout << "Could not correctly load the human's information!" << endl;
+		return false;
+	}
 
-	m_playerList[1]->SetCapturedPairs(computerCaptured);
-	m_playerList[1]->SetScore(computerScore);
-	m_playerList[1]->SetColor(computerColor);
+	if (!m_playerList[1]->SetCapturedPairs(humanCaptured) || !m_playerList[1]->SetScore(humanScore) || !m_playerList[1]->SetColor(humanColor))
+	{
+		cout << "Could not correctly load the computer's information!" << endl;
+		return false;
+	}
 
-	m_nextPlayerIndex = nextPlayerIndex;
+	if (!SetNextPlayerIndex(nextPlayerIndex))
+	{
+		cout << "Could not correct load the next player!" << endl;
+		return false;
+	}
 
 	m_file.close();
 

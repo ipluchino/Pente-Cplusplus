@@ -20,9 +20,9 @@ public:
 	vector<vector<char>> GetBoard() const { return m_board; }
 
 	//Mutators
-	void SetBoard(vector<vector<char>> a_board) { m_board = a_board; }
-	void PlaceStone(char a_column, int a_row, char a_pieceColor);
-	void RemoveStone(char a_column, int a_row);
+	bool SetBoard(vector<vector<char>> a_board);
+	bool PlaceStone(char a_column, int a_row, char a_pieceColor);
+	bool RemoveStone(char a_column, int a_row);
 
 	//Utility Functions
 	void DisplayBoard();

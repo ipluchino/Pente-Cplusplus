@@ -26,5 +26,8 @@ public:
 
 	//Represents the total number of spaces needed to search when searching for a consecutive 4 of the same piece.
 	static const int CONSECUTIVE_4_DISTANCE = 4;
+
+	//Represents the total number of spaces needed to search when searching for a consecutive 5 of the same piece.
+	static const int CONSECUTIVE_5_DISTANCE = 5;
 };
 

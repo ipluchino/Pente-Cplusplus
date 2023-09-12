@@ -5,6 +5,33 @@ Player::Player() : m_color('W'), m_score(0), m_capturedPairs(0)
 {
 }
 
+bool Player::SetColor(char a_color)
+{
+	if (a_color != 'W' && a_color != 'B') return false;
+
+	m_color = a_color;
+
+	return true;
+}
+
+bool Player::SetScore(int a_score)
+{
+	if (a_score < 0) return false;
+
+	m_score = a_score;
+	
+	return true;
+}
+
+bool Player::SetCapturedPairs(int a_capturedPairs)
+{
+	if (a_capturedPairs < 0) return false;
+
+	m_capturedPairs = a_capturedPairs;
+
+	return true;
+}
+
 //Virtual function - It has its own definition in both the Human and Computer class.
 void Player::MakePlay(Board& a_board)
 {
