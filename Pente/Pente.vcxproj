@@ -134,6 +134,7 @@
     <ClCompile Include="Pente.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Round.cpp" />
+    <ClCompile Include="StrategyConstants.cpp" />
     <ClCompile Include="Tournament.cpp" />
     <ClCompile Include="UserInput.cpp" />
   </ItemGroup>
@@ -143,6 +144,7 @@
     <ClInclude Include="Human.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Round.h" />
+    <ClInclude Include="StrategyConstants.h" />
     <ClInclude Include="Tournament.h" />
     <ClInclude Include="UserInput.h" />
   </ItemGroup>

@@ -3,31 +3,13 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include "StrategyConstants.h"
 
 using namespace std;
 
 class Board
 {
 public:
-	//Constants
-	//Size of the board will always be 19x19.
-	const int BOARD_SIZE = 19;								
-	
-	////Represents the "instructions" for the 8 possible directions on the board. Left, Right, Down, Up, and the four possible diagonals.
-	const vector<vector<int>> DIRECTIONS = { {0,-1}, {0,1}, {1,0}, {-1,0}, {1, 1}, {-1,-1}, {1,-1}, {-1,1} };
-	
-	//Represents the total number of possible directions, in this case 8.
-	const int NUM_DIRECTIONS = 8;
-
-	//Represents the number of spaces needed to search from a current location on the board to find a capture.
-	const int CAPTURE_DISTANCE = 3;
-
-	//Represents the incremement required to skip over opposite directions. Ex: When searching horizontals, left & right directions searches would be the same.
-	const int DIRECTIONAL_OFFSET = 2;
-
-	//Represents the number of spaces needed to search from a current location on the board to find a consecutive four.
-	const int CONSECUTIVE_4_DISTANCE = 3;
-	
 	//Default Constructor
 	Board();
 

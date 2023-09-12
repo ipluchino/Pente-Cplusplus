@@ -40,12 +40,12 @@ void Board::DisplayBoard()
 	cout << "\n\n";
 
 	//Print the entire board and the row headers to the left of each row (1-19 going from bottom to top)
-	for (int i = 0; i < BOARD_SIZE; i++)
+	for (int i = 0; i < StrategyConstants::BOARD_SIZE; i++)
 	{
-		cout << BOARD_SIZE - i << "   ";
+		cout << StrategyConstants::BOARD_SIZE - i << "   ";
 		if (i >= 10) cout << " ";
 
-		for (int j = 0; j < BOARD_SIZE; j++) 
+		for (int j = 0; j < StrategyConstants::BOARD_SIZE; j++)
 		{
 			cout << m_board[i][j] << " ";
 		}
@@ -72,9 +72,9 @@ int Board::CountPieces(char a_color)
 	int total = 0;
 
 	//Loop through the entire board and count up the number of pieces that are the color passed.
-	for (int i = 0; i < BOARD_SIZE; i++)
+	for (int i = 0; i < StrategyConstants::BOARD_SIZE; i++)
 	{
-		for (int j = 0; j < BOARD_SIZE; j++)
+		for (int j = 0; j < StrategyConstants::BOARD_SIZE; j++)
 		{
 			if (m_board[i][j] == a_color)
 			{
@@ -107,23 +107,23 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 	int convertedRow = ConvertRowIndex(a_row);
 
 	//Must loop through all 8 of the possible directions starting from the location passed since captures can happen in any direction.
-	for (int i = 0; i < NUM_DIRECTIONS; i++)
+	for (int i = 0; i < StrategyConstants::NUM_DIRECTIONS; i++)
 	{	
 		//For each of the 8 directions, you must go three spaces out to check if a capture has occured.
 		//For example, if the color passed was white, a capture follows the pattern * B B W where * is the location passed to this function.
 		vector<vector<int>> newLocations = {};
 
-		for (int j = 1; j <= CAPTURE_DISTANCE; j++)
+		for (int j = 1; j <= StrategyConstants::CAPTURE_DISTANCE; j++)
 		{
-			int newRow = convertedRow + (DIRECTIONS[i][0] * j);
-			int newCol = convertedColumn + (DIRECTIONS[i][1] * j);
+			int newRow = convertedRow + (StrategyConstants::DIRECTIONS[i][0] * j);
+			int newCol = convertedColumn + (StrategyConstants::DIRECTIONS[i][1] * j);
 
 			//If the location is valid, it must be stored so the pieces there can be removed if it turns out to be a successful capture.
 			if (IsValidIndices(newRow, newCol)) newLocations.push_back({ newRow, newCol });
 		}
 
 		//There must be at least 3 valid board spaces going in the current direction being evaluated for a capture to be possible.
-		if (newLocations.size() == CAPTURE_DISTANCE)
+		if (newLocations.size() == StrategyConstants::CAPTURE_DISTANCE)
 		{
 			if (m_board[newLocations[0][0]][newLocations[0][1]] == opponentColor &&
 				m_board[newLocations[1][0]][newLocations[1][1]] == opponentColor &&
@@ -158,9 +158,9 @@ char Board::OpponentColor(char a_color)
 bool Board::IsBoardFull()
 {
 	//Loop through every piece on the board, and if one is empty the board is not full. Otherwise, it is.
-	for (int i = 0; i < BOARD_SIZE; i++)
+	for (int i = 0; i < StrategyConstants::BOARD_SIZE; i++)
 	{
-		for (int j = 0; j < BOARD_SIZE; j++)
+		for (int j = 0; j < StrategyConstants::BOARD_SIZE; j++)
 		{
 			if (m_board[i][j] == '-') return false;
 		}
@@ -173,13 +173,13 @@ bool Board::IsBoardFull()
 bool Board::FiveConsecutive()
 {
 	//From every position on the board, every horizontal, vertical, and diagonal needs to be searched.
-	for (int i = 0; i < BOARD_SIZE; i++)
+	for (int i = 0; i < StrategyConstants::BOARD_SIZE; i++)
 	{
-		for (int j = 0; j < BOARD_SIZE; j++)
+		for (int j = 0; j < StrategyConstants::BOARD_SIZE; j++)
 		{
 			//Only have to loop through 4 of the directions, since searching opposite directions (left&right, up&down, etc. is redundant)
             //All horizontals are checked with just left, all verticals with just up, etc.
-			for (int k = 0; k < NUM_DIRECTIONS; k += DIRECTIONAL_OFFSET)
+			for (int k = 0; k < StrategyConstants::NUM_DIRECTIONS; k += StrategyConstants::DIRECTIONAL_OFFSET)
 			{
 				int whiteCounter = 0;
 				int blackCounter = 0;
@@ -187,8 +187,8 @@ bool Board::FiveConsecutive()
 				//For each direction, consider the current space and 4 spaces out (to make a consecutive 5).
 				for (int l = 0; l < 5; l++)
 				{
-					int newRow = i + (DIRECTIONS[k][0] * l);
-					int newCol = j + (DIRECTIONS[k][1] * l);
+					int newRow = i + (StrategyConstants::DIRECTIONS[k][0] * l);
+					int newCol = j + (StrategyConstants::DIRECTIONS[k][1] * l);
 
 					//No need to keep searching if the 5 spaces go out of the board's bounds.
 					if (!IsValidIndices(newRow, newCol)) break;
@@ -211,7 +211,7 @@ int Board::ScoreBoard(char a_color, int a_numCaptures)
 	//Holds the overall score for a provided color (a_color).
 	int totalScore = 0;
 
-	for (int direction = 0; direction < DIRECTIONS.size(); direction += DIRECTIONAL_OFFSET)
+	for (int direction = 0; direction < StrategyConstants::NUM_DIRECTIONS; direction += StrategyConstants::DIRECTIONAL_OFFSET)
 	{
 		//The first step in scoring is the find all 5 or more consecutives in each horizontal, vertical, and diagonal.
 		//NOTE: There can be multiple 5 or more consecutives in an L shape if the last piece placed connects the L together.
@@ -219,9 +219,9 @@ int Board::ScoreBoard(char a_color, int a_numCaptures)
 		vector<vector<char>> boardCopy = GetBoard();
 
 		//Loop through every piece and search the current direction for any consecutive 5 or more stones. This is considered a "winning move".
-		for (int i = 0; i < BOARD_SIZE; i++)
+		for (int i = 0; i < StrategyConstants::BOARD_SIZE; i++)
 		{
-			for (int j = 0; j < BOARD_SIZE; j++)
+			for (int j = 0; j < StrategyConstants::BOARD_SIZE; j++)
 			{
 				int totalConsecutive = 0;
 				int row = i;
@@ -236,8 +236,8 @@ int Board::ScoreBoard(char a_color, int a_numCaptures)
 
 					totalConsecutive++;
 
-					row += DIRECTIONS[direction][0];
-					col += DIRECTIONS[direction][1];
+					row += StrategyConstants::DIRECTIONS[direction][0];
+					col += StrategyConstants::DIRECTIONS[direction][1];
 				}
 
 				//If a winning move was found, the player is awarded 5 points.
@@ -256,17 +256,17 @@ int Board::ScoreBoard(char a_color, int a_numCaptures)
 		}
 
 		//After the "winning move" in the current direction has been found and marked as seen, search for any consecutive 4s in that same direction.
-		for (int i = 0; i < BOARD_SIZE; i++)
+		for (int i = 0; i < StrategyConstants::BOARD_SIZE; i++)
 		{
-			for (int j = 0; j < BOARD_SIZE; j++)
+			for (int j = 0; j < StrategyConstants::BOARD_SIZE; j++)
 			{
 				int totalConsecutive = 0;
 
 				//Search 3 more spaces out from the current stone.
-				for (int k = 0; k <= CONSECUTIVE_4_DISTANCE; k++)
+				for (int k = 0; k < StrategyConstants::CONSECUTIVE_4_DISTANCE; k++)
 				{
-					int row = i + DIRECTIONS[direction][0] * k;
-					int col = j + DIRECTIONS[direction][1] * k;
+					int row = i + StrategyConstants::DIRECTIONS[direction][0] * k;
+					int col = j + StrategyConstants::DIRECTIONS[direction][1] * k;
 
 					if (!IsValidIndices(row, col)) break;
 
