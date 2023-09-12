@@ -65,6 +65,9 @@ void Round::StartRound()
 		}
 	}
 
+	//Display the scores earned for this current round.
+	DisplayRoundScore();
+
 	//Once the round ends, update the scores for each player.
 	UpdateScores();
 
@@ -155,13 +158,13 @@ void Round::DisplayGame()
 
 	//Dislpay the Human's information.
 	cout << "Human:" << endl;
-	cout << "Captured Pairs: " << m_playerList[0]->GetCapturedPairs() << endl;
-	cout << "Tournament Score: " << m_playerList[0]->GetScore() << endl << endl;
+	cout << "Captured Pairs: " << GetHumanCapturedPairs() << endl;
+	cout << "Tournament Score: " << GetHumanScore() << endl << endl;
 
 	//Display the Computer's information.
 	cout << "Computer:" << endl;
-	cout << "Captured Pairs: " << m_playerList[1]->GetCapturedPairs() << endl;
-	cout << "Tournament Score: " << m_playerList[1]->GetScore() << endl << endl;
+	cout << "Captured Pairs: " << GetComputerCapturedPairs() << endl;
+	cout << "Tournament Score: " << GetComputerScore() << endl << endl;
 }
 
 //Determines if the round is over.
@@ -372,7 +375,7 @@ bool Round::LoadGameData()
 	
 	if (!m_board.SetBoard(board))
 	{
-		cout << "Could not load board!" << endl; 
+		cout << "Could not correctly load board!" << endl; 
 		return false;
 	}
 
@@ -382,7 +385,7 @@ bool Round::LoadGameData()
 		return false;
 	}
 
-	if (!m_playerList[1]->SetCapturedPairs(humanCaptured) || !m_playerList[1]->SetScore(humanScore) || !m_playerList[1]->SetColor(humanColor))
+	if (!m_playerList[1]->SetCapturedPairs(computerCaptured) || !m_playerList[1]->SetScore(computerScore) || !m_playerList[1]->SetColor(computerColor))
 	{
 		cout << "Could not correctly load the computer's information!" << endl;
 		return false;
@@ -390,7 +393,7 @@ bool Round::LoadGameData()
 
 	if (!SetNextPlayerIndex(nextPlayerIndex))
 	{
-		cout << "Could not correct load the next player!" << endl;
+		cout << "Could not correctly load the next player!" << endl;
 		return false;
 	}
 
@@ -399,11 +402,11 @@ bool Round::LoadGameData()
 	return true;
 }
 
-//Updates the score of the round.
+//Updates the scores after a round concludes.
 void Round::UpdateScores()
 {
-	m_playerList[0]->SetScore(m_playerList[0]->GetScore() + m_board.ScoreBoard(m_playerList[0]->GetColor(), m_playerList[0]->GetCapturedPairs()));
-	m_playerList[1]->SetScore(m_playerList[1]->GetScore() + m_board.ScoreBoard(m_playerList[1]->GetColor(), m_playerList[1]->GetCapturedPairs()));
+	m_playerList[0]->SetScore(GetHumanScore() + m_board.ScoreBoard(GetHumanColor(), GetHumanCapturedPairs()));
+	m_playerList[1]->SetScore(GetComputerScore() + m_board.ScoreBoard(GetComputerColor(), GetComputerCapturedPairs()));
 }
 
 //Resets the round so another can be played.
@@ -413,4 +416,13 @@ void Round::ResetRound()
 	m_playerList[0]->SetCapturedPairs(0);
 	m_playerList[1]->SetCapturedPairs(0);
 	m_nextPlayerIndex = -1;
+}
+
+void Round::DisplayRoundScore()
+{
+	int humanRoundScore = m_board.ScoreBoard(GetHumanColor(), GetHumanCapturedPairs());
+	int computerRoundScore = m_board.ScoreBoard(GetComputerColor(), GetComputerCapturedPairs());
+	
+	cout << "You have earned " << humanRoundScore << " points for this round." << endl;
+	cout << "The computer has earned " << computerRoundScore << " points for this round." << endl << endl;
 }

@@ -44,6 +44,9 @@ void Tournament::StartTournament()
 
 bool Tournament::Continue()
 {
+	cout << "Human's new Tournament Score: " << m_round.GetHumanScore() << endl;
+	cout << "Computer's new Tournament Score: " << m_round.GetComputerScore() << endl << endl;
+	
 	string choice = m_userInput.GetContinueDecision();
 
 	if (choice == "Y")
@@ -52,8 +55,35 @@ bool Tournament::Continue()
 	}
 	else
 	{
+		string winner = WhoWon();
+		
+		cout << winner << endl;
 		cout << "Thanks for playing!" << endl;
+		
 		return false;
 	}
+}
+
+string Tournament::WhoWon()
+{
+	int humanScore = m_round.GetHumanScore();
+	int computerScore = m_round.GetComputerScore();
+
+	string winner;
+
+	if (humanScore > computerScore)
+	{
+		winner = "You have won the tournament with a score of " + to_string(humanScore) + " to " + to_string(computerScore) + ".";
+	}
+	else if (computerScore > humanScore)
+	{
+		winner = "The computer has won the tournament with a score of " + to_string(computerScore) + " to " + to_string(humanScore) + ".";
+	}
+	else
+	{
+		winner = "The game has ended in a draw! Both players have the same amound of points";
+	}
+
+	return winner;
 }
 

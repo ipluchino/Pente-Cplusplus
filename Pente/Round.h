@@ -24,6 +24,12 @@ public:
 	~Round();
 
 	//Selectors
+	int GetHumanScore() const { return m_playerList[0]->GetScore(); }
+	int GetComputerScore() const { return m_playerList[1]->GetScore(); }
+	char GetHumanColor() const { return m_playerList[0]->GetColor(); }
+	char GetComputerColor() const { return m_playerList[1]->GetColor(); }
+	int GetHumanCapturedPairs() const { return m_playerList[0]->GetCapturedPairs(); }
+	int GetComputerCapturedPairs() const { return m_playerList[1]->GetCapturedPairs(); }
 
 	//Mutators
 	bool SetNextPlayerIndex(int a_index);
@@ -38,6 +44,7 @@ public:
 	bool LoadGameData();
 	void UpdateScores();
 	void ResetRound();
+	void DisplayRoundScore();
 
 private:
 	//Holds a list of the players currently playing the game. In this case, there will be one human player and one computer player.

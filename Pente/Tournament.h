@@ -16,6 +16,7 @@ public:
 	bool LoadGame();
 	void StartTournament();
 	bool Continue();
+	string WhoWon();
 
 private:
 	//Round object used to play one round of Pente.
