@@ -46,7 +46,10 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	
 	//Location represents the location on the board of the most optimal play, while reasoning represents the explanation why it is the most optimal.
 	string location, reasoning;
-	
+
+	//possiblePlay is the potential {row, col} pair returned by the strategy functions.
+	vector<int> possiblePlay;
+
 	//If the board is empty, the only play is the center position, J10. 
 	if (a_board.IsEmptyBoard())
 	{
@@ -66,21 +69,117 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 			location = col + to_string(row);
 
 		} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
+
+		reasoning = "The computer placed a stone on " + location + " because it played randomly within the handicap.";
+		return pair<string, string>(location, reasoning);
 	}
-	else
+
+	//Attempt to make the most possible captures, if possible.
+	possiblePlay = MakeCapture(a_board, a_color);
+	if (possiblePlay.size() != 0)
 	{
-		do {
-			int row = 1 + (rand() % 19);
-			char col = 'A' + (rand() % 19);
+		int row = a_board.ConvertRowIndex(possiblePlay[0]);
+		char col = a_board.IntToCharacter(possiblePlay[1]);
 
-			location = col + to_string(row);
-
-		} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
+		location = col + to_string(row);
+		reasoning = "The computer placed a stone on " + location + " to capture the opponent's pieces.";
+		return pair<string, string>(location, reasoning);
 	}
+
+	//Play randomly if none of the above applies. Will be changed in the future.
+	do {
+		int row = 1 + (rand() % 19);
+		char col = 'A' + (rand() % 19);
+
+		location = col + to_string(row);
+
+	} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
 
 	reasoning = "The computer placed a stone on " + location + " because it played randomly.";
 
 	return pair<string, string>(location, reasoning);
+}
+
+//Returns a vector<int> that contains {row, col} of best possible location to place your piece to make the most captures.
+//Returns an empty vector if there are no potential captures to be made.
+vector<int> Player::MakeCapture(Board a_board, char a_color)
+{
+	vector<vector<char>> board = a_board.GetBoard();
+
+	vector<vector<int>> allPossibleCaptures;
+
+	//Search the entire board for empty spaces.
+	for (int i = 0; i < StrategyConstants::BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < StrategyConstants::BOARD_SIZE; j++)
+		{
+			if (board[i][j] == '-')
+			{
+				//If the space is empty, determine the number of captures that would occur if you were to place your piece here.
+				int numCaptures = CanCaptureIfPlaced(a_board, a_color, i, j);
+				if (numCaptures > 0)
+				{
+					//If you can make a capture at this location, log it in the form {row, col, number of captures} 
+					vector<int> captureInfo = { i, j, numCaptures };
+					allPossibleCaptures.push_back(captureInfo);
+				}
+			}
+		}
+	}
+
+	//If there are no possible captures, simply return an empty vector.
+	if (allPossibleCaptures.size() == 0)
+	{
+		return {};
+	}
+
+	//If there are multiple possible capture locations, the one that captures the most pieces should be prioritized.
+	//To accomplish this, a lambda function is used to sort by capture number for each possible play.
+	sort(allPossibleCaptures.begin(), allPossibleCaptures.end(), [](vector<int> a, vector<int> b) {
+		return a[2] > b[2];
+	});
+
+	//Return the play that captures the most possible pieces in one play. Since the vector is sorted by capture number,
+	//the first play is considered the most optimized.
+	return { allPossibleCaptures[0][0], allPossibleCaptures[0][1] };
+}
+
+//Given a board and location, determines the number of captures that would happen if you place it here.
+int Player::CanCaptureIfPlaced(Board a_board, char a_color, int a_row, int a_col)
+{
+	vector<vector<char>> board = a_board.GetBoard();
+	
+	char opponentColor = a_board.OpponentColor(a_color);
+	int numCaptures = 0;
+
+	//Loop through all 8 of the possible directions starting from 
+	for (int i = 0; i < StrategyConstants::NUM_DIRECTIONS; i++)
+	{
+		vector<vector<int>> newLocations = {};
+
+		//To see if a capture exists, you must go three spaces out in each direction and store them.
+		for (int j = 1; j <= StrategyConstants::CAPTURE_DISTANCE; j++)
+		{
+			int newRow = a_row + (StrategyConstants::DIRECTIONS[i][0] * j);
+			int newCol = a_col + (StrategyConstants::DIRECTIONS[i][1] * j);
+
+			if (a_board.IsValidIndices(newRow, newCol)) newLocations.push_back({ newRow, newCol });
+		}
+
+		if (newLocations.size() == StrategyConstants::CAPTURE_DISTANCE)
+		{
+			//A capture is possible if the three valid locations are in the pattern: * O O P where * represents an empty space,
+			//O is the opponent's pieces, and P is the player's piece.
+			if (board[newLocations[0][0]][newLocations[0][1]] == opponentColor &&
+				board[newLocations[1][0]][newLocations[1][1]] == opponentColor &&
+				board[newLocations[2][0]][newLocations[2][1]] == a_color)
+			{
+				numCaptures++;
+			}
+		}
+	}
+
+	return numCaptures;
 }
 
 

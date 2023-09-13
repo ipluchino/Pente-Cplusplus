@@ -44,8 +44,8 @@ void Tournament::StartTournament()
 
 bool Tournament::Continue()
 {
-	cout << "Human's new Tournament Score: " << m_round.GetHumanScore() << endl;
-	cout << "Computer's new Tournament Score: " << m_round.GetComputerScore() << endl << endl;
+	cout << "Human's Updated Tournament Score: " << m_round.GetHumanScore() << endl;
+	cout << "Computer's Updated Tournament Score: " << m_round.GetComputerScore() << endl << endl;
 	
 	string choice = m_userInput.GetContinueDecision();
 

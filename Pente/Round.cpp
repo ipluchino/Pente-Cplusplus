@@ -206,17 +206,17 @@ void Round::SaveGame()
 	vector<vector<char>> board = m_board.GetBoard();
 	
 	m_file << "Board:\n";
-	for (int i = 0; i < board.size(); i++)
+	for (int row = 0; row < board.size(); row++)
 	{
-		for (int j = 0; j < board.size(); j++)
+		for (int col = 0; col < board.size(); col++)
 		{
-			if (board[i][j] == '-')
+			if (board[row][col] == '-')
 			{
 				m_file << 'O';
 			}
 			else
 			{
-				m_file << board[i][j];
+				m_file << board[row][col];
 			}
 		}
 
@@ -225,23 +225,23 @@ void Round::SaveGame()
 	
 	//Write the human's game information to the file.
 	m_file << "\nHuman:\n";
-	m_file << "Captured Pairs: " << m_playerList[0]->GetCapturedPairs() << "\n";
-	m_file << "Score: " << m_playerList[0]->GetScore() << "\n\n";
+	m_file << "Captured Pairs: " << GetHumanCapturedPairs() << "\n";
+	m_file << "Score: " << GetHumanScore() << "\n\n";
 
 	//Write the computer's game information to the file.
 	m_file << "Computer:\n";
-	m_file << "Captured Pairs: " << m_playerList[1]->GetCapturedPairs() << "\n";
-	m_file << "Score: " << m_playerList[1]->GetScore() << "\n\n";
+	m_file << "Captured Pairs: " << GetComputerCapturedPairs() << "\n";
+	m_file << "Score: " << GetComputerScore() << "\n\n";
 
 	//Write the next player's turn to the file.
 	m_file << "Next Player: ";
 	if (m_nextPlayerIndex == 0)
 	{
-		m_file << "Human - " << m_playerList[0]->GetColor();
+		m_file << "Human - " << GetHumanColor();
 	}
 	else
 	{
-		m_file << "Computer - " << m_playerList[1]->GetColor();
+		m_file << "Computer - " << GetComputerColor();
 	}
 
 	m_file.close();

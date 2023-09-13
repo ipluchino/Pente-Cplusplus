@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <stdlib.h>
+#include <algorithm>
 #include "Board.h"
 #include "StrategyConstants.h"
 
@@ -31,6 +32,8 @@ public:
 	//Utility Functions
 	virtual void MakePlay(Board& a_board);
 	pair<string, string> OptimalPlay(Board a_board, char a_color);
+	vector<int> MakeCapture(Board a_board, char a_color);
+	int CanCaptureIfPlaced(Board a_board, char a_color, int a_row, int a_col);
 
 
 protected:
