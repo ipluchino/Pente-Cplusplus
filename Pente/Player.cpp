@@ -121,18 +121,18 @@ vector<int> Player::MakeCapture(Board a_board, char a_color)
 	vector<vector<int>> allPossibleCaptures;
 
 	//Search the entire board for empty spaces.
-	for (int i = 0; i < StrategyConstants::BOARD_SIZE; i++)
+	for (int row = 0; row < StrategyConstants::BOARD_SIZE; row++)
 	{
-		for (int j = 0; j < StrategyConstants::BOARD_SIZE; j++)
+		for (int col = 0; col < StrategyConstants::BOARD_SIZE; col++)
 		{
-			if (board[i][j] == '-')
+			if (board[row][col] == '-')
 			{
 				//If the space is empty, determine the number of captures that would occur if you were to place your piece here.
-				int numCaptures = CanCaptureIfPlaced(a_board, a_color, i, j);
+				int numCaptures = CanCaptureIfPlaced(a_board, a_color, row, col);
 				if (numCaptures > 0)
 				{
 					//If you can make a capture at this location, log it in the form {row, col, number of captures} 
-					vector<int> captureInfo = { i, j, numCaptures };
+					vector<int> captureInfo = { row, col, numCaptures };
 					allPossibleCaptures.push_back(captureInfo);
 				}
 			}
@@ -165,15 +165,15 @@ int Player::CanCaptureIfPlaced(Board a_board, char a_color, int a_row, int a_col
 	int numCaptures = 0;
 
 	//Loop through all 8 of the possible directions starting from 
-	for (int i = 0; i < StrategyConstants::NUM_DIRECTIONS; i++)
+	for (int direction = 0; direction < StrategyConstants::NUM_DIRECTIONS; direction++)
 	{
 		vector<vector<int>> newLocations = {};
 
 		//To see if a capture exists, you must go three spaces out in each direction and store them.
-		for (int j = 1; j <= StrategyConstants::CAPTURE_DISTANCE; j++)
+		for (int distance = 1; distance <= StrategyConstants::CAPTURE_DISTANCE; distance++)
 		{
-			int newRow = a_row + (StrategyConstants::DIRECTIONS[i][0] * j);
-			int newCol = a_col + (StrategyConstants::DIRECTIONS[i][1] * j);
+			int newRow = a_row + (StrategyConstants::DIRECTIONS[direction][0] * distance);
+			int newCol = a_col + (StrategyConstants::DIRECTIONS[direction][1] * distance);
 
 			if (a_board.IsValidIndices(newRow, newCol)) newLocations.push_back({ newRow, newCol });
 		}
