@@ -157,12 +157,12 @@ void Round::DisplayGame()
 	m_board.DisplayBoard();
 
 	//Dislpay the Human's information.
-	cout << "Human:" << endl;
+	cout << "Human - " << GetHumanColor() << ":" << endl;
 	cout << "Captured Pairs: " << GetHumanCapturedPairs() << endl;
 	cout << "Tournament Score: " << GetHumanScore() << endl << endl;
 
 	//Display the Computer's information.
-	cout << "Computer:" << endl;
+	cout << "Computer - " << GetComputerColor() << ":" << endl;
 	cout << "Captured Pairs: " << GetComputerCapturedPairs() << endl;
 	cout << "Tournament Score: " << GetComputerScore() << endl << endl;
 }
@@ -178,7 +178,7 @@ bool Round::RoundOver()
 	}
 
 	//If one of the players has achieved at least 5 captured pairs, the round is over.
-	if (m_playerList[0]->GetCapturedPairs() >= 5 || m_playerList[1]->GetCapturedPairs() >= 5)
+	if (GetHumanCapturedPairs() >= 5 || GetComputerCapturedPairs() >= 5)
 	{
 		cout << "The round has ended because a player has at least 5 captured pairs." << endl << endl;
 		return true;

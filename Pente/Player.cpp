@@ -86,6 +86,18 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
+	//Attempt to block the most possible captures, if possible.
+	possiblePlay = PreventCapture(a_board, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		int row = a_board.ConvertRowIndex(possiblePlay[0]);
+		char col = a_board.IntToCharacter(possiblePlay[1]);
+
+		location = col + to_string(row);
+		reasoning = "The computer placed a stone on " + location + " to prevent the opponent from making a capture.";
+		return pair<string, string>(location, reasoning);
+	}
+
 	//Play randomly if none of the above applies. Will be changed in the future.
 	do {
 		int row = 1 + (rand() % 19);
@@ -180,6 +192,17 @@ int Player::CanCaptureIfPlaced(Board a_board, char a_color, int a_row, int a_col
 	}
 
 	return numCaptures;
+}
+
+//Returns a vector<int> in the form {row, col} if a potential block is available.
+vector<int> Player::PreventCapture(Board a_board, char a_color)
+{
+	char opponentColor = a_board.OpponentColor(a_color);
+
+	//If the opponent has the ability to make a capture, or multiple, on their next turn, it should be blocked.
+	vector<int> possiblePreventCapture = MakeCapture(a_board, opponentColor);
+	
+	return possiblePreventCapture;
 }
 
 

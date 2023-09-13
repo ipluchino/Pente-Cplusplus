@@ -27,4 +27,4 @@ Computer:
 Captured Pairs: 0
 Score: 0
 
-Next Player: Human - W
+Next Player: Human - B

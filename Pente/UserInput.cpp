@@ -132,7 +132,7 @@ string UserInput::GetHumanDecision()
 	string response;
 	bool valid = false;
 
-	cout << "Options:" << endl;
+	cout << "It is now your turn. Please choose one of these options:" << endl;
 	cout << "1. Place a tile." << endl;
 	cout << "2. Ask for help." << endl << endl;
 

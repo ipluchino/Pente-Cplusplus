@@ -34,6 +34,7 @@ public:
 	pair<string, string> OptimalPlay(Board a_board, char a_color);
 	vector<int> MakeCapture(Board a_board, char a_color);
 	int CanCaptureIfPlaced(Board a_board, char a_color, int a_row, int a_col);
+	vector<int> PreventCapture(Board a_board, char a_color);
 
 
 protected:
