@@ -41,6 +41,7 @@ public:
 	vector<int> FindEmptyIndices(Board a_board, vector<vector<int>> a_locations);
 	int FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locations, int emptyIndex);
 	vector<int> BuildInitiative(Board a_board, int a_numPlaced, char a_color);
+	vector<int> MakeWinningMove(Board a_board, char a_color);
 
 protected:
 	//The color of the stones (black or white) that the player is playing as.

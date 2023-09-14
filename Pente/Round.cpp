@@ -435,5 +435,5 @@ void Round::DisplayRoundScore()
 	int computerRoundScore = m_board.ScoreBoard(GetComputerColor(), GetComputerCapturedPairs());
 	
 	cout << "Points scored by the Human this round: " << humanRoundScore << endl;
-	cout << "Points scored by the Computer this round:  " << computerRoundScore << endl << endl;
+	cout << "Points scored by the Computer this round: " << computerRoundScore << endl << endl;
 }

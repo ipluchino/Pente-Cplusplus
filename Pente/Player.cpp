@@ -55,6 +55,18 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
+	//Attempt to win the game, if possible.
+	possiblePlay = MakeWinningMove(a_board, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		int row = a_board.ConvertRowIndex(possiblePlay[0]);
+		char col = a_board.IntToCharacter(possiblePlay[1]);
+
+		location = col + to_string(row);
+		reasoning = "The computer placed a stone on " + location + " to win the round!";
+		return pair<string, string>(location, reasoning);
+	}
+
 	//Attempt to make the most possible captures, if possible.
 	possiblePlay = MakeCapture(a_board, a_color);
 	if (possiblePlay.size() != 0)
@@ -170,7 +182,7 @@ vector<int> Player::MakeCapture(Board a_board, char a_color)
 
 	//Return the play that captures the most possible pieces in one play. Since the vector is sorted by capture number,
 	//the first play is considered the most optimized.
-	return { allPossibleCaptures[0][0], allPossibleCaptures[0][1] };
+	return allPossibleCaptures[0];
 }
 
 //Given a board and location, determines the number of captures that would happen if you place it here.
@@ -371,6 +383,8 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 			{
 				//possibleMoves[i][2] represents the middle of the set of 5 locations. Ex: W - * - W where * represents the middle.
 				//This ensures the new pieces is placed one away from the placed piece and not at risk of capture. 
+
+				//Check if neighbors == 0!!!
 				playLocations.push_back(possibleMoves[i][2]);
 			}
 		}
@@ -423,7 +437,6 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
 				if (possibleConsectutive == 4)
 				{
-					//returns a vector<int> int the form {row, col}
 					return possibleMoves[i][emptyIndices[j]];
 				}
 			}
@@ -437,7 +450,6 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
 				if (possibleConsectutive == 3)
 				{
-					//returns a vector<int> int the form {row, col}
 					return possibleMoves[i][emptyIndices[j]];
 				}
 			}
@@ -447,6 +459,42 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 	{
 		return {};
 	}
+}
+
+//Checks if it is possible to win, given the current board circumstances.
+vector<int> Player::MakeWinningMove(Board a_board, char a_color)
+{
+	//First check if there are any moves that allow for 5 in a row.
+	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 4, a_color);
+
+	if (possibleMoves.size() > 1)
+	{
+		//Delay win if multiple win moves to score more points? 
+		cout << "Multiple! Delay?" << endl;
+	}
+	
+	if (possibleMoves.size() == 1)
+	{
+		//If there's only one possible move that creates a 5 in a row, make it.
+		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[0]);
+		return possibleMoves[0][emptyIndices[0]];
+	}
+
+	//Next, check if you can make a capture to end the game.
+	//Note: potentialCaptures is in the form {row, col, numCaptures}
+	vector<int> potentialCaptures = MakeCapture(a_board, a_color);
+
+	if (potentialCaptures.size() > 0)
+	{
+		int numCaptures = potentialCaptures[2];
+
+		if (numCaptures + m_capturedPairs >= 5)
+		{
+			return potentialCaptures;
+		}
+	}
+
+	return {};
 }
 
 
