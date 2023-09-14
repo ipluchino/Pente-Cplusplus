@@ -51,6 +51,8 @@ string Human::AskForHelp(Board a_board)
 	string explanation = playInfo.second;
 	
 	//Alter the output of the explanation to present it as a suggestion.
-	explanation.replace(explanation.find("placed"), 6, "recommends you place");
+	string toFind = "placed";
+
+	explanation.replace(explanation.find(toFind), toFind.length(), "recommends you place");
 	return explanation;
 }
