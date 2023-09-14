@@ -31,11 +31,16 @@ public:
 
 	//Utility Functions
 	virtual void MakePlay(Board& a_board);
+	
+	//Strategy Functions
 	pair<string, string> OptimalPlay(Board a_board, char a_color);
 	vector<int> MakeCapture(Board a_board, char a_color);
 	int CanCaptureIfPlaced(Board a_board, char a_color, int a_row, int a_col);
 	vector<int> PreventCapture(Board a_board, char a_color);
-
+	vector<vector<vector<int>>> FindAllMoves(Board a_board, int a_numPlaced, char a_color);
+	vector<int> FindEmptyIndices(Board a_board, vector<vector<int>> a_locations);
+	int FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locations, int emptyIndex);
+	vector<int> BuildInitiative(Board a_board, int a_numPlaced, char a_color);
 
 protected:
 	//The color of the stones (black or white) that the player is playing as.

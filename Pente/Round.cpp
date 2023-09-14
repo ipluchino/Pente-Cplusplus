@@ -5,6 +5,8 @@ Round::Round() : m_nextPlayerIndex(-1)
 {
 	m_playerList.push_back(new Human());
 	m_playerList.push_back(new Computer());
+
+	srand(time(NULL));
 }
 
 //Destructor
@@ -126,7 +128,6 @@ bool Round::CoinToss()
 	string choice = m_userInput.GetCoinTossCall();
 	
 	//Randomly generate either 1 or 2. 1 Represents heads, while 2 represents tails.
-	srand(time(NULL));
 	int coin = 1 + (rand() % 2);
 
 	//Output the coin toss result to the screen so the user can see if it was heads or tails.
@@ -165,6 +166,16 @@ void Round::DisplayGame()
 	cout << "Computer - " << GetComputerColor() << ":" << endl;
 	cout << "Captured Pairs: " << GetComputerCapturedPairs() << endl;
 	cout << "Tournament Score: " << GetComputerScore() << endl << endl;
+
+	//Display who's turn it currently is.
+	if (m_nextPlayerIndex == 0)
+	{
+		cout << "Next Turn: Human" << endl << endl;
+	}
+	else
+	{
+		cout << "Next Turn: Computer" << endl << endl;
+	}
 }
 
 //Determines if the round is over.
@@ -423,6 +434,6 @@ void Round::DisplayRoundScore()
 	int humanRoundScore = m_board.ScoreBoard(GetHumanColor(), GetHumanCapturedPairs());
 	int computerRoundScore = m_board.ScoreBoard(GetComputerColor(), GetComputerCapturedPairs());
 	
-	cout << "You have earned " << humanRoundScore << " points for this round." << endl;
-	cout << "The computer has earned " << computerRoundScore << " points for this round." << endl << endl;
+	cout << "Points scored by the Human this round: " << humanRoundScore << endl;
+	cout << "Points scored by the Computer this round:  " << computerRoundScore << endl << endl;
 }

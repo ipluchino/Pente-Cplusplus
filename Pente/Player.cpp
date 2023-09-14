@@ -3,6 +3,7 @@
 //Default Constructor - If no color is provided, by default the color is set to white.
 Player::Player() : m_color('W'), m_score(0), m_capturedPairs(0)
 {
+	srand(unsigned(time(NULL)));
 }
 
 bool Player::SetColor(char a_color)
@@ -41,36 +42,16 @@ void Player::MakePlay(Board& a_board)
 //Assistance Received: https://www.digitalocean.com/community/tutorials/random-number-generator-c-plus-plus
 pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 {
-	//ALL STRATEGY WILL GO HERE, FOR NOW COMPUTER PLAYS RANDOMLY
-	srand(time(NULL));
-	
 	//Location represents the location on the board of the most optimal play, while reasoning represents the explanation why it is the most optimal.
 	string location, reasoning;
-
-	//possiblePlay is the potential {row, col} pair returned by the strategy functions.
 	vector<int> possiblePlay;
 
 	//If the board is empty, the only play is the center position, J10. 
 	if (a_board.IsEmptyBoard())
 	{
 		location = "J10";
-		reasoning = "The computer placed a stone on " + location + " because it is going first and the first play must be on J10.";
+		reasoning = "The computer placed a stone on " + location + " because the first stone must be placed there.";
 
-		return pair<string, string>(location, reasoning);
-	}
-
-	//If it is the second turn of the first player, you can only play within 3 intersections of the center piece (j10).
-	if (a_board.CountPieces('W') == 1 && a_board.CountPieces('B') == 1)
-	{
-		do {
-			int row = 7 + (rand() % 7);
-			char col = 'G' + (rand() % 7);
-
-			location = col + to_string(row);
-
-		} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
-
-		reasoning = "The computer placed a stone on " + location + " because it played randomly within the handicap.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -95,6 +76,42 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 
 		location = col + to_string(row);
 		reasoning = "The computer placed a stone on " + location + " to prevent the opponent from making a capture.";
+		return pair<string, string>(location, reasoning);
+	}
+
+	//Attempt to build initiative with 3 pieces already placed.
+	possiblePlay = BuildInitiative(a_board, 3, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		int row = a_board.ConvertRowIndex(possiblePlay[0]);
+		char col = a_board.IntToCharacter(possiblePlay[1]);
+
+		location = col + to_string(row);
+		reasoning = "The computer placed a stone on " + location + " to build initiative and have 4 pieces in an open 5.";
+		return pair<string, string>(location, reasoning);
+	}
+
+	//Attempt to build initiative with 2 pieces already placed.
+	possiblePlay = BuildInitiative(a_board, 2, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		int row = a_board.ConvertRowIndex(possiblePlay[0]);
+		char col = a_board.IntToCharacter(possiblePlay[1]);
+
+		location = col + to_string(row);
+		reasoning = "The computer placed a stone on " + location + " to build initiative and have 3 pieces in an open 5.";
+		return pair<string, string>(location, reasoning);
+	}
+
+	//Attempt to build initiative with 1 piece already placed.
+	possiblePlay = BuildInitiative(a_board, 1, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		int row = a_board.ConvertRowIndex(possiblePlay[0]);
+		char col = a_board.IntToCharacter(possiblePlay[1]);
+
+		location = col + to_string(row);
+		reasoning = "The computer placed a stone on " + location + " to build initiative and have 2 pieces in an open 5.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -203,6 +220,233 @@ vector<int> Player::PreventCapture(Board a_board, char a_color)
 	vector<int> possiblePreventCapture = MakeCapture(a_board, opponentColor);
 	
 	return possiblePreventCapture;
+}
+
+//Finds all possible set of 5 locations that has numPlaced stones of the provided color placed, and 5-numPlaced empty locations.
+//Returns a vector<vector<vector<int>>> in the format {{{1,2}, {1,3}, {1,4}, {1,5}, {1,6}}, ...}
+vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced, char a_color)
+{
+	//A copy of the board's data.
+	vector<vector<char>> board = a_board.GetBoard();
+
+	//Will hold all possible sets of consecutive 5s that has a_numPlaced pieces of the specified color, and 5-numPlaced empty locations.
+	vector<vector<vector<int>>> result;
+
+	//To be apart of a possible winning consecutive 5 in the future, there must be at least 5-a_numPlaced empty spaces.
+	int emptyRequired = StrategyConstants::CONSECUTIVE_5_DISTANCE - a_numPlaced;
+
+	for (int row = 0; row < StrategyConstants::BOARD_SIZE; row++)
+	{
+		for (int col = 0; col < StrategyConstants::BOARD_SIZE; col++)
+		{
+			//Only need to search the horizontals, verticals, main diagonals, and anti-diagonals to cover all possible sets of 5.
+			for (int direction = 0; direction < StrategyConstants::NUM_DIRECTIONS; direction += StrategyConstants::DIRECTIONAL_OFFSET)
+			{
+				int pieceCounter = 0;
+				int emptyCounter = 0;
+
+				vector<vector<int>> locations = {};
+
+				for (int distance = 0; distance < StrategyConstants::CONSECUTIVE_5_DISTANCE; distance++)
+				{
+					int newRow = row + StrategyConstants::DIRECTIONS[direction][0] * distance;
+					int newCol = col + StrategyConstants::DIRECTIONS[direction][1] * distance;
+
+					//No need to keep searching the current set of 5 if one of the locations go out of bounds.
+					if (!a_board.IsValidIndices(newRow, newCol)) break;
+
+					if (board[newRow][newCol] == a_color)
+					{
+						pieceCounter++;
+					}
+					else if (board[newRow][newCol] == '-')
+					{
+						emptyCounter++;
+					}
+
+					locations.push_back({ newRow, newCol });
+				}
+
+				if (pieceCounter == a_numPlaced && emptyCounter == emptyRequired)
+				{
+					result.push_back(locations);
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
+//Given a set of 5 locations, returns the indices of the empty locations. This will be used later in determining the optimal placements.
+vector<int> Player::FindEmptyIndices(Board a_board, vector<vector<int>> a_locations)
+{
+	vector<vector<char>> board = a_board.GetBoard();
+	vector<int> emptyIndices;
+
+	//Search through the set of 5 locations and mark the empty indices.
+	for (int i = 0; i < a_locations.size(); i++)
+	{
+		int row = a_locations[i][0];
+		int col = a_locations[i][1];
+
+		if (board[row][col] == '-')
+		{
+			emptyIndices.push_back(i);
+		}
+	}
+
+	return emptyIndices;
+}
+
+//Given a possible set of 5, finds the number of consecutive pieces that would be achievevd if placed in the empty index.
+int Player::FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locations, int emptyIndex)
+{
+	vector<vector<char>> board = a_board.GetBoard();
+
+	int beforeTotal = 0;
+	int afterTotal = 0;
+
+	//Find the number of consecutive pieces before emptyIndex in a_locations.
+	int index = emptyIndex;
+	while (--index >= 0)
+	{
+		int row = a_locations[index][0];
+		int col = a_locations[index][1];
+
+		if (board[row][col] != '-')
+		{
+			beforeTotal++;
+		}
+		else {
+			break;
+		}
+	}
+
+	//Find the number of consecutive pieces after emptyIndex in a_locations.
+	index = emptyIndex;
+	while (++index < a_locations.size())
+	{
+		int row = a_locations[index][0];
+		int col = a_locations[index][1];
+
+		if (board[row][col] != '-')
+		{
+			afterTotal++;
+		}
+		else {
+			break;
+		}
+	}
+
+	//The number of consecutive pieces if placed in the emptyIndex is the number of consecutive pieces before it, plus the number of pieces after it, plus itself.
+	return beforeTotal + afterTotal + 1;
+}
+
+//Returns the most optimal play when building initiative that already has a_numPlaced pieces of a_color placed.
+vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color)
+{
+	vector<vector<char>> board = a_board.GetBoard();
+	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, a_numPlaced, a_color);
+
+	//If there are no possible moves that satisfy the conditions passed, simply return.
+	if (possibleMoves.size() == 0) return {};
+
+	if (a_numPlaced == 1)
+	{
+		vector<vector<int>> playLocations;
+
+		for (int i = 0; i < possibleMoves.size(); i++)
+		{
+			//There are 5 locations within each list of possiblemoves
+			//The indices 0 and 4 represents the ends of the set of 5 - Ex: * - - - *
+			int firstRow = possibleMoves[i][0][0];
+			int firstCol = possibleMoves[i][0][1];
+			int lastRow = possibleMoves[i][4][0];
+			int lastCol = possibleMoves[i][4][1];
+
+			//Find the possible set of 5 where the piece found one one of the ends to make it easier to find the middle.
+			//Ex: W - - - - OR - - - - W
+			if (board[firstRow][firstCol] != '-' || board[lastRow][lastCol] != '-')
+			{
+				//possibleMoves[i][2] represents the middle of the set of 5 locations. Ex: W - * - W where * represents the middle.
+				//This ensures the new pieces is placed one away from the placed piece and not at risk of capture. 
+				playLocations.push_back(possibleMoves[i][2]);
+			}
+		}
+
+		//Possibly shuffle this to get a random direction?
+		random_shuffle(playLocations.begin(), playLocations.end());
+		return playLocations[0];
+	}
+	else if (a_numPlaced == 2)
+	{
+		//Search for possible 3 in a rows. If there is one, that is the most optimal play.
+		for (int i = 0; i < possibleMoves.size(); i++) {
+			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
+
+			for (int j = 0; j < emptyIndices.size(); j++) {
+				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
+				if (possibleConsectutive == 3)
+				{
+					return possibleMoves[i][emptyIndices[j]];
+				}
+			}
+		}
+
+		//If you can't make a 3 in a row, prefer to place the piece with the least neighbors to avoid being captured. Ex: W - * - W
+		int leastCaptures = INT_MAX;
+		int leastIndex = INT_MAX;
+		int locationIndex = 0;
+		for (int i = 0; i < possibleMoves.size(); i++) {
+			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
+
+			for (int j = 0; j < emptyIndices.size(); j++) {
+				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
+				if (possibleConsectutive < leastCaptures) {
+					leastCaptures = possibleConsectutive;
+					leastIndex = emptyIndices[j];
+					locationIndex = i;
+				}
+			}
+		}
+
+		return possibleMoves[locationIndex][leastIndex];
+	}
+	else if (a_numPlaced == 3)
+	{
+		//Search for possible 4 in a rows. If there is one, that is the most optimal play.
+		for (int i = 0; i < possibleMoves.size(); i++) {
+			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
+
+			for (int j = 0; j < emptyIndices.size(); j++) {
+				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
+				if (possibleConsectutive == 4)
+				{
+					//returns a vector<int> int the form {row, col}
+					return possibleMoves[i][emptyIndices[j]];
+				}
+			}
+		}
+
+		//If there are no possible 4 in a rows, prefer to make 3 in a row (always possible given 3 of a player's piece and 2 empty spots and there is no 4 in a row).
+		for (int i = 0; i < possibleMoves.size(); i++) {
+			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
+
+			for (int j = 0; j < emptyIndices.size(); j++) {
+				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
+				if (possibleConsectutive == 3)
+				{
+					//returns a vector<int> int the form {row, col}
+					return possibleMoves[i][emptyIndices[j]];
+				}
+			}
+		}
+	}
+	else
+	{
+		return {};
+	}
 }
 
 
