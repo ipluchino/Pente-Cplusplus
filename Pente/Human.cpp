@@ -32,7 +32,8 @@ void Human::MakePlay(Board& a_board)
 		}
 		else
 		{
-			cout << "Implement request help!" << endl;
+			string help = AskForHelp(a_board);
+			cout << help << endl << endl;
 		}
 
 	} while (decision != "1");
@@ -40,4 +41,16 @@ void Human::MakePlay(Board& a_board)
 	//Clear any captures and update the player's capture count, if any occur.
 	int captures = a_board.ClearCaptures(location[0], stoi(location.substr(1, 2)), m_color);
 	m_capturedPairs += captures;
+}
+
+//Returns the most optimal play to the user.
+//Assistance: https://cplusplus.com/reference/string/string/replace/
+string Human::AskForHelp(Board a_board)
+{
+	pair<string, string> playInfo = OptimalPlay(a_board, m_color);
+	string explanation = playInfo.second;
+	
+	//Alter the output of the explanation to present it as a suggestion.
+	explanation.replace(explanation.find("placed"), 6, "recommends you place");
+	return explanation;
 }

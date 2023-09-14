@@ -19,6 +19,7 @@ public:
 
 	//Utility Functions
 	void MakePlay(Board& a_board);
+	string AskForHelp(Board a_board);
 
 private:
 	//UserInput object used to obtain input from the human player.
