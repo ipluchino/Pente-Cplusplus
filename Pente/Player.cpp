@@ -472,7 +472,8 @@ vector<int> Player::MakeWinningMove(Board a_board, char a_color)
 		//Delay win if multiple win moves to score more points? 
 		cout << "Multiple! Delay?" << endl;
 	}
-	else if (possibleMoves.size() == 1)
+	
+	if (possibleMoves.size() > 0)
 	{
 		//If there's only one possible move that creates a 5 in a row, make it.
 		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[0]);
