@@ -18,7 +18,7 @@ public:
 	//Mutators
 
 	//Utility Functions
-	void MakePlay(Board& a_board);
+	bool MakePlay(Board& a_board);
 	string AskForHelp(Board a_board);
 
 private:

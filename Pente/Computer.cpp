@@ -5,8 +5,13 @@ Computer::Computer()
 {
 }
 
-void Computer::MakePlay(Board& a_board)
+bool Computer::MakePlay(Board& a_board)
 {
+	string decision = m_userInput.GetComputerDecision();
+
+	//The user would like to save and exit the game before the computer places a tile.
+	if (decision == "2") return false;
+
 	//Obtain the optimal play given the current board. 
 	//playInfo.first is the location of the play, while playInfo.second is the reasoning for that play. 
 	pair<string, string> playInfo = OptimalPlay(a_board, m_color);
@@ -22,4 +27,6 @@ void Computer::MakePlay(Board& a_board)
 	//Clear any captures and update the player's capture count, if any occur.
 	int captures = a_board.ClearCaptures(location[0], stoi(location.substr(1, 2)), m_color);
 	m_capturedPairs += captures;
+
+	return true;
 }

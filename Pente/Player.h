@@ -30,7 +30,7 @@ public:
 	bool SetCapturedPairs(int a_capturedPairs);
 
 	//Utility Functions
-	virtual void MakePlay(Board& a_board);
+	virtual bool MakePlay(Board& a_board);
 	
 	//Strategy Functions
 	pair<string, string> OptimalPlay(Board a_board, char a_color);

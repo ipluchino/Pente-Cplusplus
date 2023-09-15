@@ -34,8 +34,9 @@ bool Player::SetCapturedPairs(int a_capturedPairs)
 }
 
 //Virtual function - It has its own definition in both the Human and Computer class.
-void Player::MakePlay(Board& a_board)
+bool Player::MakePlay(Board& a_board)
 {
+	return true;
 }
 
 //Determines the optimal play and returns its location as well as the reasoning why it is the optimal play.

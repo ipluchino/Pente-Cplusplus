@@ -5,7 +5,7 @@ Human::Human(): Player()
 {
 }
 
-void Human::MakePlay(Board& a_board)
+bool Human::MakePlay(Board& a_board)
 {
 	string decision;
 	string location;
@@ -21,7 +21,7 @@ void Human::MakePlay(Board& a_board)
 			{
 				a_board.PlaceStone('J', 10, m_color);
 				cout << "You placed your stone on J10 because the player that goes first must place it here." << endl << endl;
-				return;
+				return true;
 			}
 
 			//Obtain the location the human player wants to place the stone.
@@ -30,10 +30,15 @@ void Human::MakePlay(Board& a_board)
 			//Place the stone on the board. location[0] represents the column and location.substr(1, 2) represents the row.
 			a_board.PlaceStone(location[0], stoi(location.substr(1, 2)), m_color);
 		}
-		else
+		else if (decision == "2")
 		{
 			string help = AskForHelp(a_board);
 			cout << help << endl << endl;
+		}
+		else
+		{
+			//The user wants to save and exit the game.
+			return false;
 		}
 
 	} while (decision != "1");
@@ -41,6 +46,8 @@ void Human::MakePlay(Board& a_board)
 	//Clear any captures and update the player's capture count, if any occur.
 	int captures = a_board.ClearCaptures(location[0], stoi(location.substr(1, 2)), m_color);
 	m_capturedPairs += captures;
+
+	return true;
 }
 
 //Returns the most optimal play to the user.

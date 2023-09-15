@@ -18,7 +18,7 @@ public:
 	string GetTournamentChoice();
 	string GetCoinTossCall();
 	string GetHumanDecision();
-	string GetSaveDecision();
+	string GetComputerDecision();
 	string GetFileNameLoad();
 	string GetFileNameSave();
 	string GetContinueDecision();

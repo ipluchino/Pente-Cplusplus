@@ -41,30 +41,27 @@ void Round::StartRound()
 	}
 
 	//Display the board for the first time if the human is going first so they can see the board.
-	if (m_nextPlayerIndex == 0) DisplayGame();
+	DisplayGame();
 
 	//Main round loop. Alternate turns between the human and the computer.
 	while (!RoundOver())
 	{
-		m_playerList[m_nextPlayerIndex]->MakePlay(m_board);
+		bool playMade = m_playerList[m_nextPlayerIndex]->MakePlay(m_board);
+
+		//If no play was made, the user wants to save and exit the game. The program is terminated after SaveGame() is called.
+		if (playMade == false)
+		{
+			SaveGame();
+		}
+
+		//Make it the next player's turn after they have made a play.
 		m_nextPlayerIndex = (m_nextPlayerIndex + 1) % NUM_PLAYERS;
 
 		//Clear the screen.
 		//system("cls");
 
-		//Display the game after each player's turn.
+		//Display the game information after each player's turn.
 		DisplayGame();
-
-		//If the round ends after a player's move, don't ask the user to save.
-		//if (RoundOver()) break;
-
-		//Ask the user to save and exit after each player's turn
-		string saveDecision = m_userInput.GetSaveDecision();
-
-		if (saveDecision == "Y")
-		{
-			SaveGame();
-		}
 	}
 
 	//Display the scores earned for this current round.

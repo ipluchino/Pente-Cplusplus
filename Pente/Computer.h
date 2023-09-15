@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Player.h"
+#include "UserInput.h"
 
 class Computer: public Player
 {
@@ -16,11 +17,12 @@ public:
 	//Mutators
 
 	//Utility Functions
-	void MakePlay(Board& a_board);
+	bool MakePlay(Board& a_board);
 
 
 
 private:
-
+	//UserInput object used to obtain input from the human player and is used when determining if the player wants to save before the computer places a stone.
+	UserInput m_userInput;
 };
 
