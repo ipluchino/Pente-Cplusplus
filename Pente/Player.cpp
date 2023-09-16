@@ -39,6 +39,16 @@ bool Player::MakePlay(Board& a_board)
 	return true;
 }
 
+//Converts a row and col in integer form into its respective board intersection as a string.
+string Player::ExtractLocation(int row, int col, Board a_board)
+{
+	int boardRow = a_board.ConvertRowIndex(row);
+	char boardCol = a_board.IntToCharacter(col);
+
+	string location = boardCol + to_string(boardRow);
+	return location;
+}
+
 //Determines the optimal play and returns its location as well as the reasoning why it is the optimal play.
 //Assistance Received: https://www.digitalocean.com/community/tutorials/random-number-generator-c-plus-plus
 pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
@@ -60,11 +70,17 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	possiblePlay = MakeWinningMove(a_board, a_color);
 	if (possiblePlay.size() != 0)
 	{
-		int row = a_board.ConvertRowIndex(possiblePlay[0]);
-		char col = a_board.IntToCharacter(possiblePlay[1]);
-
-		location = col + to_string(row);
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
 		reasoning = "The computer placed a stone on " + location + " to win the round!";
+		return pair<string, string>(location, reasoning);
+	}
+
+	//Prevent the opponent from winning the game, if possible.
+	possiblePlay = PreventWinningMove(a_board, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
+		reasoning = "The computer placed a stone on " + location + " to prevent the opponent from winning.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -72,10 +88,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	possiblePlay = MakeCapture(a_board, a_color);
 	if (possiblePlay.size() != 0)
 	{
-		int row = a_board.ConvertRowIndex(possiblePlay[0]);
-		char col = a_board.IntToCharacter(possiblePlay[1]);
-
-		location = col + to_string(row);
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
 		reasoning = "The computer placed a stone on " + location + " to capture the opponent's pieces.";
 		return pair<string, string>(location, reasoning);
 	}
@@ -84,10 +97,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	possiblePlay = PreventCapture(a_board, a_color);
 	if (possiblePlay.size() != 0)
 	{
-		int row = a_board.ConvertRowIndex(possiblePlay[0]);
-		char col = a_board.IntToCharacter(possiblePlay[1]);
-
-		location = col + to_string(row);
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
 		reasoning = "The computer placed a stone on " + location + " to prevent the opponent from making a capture.";
 		return pair<string, string>(location, reasoning);
 	}
@@ -96,11 +106,17 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	possiblePlay = BuildInitiative(a_board, 3, a_color);
 	if (possiblePlay.size() != 0)
 	{
-		int row = a_board.ConvertRowIndex(possiblePlay[0]);
-		char col = a_board.IntToCharacter(possiblePlay[1]);
-
-		location = col + to_string(row);
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
 		reasoning = "The computer placed a stone on " + location + " to build initiative and have 4 pieces in an open 5.";
+		return pair<string, string>(location, reasoning);
+	}
+
+	//Attempt to counter initiative if the opponent has 3 pieces already placed.
+	possiblePlay = CounterInitiative(a_board, 3, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
+		reasoning = "The computer placed a stone on " + location + " to block the opponent from getting 4 pieces in an open 5.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -108,10 +124,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	possiblePlay = BuildInitiative(a_board, 2, a_color);
 	if (possiblePlay.size() != 0)
 	{
-		int row = a_board.ConvertRowIndex(possiblePlay[0]);
-		char col = a_board.IntToCharacter(possiblePlay[1]);
-
-		location = col + to_string(row);
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
 		reasoning = "The computer placed a stone on " + location + " to build initiative and have 3 pieces in an open 5.";
 		return pair<string, string>(location, reasoning);
 	}
@@ -120,10 +133,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	possiblePlay = BuildInitiative(a_board, 1, a_color);
 	if (possiblePlay.size() != 0)
 	{
-		int row = a_board.ConvertRowIndex(possiblePlay[0]);
-		char col = a_board.IntToCharacter(possiblePlay[1]);
-
-		location = col + to_string(row);
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
 		reasoning = "The computer placed a stone on " + location + " to build initiative and have 2 pieces in an open 5.";
 		return pair<string, string>(location, reasoning);
 	}
@@ -277,7 +287,7 @@ vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced,
 						emptyCounter++;
 					}
 
-					locations.push_back({ newRow, newCol });
+					locations.push_back({ newRow, newCol, direction });
 				}
 
 				if (pieceCounter == a_numPlaced && emptyCounter == emptyRequired)
@@ -380,7 +390,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			//Find the possible set of 5 where the piece found one one of the ends to make it easier to find the middle.
 			//Ex: W - - - - OR - - - - W
-			if (board[firstRow][firstCol] != '-' || board[lastRow][lastCol] != '-')
+			if ((board[firstRow][firstCol] != '-' || board[lastRow][lastCol] != '-') && !InDangerOfCapture(a_board, possibleMoves[i][2], a_color))
 			{
 				//possibleMoves[i][2] represents the middle of the set of 5 locations. Ex: W - * - W where * represents the middle.
 				//This ensures the new pieces is placed one away from the placed piece and not at risk of capture. 
@@ -402,7 +412,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 3)
+				if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color))
 				{
 					return possibleMoves[i][emptyIndices[j]];
 				}
@@ -418,7 +428,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive < leastCaptures) {
+				if (possibleConsectutive < leastCaptures && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color)) {
 					leastCaptures = possibleConsectutive;
 					leastIndex = emptyIndices[j];
 					locationIndex = i;
@@ -436,7 +446,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 4)
+				if (possibleConsectutive == 4 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color))
 				{
 					return possibleMoves[i][emptyIndices[j]];
 				}
@@ -449,7 +459,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 3)
+				if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color))
 				{
 					return possibleMoves[i][emptyIndices[j]];
 				}
@@ -460,6 +470,30 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 	{
 		return {};
 	}
+}
+
+vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_color)
+{
+	char opponentColor = a_board.OpponentColor(a_color);
+
+	if (a_numPlaced == 2)
+	{
+		//Begin a flank???
+	}
+	else if (a_numPlaced == 3)
+	{
+		//Blocking a potential 4 in a row, or 4 pieces in an open 5. The best place to block is where the opponent wants to go next.
+		vector<int> counterLocation = BuildInitiative(a_board, a_numPlaced, opponentColor);
+
+		if (counterLocation.size() > 0)
+		{
+			return counterLocation;
+		}
+	}
+
+	//The computer will only consider countering initiaitve to start a flank on an opponent or two block the opponent from getting 4 in a row/4 in an open 5.
+	//PreventWinningMove() handles blocking potential win moves.
+	return {};
 }
 
 //Checks if it is possible to win, given the current board circumstances.
@@ -496,6 +530,67 @@ vector<int> Player::MakeWinningMove(Board a_board, char a_color)
 	}
 
 	return {};
+}
+
+vector<int> Player::PreventWinningMove(Board a_board, char a_color)
+{
+	//If the opponent has any winning moves they can do on their next turn, this is the location that you should block.
+	char opponentColor = a_board.OpponentColor(a_color);
+	vector<int> preventWin = MakeWinningMove(a_board, opponentColor);
+
+	if (preventWin.size() > 0)
+	{
+		return preventWin;
+	}
+	else
+	{
+		return {};
+	}
+}
+
+//Returns true if placing a piece in a_location will put the player at risk of being captured.
+bool Player::InDangerOfCapture(Board a_board, vector<int> a_location, char a_color)
+{
+	vector<vector<char>> board = a_board.GetBoard();
+	
+	int row = a_location[0];
+	int col = a_location[1];
+	
+	char opponentColor = a_board.OpponentColor(a_color);
+
+	//To determine if playing a piece will put the player at risk of being captured, locations will need to be checked in opposite directions.
+	vector<int> currentDirection;
+	vector<int> oppositeDirection;
+	for (int direction = 0; direction < StrategyConstants::NUM_DIRECTIONS; direction++)
+	{
+		//Multiplying the row instruction and the column instruction by -1 results in the instructions for the opposite direction.
+		currentDirection = StrategyConstants::DIRECTIONS[direction];
+		oppositeDirection = { StrategyConstants::DIRECTIONS[direction][0] * -1, StrategyConstants::DIRECTIONS[direction][1] * -1 };
+
+		//To be in danger of being captured there must be this pattern: - * P O
+		// - is an empty space, * is the current location being evaluated, P is the current players piece, and O is the opponents piece.
+		//The empty location should be one in the opposite direction that is currently being evaluated.
+		int emptyRow = row + oppositeDirection[0];
+		int emptyCol = col + oppositeDirection[1];
+
+		//Your piece should be a distance of 1 away in the current direction.
+		int yourPieceRow = row + currentDirection[0];
+		int yourPieceCol = col + currentDirection[1];
+
+		//The opponent's piece should be a distance of 2 away in the current direction.
+		int opponentPieceRow = row + currentDirection[0] * 2;
+		int opponentPieceCol = col + currentDirection[1] * 2;
+
+		if (a_board.IsValidIndices(emptyRow, emptyCol) && a_board.IsValidIndices(yourPieceRow, yourPieceCol) && a_board.IsValidIndices(opponentPieceRow, opponentPieceCol))
+		{
+			if (board[emptyRow][emptyCol] == '-' && board[yourPieceRow][yourPieceCol] == a_color && board[opponentPieceRow][opponentPieceCol] == opponentColor)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 
