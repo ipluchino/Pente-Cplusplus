@@ -3,7 +3,7 @@
 //Default Constructor. m_nextPlayerIndex is initially set to '-1' to represent undefined.
 Round::Round() : m_nextPlayerIndex(-1)
 {
-	m_playerList.push_back(new Human());
+	m_playerList.push_back(new Computer());
 	m_playerList.push_back(new Computer());
 
 	srand(time(NULL));

@@ -401,8 +401,15 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 		}
 
 		//Possibly shuffle this to get a random direction?
-		random_shuffle(playLocations.begin(), playLocations.end());
-		return playLocations[0];
+		if (playLocations.size() > 0)
+		{
+			random_shuffle(playLocations.begin(), playLocations.end());
+			return playLocations[0];
+		}
+		else
+		{
+			return {};
+		}
 	}
 	else if (a_numPlaced == 2)
 	{
@@ -422,7 +429,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 		//If you can't make a 3 in a row, prefer to place the piece with the least neighbors to avoid being captured. Ex: W - * - W
 		int leastCaptures = INT_MAX;
 		int leastIndex = INT_MAX;
-		int locationIndex = 0;
+		int locationIndex = -1;
 		for (int i = 0; i < possibleMoves.size(); i++) {
 			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
 
@@ -436,7 +443,14 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 			}
 		}
 
-		return possibleMoves[locationIndex][leastIndex];
+		if (locationIndex != -1)
+		{
+			return possibleMoves[locationIndex][leastIndex];
+		}
+		else
+		{
+			return {};
+		}
 	}
 	else if (a_numPlaced == 3)
 	{
@@ -465,6 +479,9 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 				}
 			}
 		}
+
+		//If there aren't any possible places that don't result in capture, return nothing.
+		return {};
 	}
 	else
 	{
