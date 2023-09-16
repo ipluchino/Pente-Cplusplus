@@ -49,19 +49,44 @@ string Player::ExtractLocation(int row, int col, Board a_board)
 	return location;
 }
 
+//Converts a direction index into the direction it represents: horizontal, vertical, main diagonal, and anti diagonal.
+string Player::GetDirection(int a_directionIndex)
+{
+	if (a_directionIndex == 0 || a_directionIndex == 1)
+	{
+		return "horizontal";
+	}
+	else if (a_directionIndex == 2 || a_directionIndex == 3)
+	{
+		return "vertical";
+	}
+	else if (a_directionIndex == 4 || a_directionIndex == 5)
+	{
+		return "main-diagonal";
+	}
+	else if (a_directionIndex == 6 || a_directionIndex == 7)
+	{
+		return "anti-diagonal";
+	}
+	else
+	{
+		return "unknown direction";
+	}
+}
+
 //Determines the optimal play and returns its location as well as the reasoning why it is the optimal play.
 //Assistance Received: https://www.digitalocean.com/community/tutorials/random-number-generator-c-plus-plus
 pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 {
 	//Location represents the location on the board of the most optimal play, while reasoning represents the explanation why it is the most optimal.
-	string location, reasoning;
+	string location, reasoning = "The computer placed a stone on ";
 	vector<int> possiblePlay;
 
 	//If the board is empty, the only play is the center position, J10. 
 	if (a_board.IsEmptyBoard())
 	{
 		location = "J10";
-		reasoning = "The computer placed a stone on " + location + " because the first stone must be placed there.";
+		reasoning += location + " because the first stone must be placed there.";
 
 		return pair<string, string>(location, reasoning);
 	}
@@ -71,7 +96,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning = "The computer placed a stone on " + location + " to win the round!";
+		reasoning += location + " to win the round!";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -80,7 +105,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning = "The computer placed a stone on " + location + " to prevent the opponent from winning.";
+		reasoning += location + " to prevent the opponent from winning.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -89,7 +114,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning = "The computer placed a stone on " + location + " to capture the opponent's pieces.";
+		reasoning += location + " to capture the opponent's pieces.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -98,7 +123,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning = "The computer placed a stone on " + location + " to prevent the opponent from making a capture.";
+		reasoning += location + " to prevent the opponent from making a capture.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -107,7 +132,8 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning = "The computer placed a stone on " + location + " to build initiative and have 4 pieces in an open 5.";
+		reasoning += location + " to build initiative and have 4 pieces in an open 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -116,7 +142,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning = "The computer placed a stone on " + location + " to block the opponent from getting 4 pieces in an open 5.";
+		reasoning += location + " to block the opponent from getting 4 pieces in an open 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -125,7 +151,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning = "The computer placed a stone on " + location + " to build initiative and have 3 pieces in an open 5.";
+		reasoning += location + " to build initiative and have 3 pieces in an open 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -134,7 +160,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning = "The computer placed a stone on " + location + " to build initiative and have 2 pieces in an open 5.";
+		reasoning += location + " to build initiative and have 2 pieces in an open 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -147,7 +173,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 
 	} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
 
-	reasoning = "The computer placed a stone on " + location + " because it played randomly.";
+	reasoning += location + " because it played randomly.";
 
 	return pair<string, string>(location, reasoning);
 }

@@ -32,6 +32,7 @@ public:
 	//Utility Functions
 	virtual bool MakePlay(Board& a_board);
 	string ExtractLocation(int row, int col, Board a_board);
+	string GetDirection(int a_directionIndex);
 	
 	//Strategy Functions
 	pair<string, string> OptimalPlay(Board a_board, char a_color);
