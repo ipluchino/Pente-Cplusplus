@@ -155,6 +155,15 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
+	//Attempt to initiate a flank.
+	possiblePlay = CounterInitiative(a_board, 2, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
+		reasoning += location + " to counter initiative and initiate a flank in the " + GetDirection(possiblePlay[2]) + " direction.";
+		return pair<string, string>(location, reasoning);
+	}
+
 	//Attempt to build initiative with 1 piece already placed.
 	possiblePlay = BuildInitiative(a_board, 1, a_color);
 	if (possiblePlay.size() != 0)
@@ -273,7 +282,7 @@ vector<int> Player::PreventCapture(Board a_board, char a_color)
 
 //Finds all possible set of 5 locations that has numPlaced stones of the provided color placed, and 5-numPlaced empty locations.
 //Returns a vector<vector<vector<int>>> in the format {{{1,2}, {1,3}, {1,4}, {1,5}, {1,6}}, ...}
-vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced, char a_color)
+vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced, char a_color, int a_distance)
 {
 	//A copy of the board's data.
 	vector<vector<char>> board = a_board.GetBoard();
@@ -282,7 +291,7 @@ vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced,
 	vector<vector<vector<int>>> result;
 
 	//To be apart of a possible winning consecutive 5 in the future, there must be at least 5-a_numPlaced empty spaces.
-	int emptyRequired = StrategyConstants::CONSECUTIVE_5_DISTANCE - a_numPlaced;
+	int emptyRequired = a_distance - a_numPlaced;
 
 	for (int row = 0; row < StrategyConstants::BOARD_SIZE; row++)
 	{
@@ -296,7 +305,7 @@ vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced,
 
 				vector<vector<int>> locations = {};
 
-				for (int distance = 0; distance < StrategyConstants::CONSECUTIVE_5_DISTANCE; distance++)
+				for (int distance = 0; distance < a_distance; distance++)
 				{
 					int newRow = row + StrategyConstants::DIRECTIONS[direction][0] * distance;
 					int newCol = col + StrategyConstants::DIRECTIONS[direction][1] * distance;
@@ -396,7 +405,7 @@ int Player::FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locatio
 vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color)
 {
 	vector<vector<char>> board = a_board.GetBoard();
-	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, a_numPlaced, a_color);
+	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, a_numPlaced, a_color, StrategyConstants::CONSECUTIVE_5_DISTANCE);
 
 	//If there are no possible moves that satisfy the conditions passed, simply return.
 	if (possibleMoves.size() == 0) return {};
@@ -453,7 +462,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 		}
 
 		//If you can't make a 3 in a row, prefer to place the piece with the least neighbors to avoid being captured. Ex: W - * - W
-		int leastCaptures = INT_MAX;
+		int leastConsecutive = INT_MAX;
 		int leastIndex = INT_MAX;
 		int locationIndex = -1;
 		for (int i = 0; i < possibleMoves.size(); i++) {
@@ -461,8 +470,8 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive < leastCaptures && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color)) {
-					leastCaptures = possibleConsectutive;
+				if (possibleConsectutive < leastConsecutive && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color)) {
+					leastConsecutive = possibleConsectutive;
 					leastIndex = emptyIndices[j];
 					locationIndex = i;
 				}
@@ -521,7 +530,17 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 
 	if (a_numPlaced == 2)
 	{
-		//Begin a flank???
+		vector<int> possibleFlank = FindFlanks(a_board, a_color);
+		
+		if (possibleFlank.size() > 0)
+		{
+			return possibleFlank;
+		}
+		else
+		{
+			return {};
+		}
+
 	}
 	else if (a_numPlaced == 3)
 	{
@@ -531,6 +550,10 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 		if (counterLocation.size() > 0)
 		{
 			return counterLocation;
+		}
+		else
+		{
+			return {};
 		}
 	}
 
@@ -543,7 +566,7 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 vector<int> Player::MakeWinningMove(Board a_board, char a_color)
 {
 	//First check if there are any moves that allow for 5 in a row.
-	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 4, a_color);
+	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 4, a_color, StrategyConstants::CONSECUTIVE_5_DISTANCE);
 
 	if (possibleMoves.size() > 1)
 	{
@@ -634,6 +657,36 @@ bool Player::InDangerOfCapture(Board a_board, vector<int> a_location, char a_col
 	}
 
 	return false;
+}
+
+//Finds potential flanks where you can initiate a capture. Searches for the pattern: * W W * on the board.
+vector<int> Player::FindFlanks(Board a_board, char a_color)
+{
+	char opponentColor = a_board.OpponentColor(a_color);
+
+	//Search all possible sets of 4 locations that have two opponent's stones and 2 empty locations.
+	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 2, opponentColor, 4);
+
+	for (int i = 0; i < possibleMoves.size(); i++)
+	{
+		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
+
+		//Search for sets of 4 locations that are in the pattern: * W W * where * are empty locations and W is the opponent's pieces. This is where a flank can be initiated.
+		if (emptyIndices[0] == 0 && emptyIndices[1] == 3)
+		{
+			if (!InDangerOfCapture(a_board, possibleMoves[i][0], a_color))
+			{
+				return possibleMoves[i][0];
+			}
+			else if (!InDangerOfCapture(a_board, possibleMoves[i][3], a_color))
+			{
+				return possibleMoves[i][1];
+			}
+		}
+	}
+
+	return {};
+	return vector<int>();
 }
 
 
