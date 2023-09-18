@@ -42,7 +42,7 @@ public:
 	vector<vector<vector<int>>> FindAllMoves(Board a_board, int a_numPlaced, char a_color, int a_distance);
 	vector<int> FindEmptyIndices(Board a_board, vector<vector<int>> a_locations);
 	int FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locations, int emptyIndex);
-	vector<int> BuildInitiative(Board a_board, int a_numPlaced, char a_color);
+	vector<int> BuildInitiative(Board a_board, int a_numPlaced, char a_color, char a_dangerColor);
 	vector<int> CounterInitiative(Board a_board, int a_numPlaced, char a_color);
 	vector<int> MakeWinningMove(Board a_board, char a_color);
 	vector<int> PreventWinningMove(Board a_board, char a_color);

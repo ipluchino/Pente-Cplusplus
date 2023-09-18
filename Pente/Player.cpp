@@ -128,7 +128,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	}
 
 	//Attempt to build initiative with 3 pieces already placed.
-	possiblePlay = BuildInitiative(a_board, 3, a_color);
+	possiblePlay = BuildInitiative(a_board, 3, a_color, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
@@ -147,7 +147,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	}
 
 	//Attempt to build initiative with 2 pieces already placed.
-	possiblePlay = BuildInitiative(a_board, 2, a_color);
+	possiblePlay = BuildInitiative(a_board, 2, a_color, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
@@ -165,7 +165,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	}
 
 	//Attempt to build initiative with 1 piece already placed.
-	possiblePlay = BuildInitiative(a_board, 1, a_color);
+	possiblePlay = BuildInitiative(a_board, 1, a_color, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
@@ -402,7 +402,7 @@ int Player::FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locatio
 }
 
 //Returns the most optimal play when building initiative that already has a_numPlaced pieces of a_color placed.
-vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color)
+vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color, char a_dangerColor)
 {
 	vector<vector<char>> board = a_board.GetBoard();
 	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, a_numPlaced, a_color, StrategyConstants::CONSECUTIVE_5_DISTANCE);
@@ -425,7 +425,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			//Find the possible set of 5 where the piece found one one of the ends to make it easier to find the middle.
 			//Ex: W - - - - OR - - - - W
-			if ((board[firstRow][firstCol] != '-' || board[lastRow][lastCol] != '-') && !InDangerOfCapture(a_board, possibleMoves[i][2], a_color))
+			if ((board[firstRow][firstCol] != '-' || board[lastRow][lastCol] != '-') && !InDangerOfCapture(a_board, possibleMoves[i][2], a_dangerColor))
 			{
 				//possibleMoves[i][2] represents the middle of the set of 5 locations. Ex: W - * - W where * represents the middle.
 				//This ensures the new pieces is placed one away from the placed piece and not at risk of capture. 
@@ -454,7 +454,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color))
+				if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_dangerColor))
 				{
 					return possibleMoves[i][emptyIndices[j]];
 				}
@@ -470,7 +470,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive < leastConsecutive && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color)) {
+				if (possibleConsectutive < leastConsecutive && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_dangerColor)) {
 					leastConsecutive = possibleConsectutive;
 					leastIndex = emptyIndices[j];
 					locationIndex = i;
@@ -495,7 +495,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 4 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color))
+				if (possibleConsectutive == 4 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_dangerColor))
 				{
 					return possibleMoves[i][emptyIndices[j]];
 				}
@@ -508,7 +508,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 
 			for (int j = 0; j < emptyIndices.size(); j++) {
 				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_color))
+				if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_dangerColor))
 				{
 					return possibleMoves[i][emptyIndices[j]];
 				}
@@ -545,7 +545,7 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 	else if (a_numPlaced == 3)
 	{
 		//Blocking a potential 4 in a row, or 4 pieces in an open 5. The best place to block is where the opponent wants to go next.
-		vector<int> counterLocation = BuildInitiative(a_board, a_numPlaced, opponentColor);
+		vector<int> counterLocation = BuildInitiative(a_board, a_numPlaced, opponentColor, a_color);
 
 		if (counterLocation.size() > 0)
 		{
