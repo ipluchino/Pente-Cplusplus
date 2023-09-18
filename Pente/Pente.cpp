@@ -6,7 +6,7 @@ using namespace std;
 int main()
 {
     Tournament t;
-    //t.StartTournament();
+    t.StartTournament();
 
     
     Board b;

@@ -633,27 +633,36 @@ bool Player::InDangerOfCapture(Board a_board, vector<int> a_location, char a_col
 		currentDirection = StrategyConstants::DIRECTIONS[direction];
 		oppositeDirection = { StrategyConstants::DIRECTIONS[direction][0] * -1, StrategyConstants::DIRECTIONS[direction][1] * -1 };
 
-		//To be in danger of being captured there must be this pattern: - * P O
+		//To be in danger of being captured there must be this pattern: - * P O OR this pattern: - P * O
 		// - is an empty space, * is the current location being evaluated, P is the current players piece, and O is the opponents piece.
-		//The empty location should be one in the opposite direction that is currently being evaluated.
-		int emptyRow = row + oppositeDirection[0];
-		int emptyCol = col + oppositeDirection[1];
+		
+		//The row, col pair that is a distance of one away in the opposite direction being evaluated.
+		int oppositeDirRow = row + oppositeDirection[0];
+		int oppositeDirCol = col + oppositeDirection[1];
 
-		//Your piece should be a distance of 1 away in the current direction.
-		int yourPieceRow = row + currentDirection[0];
-		int yourPieceCol = col + currentDirection[1];
+		//The row, col pair that is a distance of one away in the current direction being evaluated.
+		int currentDirOneAwayRow = row + currentDirection[0];
+		int currentDirOneAwayCol = col + currentDirection[1];
 
-		//The opponent's piece should be a distance of 2 away in the current direction.
-		int opponentPieceRow = row + currentDirection[0] * 2;
-		int opponentPieceCol = col + currentDirection[1] * 2;
+		//The row, col pair that is a distance of two away in the current direction being evaluated.
+		int currentDirTwoAwayRow = row + currentDirection[0] * 2;
+		int currentDirTwoAwayCol = col + currentDirection[1] * 2;
 
-		if (a_board.IsValidIndices(emptyRow, emptyCol) && a_board.IsValidIndices(yourPieceRow, yourPieceCol) && a_board.IsValidIndices(opponentPieceRow, opponentPieceCol))
+		if (a_board.IsValidIndices(oppositeDirRow, oppositeDirCol) && a_board.IsValidIndices(currentDirOneAwayRow, currentDirOneAwayCol) && a_board.IsValidIndices(currentDirTwoAwayRow, currentDirTwoAwayCol))
 		{
-			if (board[emptyRow][emptyCol] == '-' && board[yourPieceRow][yourPieceCol] == a_color && board[opponentPieceRow][opponentPieceCol] == opponentColor)
+			//Handling the pattern: - * P O
+			if (board[oppositeDirRow][oppositeDirCol] == '-' && board[currentDirOneAwayRow][currentDirOneAwayCol] == a_color && board[currentDirTwoAwayRow][currentDirTwoAwayCol] == opponentColor)
+			{
+				return true;
+			}
+
+			//Handling the pattern: - P * O
+			if (board[oppositeDirRow][oppositeDirCol] == opponentColor && board[currentDirOneAwayRow][currentDirOneAwayCol] == a_color && board[currentDirTwoAwayRow][currentDirTwoAwayCol] == '-')
 			{
 				return true;
 			}
 		}
+
 	}
 
 	return false;
