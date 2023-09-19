@@ -602,11 +602,14 @@ vector<int> Player::PreventWinningMove(Board a_board, char a_color)
 {
 	//If the opponent has any winning moves they can do on their next turn, this is the location that you should block.
 	char opponentColor = a_board.OpponentColor(a_color);
-	vector<int> preventWin = MakeWinningMove(a_board, opponentColor);
+	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 4, opponentColor, StrategyConstants::CONSECUTIVE_5_DISTANCE);
 
-	if (preventWin.size() > 0)
+
+	if (possibleMoves.size() > 0)
 	{
-		return preventWin;
+		//If there's a move that creates a 5 in a row for the opponent, you must block it.
+		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[0]);
+		return possibleMoves[0][emptyIndices[0]];
 	}
 	else
 	{

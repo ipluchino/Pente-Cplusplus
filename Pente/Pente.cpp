@@ -8,7 +8,7 @@ int main()
     Tournament t;
     t.StartTournament();
 
-    
+    /*
     Board b;
     Human h;
 
@@ -21,7 +21,7 @@ int main()
     b.DisplayBoard();
 
     h.MakePlay(b);
-
+    */
 
 }
 

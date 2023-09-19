@@ -113,7 +113,6 @@ int Board::CountPieces(char a_color)
 	return total;
 }
 
-
 //Determines if the entire board is empty.
 bool Board::IsEmptyBoard()
 {
@@ -197,7 +196,7 @@ bool Board::IsBoardFull()
 }
 
 //Returns true if either player has achieved a 5 in a row.
-bool Board::FiveConsecutive()
+bool Board::FiveConsecutive(char a_color)
 {
 	//From every position on the board, every horizontal, vertical, and diagonal needs to be searched.
 	for (int row = 0; row < StrategyConstants::BOARD_SIZE; row++)
@@ -208,8 +207,7 @@ bool Board::FiveConsecutive()
             //All horizontals are checked with just left, all verticals with just up, etc.
 			for (int direction = 0; direction < StrategyConstants::NUM_DIRECTIONS; direction += StrategyConstants::DIRECTIONAL_OFFSET)
 			{
-				int whiteCounter = 0;
-				int blackCounter = 0;
+				int consecutiveCounter = 0;
 
 				//For each direction, consider the current space and 4 spaces out (to make a consecutive 5).
 				for (int distance = 0; distance < StrategyConstants::CONSECUTIVE_5_DISTANCE; distance++)
@@ -220,11 +218,10 @@ bool Board::FiveConsecutive()
 					//No need to keep searching if the 5 spaces go out of the board's bounds.
 					if (!IsValidIndices(newRow, newCol)) break;
 
-					if (m_board[newRow][newCol] == 'W') whiteCounter++;
-					else if (m_board[newRow][newCol] == 'B') blackCounter++;
+					if (m_board[newRow][newCol] == a_color) consecutiveCounter++;
 				}
 
-				if (whiteCounter == 5 || blackCounter == 5) return true;
+				if (consecutiveCounter == 5) return true;
 			}
 		}
 	}

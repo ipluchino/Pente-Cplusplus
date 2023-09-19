@@ -236,21 +236,45 @@ void Round::DisplayGame()
 bool Round::RoundOver()
 {
 	//If one of the players has achieved five consecutive pieces in any direction, the round is over.
-	if (m_board.FiveConsecutive())
+	if (m_board.FiveConsecutive('W'))
 	{
-		cout << "The round has ended because a player has placed five consecutive stones." << endl << endl;
-		return true;
+		if (GetHumanColor() == 'W')
+		{
+			cout << "The round has ended because the Human player has five consecutive pieces on the board." << endl << endl;
+			return true;
+		}
+		else
+		{
+			cout << "The round has ended because the Computer player has five consecutive pieces on the board." << endl << endl;
+			return true;
+		}
 	}
-
+	else if (m_board.FiveConsecutive('B'))
+	{
+		if (GetHumanColor() == 'B')
+		{
+			cout << "The round has ended because the Human player has five consecutive pieces on the board." << endl << endl;
+			return true;
+		}
+		else
+		{
+			cout << "The round has ended because the Computer player has five consecutive pieces on the board." << endl << endl;
+			return true;
+		}
+	}
 	//If one of the players has achieved at least 5 captured pairs, the round is over.
-	if (GetHumanCapturedPairs() >= 5 || GetComputerCapturedPairs() >= 5)
+	else if (GetHumanCapturedPairs() >= 5)
 	{
-		cout << "The round has ended because a player has at least 5 captured pairs." << endl << endl;
+		cout << "The round has ended because the Human player has at least 5 captured pairs." << endl << endl;
 		return true;
 	}
-
+	else if (GetComputerCapturedPairs() >= 5)
+	{
+		cout << "The round has ended because the Computer player has at least 5 captured pairs." << endl << endl;
+		return true;
+	}
 	//If none of the above situations occured but the board is full, the round is over.
-	if (m_board.IsBoardFull()) 
+	else if (m_board.IsBoardFull()) 
 	{
 		cout << "The round has ended because the board is full." << endl << endl;
 		return true;

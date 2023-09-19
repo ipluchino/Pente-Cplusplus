@@ -33,7 +33,7 @@ public:
 	int ClearCaptures(char a_column, int a_row, char a_color);
 	char OpponentColor(char a_color);
 	bool IsBoardFull();
-	bool FiveConsecutive();
+	bool FiveConsecutive(char a_color);
 	int ScoreBoard(char a_color, int a_numCaptures);
 	void ClearBoard();
 
