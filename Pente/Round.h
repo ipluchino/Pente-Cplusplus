@@ -33,6 +33,12 @@ public:
 
 	//Mutators
 	bool SetNextPlayerIndex(int a_index);
+	bool SetHumanScore(int a_score);
+	bool SetComputerScore(int a_score);
+	bool SetHumanColor(char a_color);
+	bool SetComputerColor(char a_color);
+	bool SetHumanCapturedPairs(int a_capturedPairs);
+	bool SetComputerCapturedPairs(int a_capturedPairs);
 
 	//Utility Functions
 	void StartRound();

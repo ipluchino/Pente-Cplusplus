@@ -30,6 +30,66 @@ bool Round::SetNextPlayerIndex(int a_index)
 	return true;
 }
 
+bool Round::SetHumanScore(int a_score)
+{
+	if (!m_playerList[0]->SetScore(a_score))
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+bool Round::SetComputerScore(int a_score)
+{
+	if (!m_playerList[1]->SetScore(a_score))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Round::SetHumanColor(char a_color)
+{
+	if (!m_playerList[0]->SetColor(a_color))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Round::SetComputerColor(char a_color)
+{
+	if (!m_playerList[1]->SetColor(a_color))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Round::SetHumanCapturedPairs(int a_capturedPairs)
+{
+	if (!m_playerList[0]->SetCapturedPairs(a_capturedPairs))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Round::SetComputerCapturedPairs(int a_capturedPairs)
+{
+	if (!m_playerList[1]->SetCapturedPairs(a_capturedPairs))
+	{
+		return false;
+	}
+
+	return true;
+}
+
 //Runs through one round of Pente.
 void Round::StartRound()
 {
@@ -40,7 +100,7 @@ void Round::StartRound()
 		DetermineFirstPlayer();
 	}
 
-	//Display the board for the first time if the human is going first so they can see the board.
+	//Display the board for the first time.
 	DisplayGame();
 
 	//Main round loop. Alternate turns between the human and the computer.
@@ -56,9 +116,6 @@ void Round::StartRound()
 
 		//Make it the next player's turn after they have made a play.
 		m_nextPlayerIndex = (m_nextPlayerIndex + 1) % NUM_PLAYERS;
-
-		//Clear the screen.
-		//system("cls");
 
 		//Display the game information after each player's turn.
 		DisplayGame();
@@ -80,19 +137,19 @@ void Round::DetermineFirstPlayer()
 	//The player who has the higher score gets to play first for the round.
 	//If the scores or tied, or a new tournament tournament is started, the first player is determined via coin toss.
 
-	if (m_playerList[0]->GetScore() > m_playerList[1]->GetScore())
+	if (GetHumanScore() > GetComputerScore())
 	{
-		m_playerList[0]->SetColor('W');
-		m_playerList[1]->SetColor('B');
-		m_nextPlayerIndex = 0;
+		SetHumanColor('W');
+		SetComputerColor('B');
+		SetNextPlayerIndex(0);
 
 		cout << "You will be going first since you have a higher score." << endl << endl;
 	}
-	else if (m_playerList[1]->GetScore() > m_playerList[0]->GetScore())
+	else if (GetComputerScore() > GetHumanScore())
 	{
-		m_playerList[1]->SetColor('W');
-		m_playerList[0]->SetColor('B');
-		m_nextPlayerIndex = 1;
+		SetComputerColor('W');
+		SetHumanColor('B');
+		SetNextPlayerIndex(1);
 
 		cout << "The computer will be going first because the computer has a higher score." << endl << endl;
 	}
@@ -102,17 +159,17 @@ void Round::DetermineFirstPlayer()
 
 		if (correctCall)
 		{
-			m_playerList[0]->SetColor('W');
-			m_playerList[1]->SetColor('B');
-			m_nextPlayerIndex = 0;
+			SetHumanColor('W');
+			SetComputerColor('B');
+			SetNextPlayerIndex(0);
 
 			cout << " You will be going first because you called the coin toss correctly." << endl << endl;
 		}
 		else
 		{
-			m_playerList[1]->SetColor('W');
-			m_playerList[0]->SetColor('B');
-			m_nextPlayerIndex = 1;
+			SetComputerColor('W');
+			SetHumanColor('B');
+			SetNextPlayerIndex(1);
 
 			cout << " The computer will be going first because you called the coin toss incorrectly." << endl << endl;
 		}
@@ -380,28 +437,27 @@ bool Round::LoadGameData()
 	}
 
 	//Set the round's data to the variables read in.
-	
 	if (!m_board.SetBoard(board))
 	{
-		cout << "Could not correctly load board!" << endl; 
+		cout << "Could not correctly load board from the file!" << endl << endl; 
 		return false;
 	}
 
-	if (!m_playerList[0]->SetCapturedPairs(humanCaptured) || !m_playerList[0]->SetScore(humanScore) || !m_playerList[0]->SetColor(humanColor))
+	if (!SetHumanCapturedPairs(humanCaptured) || !SetHumanScore(humanScore) || !SetHumanColor(humanColor))
 	{
-		cout << "Could not correctly load the human's information!" << endl;
+		cout << "Could not correctly load the human's information from the file!" << endl << endl;
 		return false;
 	}
 
-	if (!m_playerList[1]->SetCapturedPairs(computerCaptured) || !m_playerList[1]->SetScore(computerScore) || !m_playerList[1]->SetColor(computerColor))
+	if (!SetComputerCapturedPairs(computerCaptured) || !SetComputerScore(computerScore) || !SetComputerColor(computerColor))
 	{
-		cout << "Could not correctly load the computer's information!" << endl;
+		cout << "Could not correctly load the computer's information from the file!" << endl << endl;
 		return false;
 	}
 
 	if (!SetNextPlayerIndex(nextPlayerIndex))
 	{
-		cout << "Could not correctly load the next player!" << endl;
+		cout << "Could not correctly load the next player from the file!" << endl << endl;
 		return false;
 	}
 
