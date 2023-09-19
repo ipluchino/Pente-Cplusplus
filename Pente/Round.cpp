@@ -240,12 +240,12 @@ bool Round::RoundOver()
 	{
 		if (GetHumanColor() == 'W')
 		{
-			cout << "The round has ended because the Human player has five consecutive pieces on the board." << endl << endl;
+			cout << "The round has ended because the Human player has five consecutive stones on the board." << endl << endl;
 			return true;
 		}
 		else
 		{
-			cout << "The round has ended because the Computer player has five consecutive pieces on the board." << endl << endl;
+			cout << "The round has ended because the Computer player has five consecutive stones on the board." << endl << endl;
 			return true;
 		}
 	}
@@ -253,12 +253,12 @@ bool Round::RoundOver()
 	{
 		if (GetHumanColor() == 'B')
 		{
-			cout << "The round has ended because the Human player has five consecutive pieces on the board." << endl << endl;
+			cout << "The round has ended because the Human player has five consecutive stones on the board." << endl << endl;
 			return true;
 		}
 		else
 		{
-			cout << "The round has ended because the Computer player has five consecutive pieces on the board." << endl << endl;
+			cout << "The round has ended because the Computer player has five consecutive stones on the board." << endl << endl;
 			return true;
 		}
 	}

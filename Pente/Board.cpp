@@ -15,6 +15,18 @@ bool Board::SetBoard(vector<vector<char>> a_board)
 		if (a_board[i].size() != 19) return false;
 	}
 
+	//The only valid characters for the board are White ('W'), Black ('B'), and empty locations ('-')
+	for (int row = 0; row < a_board.size(); row++)
+	{
+		for (int col = 0; col < a_board.size(); col++)
+		{
+			if (a_board[row][col] != '-' && a_board[row][col] != 'W' && a_board[row][col] != 'B')
+			{
+				return false;
+			}
+		}
+	}
+
 	m_board = a_board;
 
 	return true;
