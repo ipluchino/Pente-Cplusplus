@@ -431,8 +431,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 			int lastRow = possibleMoves[i][4][0];
 			int lastCol = possibleMoves[i][4][1];
 
-			//Find the possible set of 5 where the piece found one one of the ends to make it easier to find the middle.
-			//Ex: W - - - - OR - - - - W
+			//Find the possible set of 5 where the piece found one one of the ends to make it easier to find the middle. Ex: W - - - - OR - - - - W
 			if ((board[firstRow][firstCol] != '-' || board[lastRow][lastCol] != '-') && !InDangerOfCapture(a_board, possibleMoves[i][2], a_dangerColor))
 			{
 				//possibleMoves[i][2] represents the middle of the set of 5 locations. Ex: W - * - W where * represents the middle.
@@ -455,16 +454,11 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 	else if (a_numPlaced == 2)
 	{
 		//Search for possible 3 in a rows. If there is one, that is the most optimal play.
-		for (int i = 0; i < possibleMoves.size(); i++) {
-			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
+		vector<int> possibleThreeConsecutive = FindThreeConsecutive(a_board, possibleMoves, a_dangerColor);
 
-			for (int j = 0; j < emptyIndices.size(); j++) {
-				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_dangerColor))
-				{
-					return possibleMoves[i][emptyIndices[j]];
-				}
-			}
+		if (possibleThreeConsecutive.size() != 0)
+		{
+			return possibleThreeConsecutive;
 		}
 
 		//If you can't make a 3 in a row, prefer to place the piece with the least neighbors to avoid being captured. Ex: W - * - W
@@ -503,32 +497,19 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 		}
 
 		//Search for possible 4 in a rows. If there is one, that is the most optimal play.
-		for (int i = 0; i < possibleMoves.size(); i++) {
-			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
-
-			for (int j = 0; j < emptyIndices.size(); j++) {
-				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 4 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_dangerColor))
-				{
-					return possibleMoves[i][emptyIndices[j]];
-				}
-			}
+		vector<int> possibleFourConsecutive = FindFourConsecutive(a_board, possibleMoves, a_dangerColor);
+		if (possibleFourConsecutive.size() != 0)
+		{
+			return possibleFourConsecutive;
 		}
 
-		//If there are no possible 4 in a rows, prefer to make 3 in a row (always possible given 3 of a player's piece and 2 empty spots and there is no possible 4 in a row).
-		for (int i = 0; i < possibleMoves.size(); i++) {
-			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
-
-			for (int j = 0; j < emptyIndices.size(); j++) {
-				int possibleConsectutive = FindConsecutiveIfPlaced(a_board, possibleMoves[i], emptyIndices[j]);
-				if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, possibleMoves[i][emptyIndices[j]], a_dangerColor))
-				{
-					return possibleMoves[i][emptyIndices[j]];
-				}
-			}
+		//Search for possible 3 in a rows. If there is one, that is the most optimal play.
+		vector<int> possibleThreeConsecutive = FindThreeConsecutive(a_board, possibleMoves, a_dangerColor);
+		if (possibleThreeConsecutive.size() != 0)
+		{
+			return possibleThreeConsecutive;
 		}
 
-		//If there aren't any possible places that don't result in capture, return nothing.
 		return {};
 	}
 	else
@@ -550,10 +531,8 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 		{
 			return possibleFlank;
 		}
-		else
-		{
-			return {};
-		}
+		
+		return {};
 
 	}
 	else if (a_numPlaced == 1 || a_numPlaced == 3)
@@ -565,10 +544,8 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 		{
 			return counterLocation;
 		}
-		else
-		{
-			return {};
-		}
+		
+		return {};
 	}
 
 	return {};
@@ -727,6 +704,7 @@ vector<int> Player::FindDeadlyTessera(Board a_board, char a_color)
 		if (emptyIndices[0] == 0 && emptyIndices[2] == 5)
 		{
 			//emptyIndices[1] is the empty location that is NOT on one of the ends. This creates a 4 in a row with two open ends when a stone is placed there.
+			//Note: It does not matter if placing it here results in the capture, as it will still lead to a win after placing it in the same location the following turn.
 			return possibleMoves[i][emptyIndices[1]];
 		}
 	}
@@ -734,4 +712,41 @@ vector<int> Player::FindDeadlyTessera(Board a_board, char a_color)
 	return {};
 }
 
+//Given multiple sets of possible 5's to build on, find if building three consecutive stones is possible.
+vector<int> Player::FindThreeConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor)
+{
+	//Search for possible 3 in a rows. If there is one, that is the most optimal play.
+	for (int i = 0; i < a_possibleMoves.size(); i++) {
+		vector<int> emptyIndices = FindEmptyIndices(a_board, a_possibleMoves[i]);
+
+		for (int j = 0; j < emptyIndices.size(); j++) {
+			int possibleConsectutive = FindConsecutiveIfPlaced(a_board, a_possibleMoves[i], emptyIndices[j]);
+			if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, a_possibleMoves[i][emptyIndices[j]], a_dangerColor))
+			{
+				return a_possibleMoves[i][emptyIndices[j]];
+			}
+		}
+	}
+
+	return {};
+}
+
+//Given multiple sets of possible 5's to build on, find if building four consecutive stones is possible.
+vector<int> Player::FindFourConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor)
+{
+	//Search for possible 4 in a rows. If there is one, that is the most optimal play.
+	for (int i = 0; i < a_possibleMoves.size(); i++) {
+		vector<int> emptyIndices = FindEmptyIndices(a_board, a_possibleMoves[i]);
+
+		for (int j = 0; j < emptyIndices.size(); j++) {
+			int possibleConsectutive = FindConsecutiveIfPlaced(a_board, a_possibleMoves[i], emptyIndices[j]);
+			if (possibleConsectutive == 4 && !InDangerOfCapture(a_board, a_possibleMoves[i][emptyIndices[j]], a_dangerColor))
+			{
+				return a_possibleMoves[i][emptyIndices[j]];
+			}
+		}
+	}
+
+	return {};
+}
 

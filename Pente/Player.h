@@ -49,6 +49,8 @@ public:
 	bool InDangerOfCapture(Board a_board, vector<int> a_location, char a_color);
 	vector<int> FindFlanks(Board a_board, char a_color);
 	vector<int> FindDeadlyTessera(Board a_board, char a_color);
+	vector<int> FindThreeConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor);
+	vector<int> FindFourConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor);
 
 protected:
 	//The color of the stones (black or white) that the player is playing as.
