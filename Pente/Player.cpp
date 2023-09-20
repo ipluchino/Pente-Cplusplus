@@ -173,7 +173,16 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
-	//Play randomly if none of the above applies. Will be changed in the future.
+	//Attempt to counter initiative with 1 piece already placed - used for the first move when going second.
+	possiblePlay = CounterInitiative(a_board, 1, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
+		reasoning += location + " to counter initiative and start its own initiative.";
+		return pair<string, string>(location, reasoning);
+	}
+
+	//If no other strategies can be used, find an open spot on the board and place it there. This is a failsafe for the edge case where the board is near full.
 	do {
 		int row = 1 + (rand() % 19);
 		char col = 'A' + (rand() % 19);
@@ -182,8 +191,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 
 	} while (!a_board.IsEmptyLocation(location[0], stoi(location.substr(1, 2))));
 
-	reasoning += location + " because it played randomly.";
-
+	reasoning += location + " because there is no other optimal move.";
 	return pair<string, string>(location, reasoning);
 }
 
@@ -535,6 +543,7 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 
 	if (a_numPlaced == 2)
 	{
+		//Finding any potential flanks.
 		vector<int> possibleFlank = FindFlanks(a_board, a_color);
 		
 		if (possibleFlank.size() > 0)
@@ -547,9 +556,9 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 		}
 
 	}
-	else if (a_numPlaced == 3)
+	else if (a_numPlaced == 1 || a_numPlaced == 3)
 	{
-		//Blocking a potential 4 in a row, or 4 pieces in an open 5. The best place to block is where the opponent wants to go next.
+		//When blocking, the most optimal placement to block is where your opponent wants to place their stone on their following turn.
 		vector<int> counterLocation = BuildInitiative(a_board, a_numPlaced, opponentColor, a_color);
 
 		if (counterLocation.size() > 0)
@@ -562,8 +571,6 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 		}
 	}
 
-	//The computer will only consider countering initiaitve to start a flank on an opponent or two block the opponent from getting 3 in a row/4 in an open 5.
-	//PreventWinningMove() handles blocking potential win moves.
 	return {};
 }
 
