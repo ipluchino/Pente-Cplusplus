@@ -20,6 +20,9 @@ public:
 	//Default Constructor
 	Round();
 
+	//Copy Constructor
+	Round(Round& a_otherRound);
+
 	//Destructor
 	~Round();
 

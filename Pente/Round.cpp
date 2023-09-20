@@ -9,6 +9,27 @@ Round::Round() : m_nextPlayerIndex(-1)
 	srand(time(NULL));
 }
 
+//Copy Construtor.
+Round::Round(Round& a_otherRound) : m_nextPlayerIndex(a_otherRound.m_nextPlayerIndex)
+{
+	//Create the Human and Computer objects.
+	m_playerList.push_back(new Human());
+	m_playerList.push_back(new Computer());
+	
+	//Copy the board.
+	m_board = a_otherRound.m_board;
+
+	//Copy the Human information.
+	SetHumanColor(a_otherRound.GetHumanColor());
+	SetHumanScore(a_otherRound.GetHumanScore());
+	SetHumanCapturedPairs(a_otherRound.GetHumanCapturedPairs());
+
+	//Copy the Computer information.
+	SetComputerColor(a_otherRound.GetComputerColor());
+	SetComputerScore(a_otherRound.GetComputerScore());
+	SetComputerCapturedPairs(a_otherRound.GetComputerCapturedPairs());
+}
+
 //Destructor
 Round::~Round()
 {
