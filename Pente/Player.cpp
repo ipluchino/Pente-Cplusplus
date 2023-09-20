@@ -429,8 +429,6 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 			{
 				//possibleMoves[i][2] represents the middle of the set of 5 locations. Ex: W - * - W where * represents the middle.
 				//This ensures the new pieces is placed one away from the placed piece and not at risk of capture. 
-
-				//Check if neighbors == 0!!!
 				playLocations.push_back(possibleMoves[i][2]);
 			}
 		}
@@ -489,6 +487,13 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 	}
 	else if (a_numPlaced == 3)
 	{
+		//Search for possible deadly tesseras. Deadly tesseras are 4 in a row with empty location on both sides, basically counting as a win.
+		vector<int> possibleDeadlyTessera = FindDeadlyTessera(a_board, a_color);
+		if (possibleDeadlyTessera.size() > 0)
+		{
+			return possibleDeadlyTessera;
+		}
+
 		//Search for possible 4 in a rows. If there is one, that is the most optimal play.
 		for (int i = 0; i < possibleMoves.size(); i++) {
 			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
@@ -698,7 +703,28 @@ vector<int> Player::FindFlanks(Board a_board, char a_color)
 	}
 
 	return {};
-	return vector<int>();
+}
+
+//Searches for possible Deadly Tesseras given a color.
+vector<int> Player::FindDeadlyTessera(Board a_board, char a_color)
+{
+	//Search for all valid consecutive 6 locations that have 3 of the specified piece color and 3 empty locations.
+	//Deadly tesseras are in the form: - B B * B - , where both ends of the set of six are empty.
+	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 3, a_color, 6);
+
+	for (int i = 0; i < possibleMoves.size(); i++)
+	{
+		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
+
+		//If both ends of the set of 6 locations are empty, this means that a deadly tessera can be formed.
+		if (emptyIndices[0] == 0 && emptyIndices[2] == 5)
+		{
+			//emptyIndices[1] is the empty location that is NOT on one of the ends. This creates a 4 in a row with two open ends when a stone is placed there.
+			return possibleMoves[i][emptyIndices[1]];
+		}
+	}
+
+	return {};
 }
 
 

@@ -48,6 +48,7 @@ public:
 	vector<int> PreventWinningMove(Board a_board, char a_color);
 	bool InDangerOfCapture(Board a_board, vector<int> a_location, char a_color);
 	vector<int> FindFlanks(Board a_board, char a_color);
+	vector<int> FindDeadlyTessera(Board a_board, char a_color);
 
 protected:
 	//The color of the stones (black or white) that the player is playing as.
