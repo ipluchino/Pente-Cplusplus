@@ -435,7 +435,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 			}
 		}
 
-		//Possibly shuffle this to get a random direction?
+		//Shuffle the possible locations (there will often be many) so that the computer builds in different directions, not only the first direction it finds.
 		if (playLocations.size() > 0)
 		{
 			random_shuffle(playLocations.begin(), playLocations.end());
@@ -502,7 +502,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 			}
 		}
 
-		//If there are no possible 4 in a rows, prefer to make 3 in a row (always possible given 3 of a player's piece and 2 empty spots and there is no 4 in a row).
+		//If there are no possible 4 in a rows, prefer to make 3 in a row (always possible given 3 of a player's piece and 2 empty spots and there is no possible 4 in a row).
 		for (int i = 0; i < possibleMoves.size(); i++) {
 			vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
 
@@ -557,7 +557,7 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 		}
 	}
 
-	//The computer will only consider countering initiaitve to start a flank on an opponent or two block the opponent from getting 4 in a row/4 in an open 5.
+	//The computer will only consider countering initiaitve to start a flank on an opponent or two block the opponent from getting 3 in a row/4 in an open 5.
 	//PreventWinningMove() handles blocking potential win moves.
 	return {};
 }
@@ -683,16 +683,16 @@ vector<int> Player::FindFlanks(Board a_board, char a_color)
 	{
 		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
 
-		//Search for sets of 4 locations that are in the pattern: * W W * where * are empty locations and W is the opponent's pieces. This is where a flank can be initiated.
+		//If the empty indices are on the ends of the consecutive 4 locations (* W W *), it means that a flank can be initiated.
 		if (emptyIndices[0] == 0 && emptyIndices[1] == 3)
 		{
 			if (!InDangerOfCapture(a_board, possibleMoves[i][0], a_color))
 			{
-				return possibleMoves[i][0];
+				return possibleMoves[i][emptyIndices[0]];
 			}
 			else if (!InDangerOfCapture(a_board, possibleMoves[i][3], a_color))
 			{
-				return possibleMoves[i][1];
+				return possibleMoves[i][emptyIndices[1]];
 			}
 		}
 	}
