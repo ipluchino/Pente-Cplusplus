@@ -1,7 +1,7 @@
 #include "Tournament.h"
 
 /* *********************************************************************
-Function Name: Tournament
+Function Name: Tournament - Default constructor
 Purpose: To construct a tournament object.
 Parameters: None
 Return Value: None
