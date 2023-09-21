@@ -72,8 +72,18 @@ bool Human::MakePlay(Board& a_board)
 	return true;
 }
 
-//Returns the most optimal play to the user.
-//Assistance: https://cplusplus.com/reference/string/string/replace/
+/* *********************************************************************
+Function Name: AskForHelp
+Purpose: To ask the computer for a suggestion on where the human player should place their stone.
+Parameters:
+			a_board, a Board object. The board object stores all information regarding the current board. 
+Return Value: The most optimal location to place their stone as well as an explaination why, a string.
+Algorithm:
+			1) Determine the optimal play through the OptimalPlay function in the Player class.
+			2) Update the explaination to be more readable so the user can better understand it.
+			3) Return the play location and explaination.
+Assistance Received: https://cplusplus.com/reference/string/string/replace/
+********************************************************************* */
 string Human::AskForHelp(Board a_board)
 {
 	pair<string, string> playInfo = OptimalPlay(a_board, m_color);
