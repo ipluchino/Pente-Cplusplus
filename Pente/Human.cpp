@@ -1,10 +1,32 @@
 #include "Human.h"
 
-//Default Constructor
+/* *********************************************************************
+Function Name: Human - Default constructor
+Purpose: To construct a Human object.
+Parameters: None
+Return Value: None
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 Human::Human(): Player()
 {
 }
 
+/* *********************************************************************
+Function Name: MakePlay
+Purpose: To let the human player make its play.
+Parameters:
+			a_board, a Board object passed by reference. The board is passed by reference so it is updated with the human's move.
+Return Value: Whether the human successfully made a move or the game was suspended to be saved, a boolean value.
+Algorithm:
+			1) Ask the user if what they would like to place a tile, ask for help, or save and exit the game.
+				1a) If they request help, display the optimal play and its explanation using the OptimalPlay function in the Player class.
+				1b) If they want to save and exit the game, return false.
+			2) If the human is making the first move of the game, place the stone on J10.
+			3) Otherwise, place the stone on the passed Board object.
+			4) Remove any captured pairs from the board, if they occur, and add them to the human's captured pair count.
+Assistance Received: None
+********************************************************************* */
 bool Human::MakePlay(Board& a_board)
 {
 	string decision;

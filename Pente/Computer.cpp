@@ -8,13 +8,13 @@ Return Value: None
 Algorithm: None
 Assistance Received: None
 ********************************************************************* */
-Computer::Computer()
+Computer::Computer(): Player()
 {
 }
 
 /* *********************************************************************
 Function Name: MakePlay
-Purpose: To let the computer make its play.
+Purpose: To let the computer player make its play.
 Parameters:
 			a_board, a Board object passed by reference. The board is passed by reference so it is updated with the computer's move.
 Return Value: Whether the computer successfully made a move or the game was suspended to be saved, a boolean value.
@@ -24,7 +24,7 @@ Algorithm:
 			2) Determine the optimal play based on the OptimalPlay function in the Player class.
 			3) Place the stone on the passed Board object.
 			4) Display the reasoning for the computer's play.
-			5) Remove and captured pairs, if they occur, and add them to the computer's captured pair count.
+			5) Remove any captured pairs from the board, if they occur, and add them to the computer's captured pair count.
 Assistance Received: None
 ********************************************************************* */
 bool Computer::MakePlay(Board& a_board)
