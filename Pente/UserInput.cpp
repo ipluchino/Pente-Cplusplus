@@ -1,12 +1,30 @@
 #include "UserInput.h"
 
-//Default Constructor
+/* *********************************************************************
+Function Name: UserInput - Default constructor
+Purpose: To construct a UserInput object.
+Parameters: None
+Return Value: None
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 UserInput::UserInput()
 {
 }
 
-//Obtains a valid location to place a stone from the user.
-//Assistance received: https://stackoverflow.com/questions/7663709/how-can-i-convert-a-stdstring-to-int
+/* *********************************************************************
+Function Name: GetPlayLocation
+Purpose: To obtain the location the human player would like to play their stone.
+Parameters:
+			a_board, a Board object. The board object stores all information regarding the current board. 
+Return Value: The location on the board the human player would like to place their stone, a string in the format "J10".
+Algorithm:
+			1) Obtain the location the user wishes to place their stone.
+			2) Verify that the location provided is valid.
+				2a) Locations are verified by their row, column, if the location is empty, and if the location is within handicap bounds if the handicap is active.
+			3) If it is not valid, repeat the above steps, otherwise return the location.
+Assistance Received: https://stackoverflow.com/questions/7663709/how-can-i-convert-a-stdstring-to-int
+********************************************************************* */
 string UserInput::GetPlayLocation(Board a_board)
 {
 	//Location should be in the format J12 where J is a column on the board (A-S) and 12 is a row on the board (1-19)
@@ -71,7 +89,17 @@ string UserInput::GetPlayLocation(Board a_board)
 	return location;
 }
 
-//Gets input from the user regarding whether or not they want to start a new game or load a game.
+/* *********************************************************************
+Function Name: GetTournamentChoice
+Purpose: To determine if the user would like to start a new tournament or load one from a file.
+Parameters: None
+Return Value: The user's choice, a string.
+Algorithm:
+			1) Ask the user whether they would like to start a new tournament or load one.
+			2) Verify their response.
+			3) Repeat until a valid response is given.
+Assistance Received: None
+********************************************************************* */
 string UserInput::GetTournamentChoice()
 {
 	string response;
@@ -100,7 +128,17 @@ string UserInput::GetTournamentChoice()
 	return response;
 }
 
-//Gets input form the user regarding the coin toss call to determine the first player.
+/* *********************************************************************
+Function Name: GetCoinTossCall
+Purpose: To obtain the user's coin toss call when determining the first player of the round.
+Parameters: None
+Return Value: The user's choice, a string.
+Algorithm:
+			1) Ask the user to call the coin toss.
+			2) Verify their response.
+			3) Repeat until a valid response is given.
+Assistance Received: None
+********************************************************************* */
 string UserInput::GetCoinTossCall()
 {
 	string response;
@@ -127,6 +165,17 @@ string UserInput::GetCoinTossCall()
 	return response;
 }
 
+/* *********************************************************************
+Function Name: GetHumanDecision
+Purpose: To determine what the human would like to do during their turn.
+Parameters: None
+Return Value: The user's choice, a string.
+Algorithm:
+			1) Ask the user whether they would like to place a tile, ask for help, or save and exit the game.
+			2) Verify their response.
+			3) Repeat until a valid response is given.
+Assistance Received: None
+********************************************************************* */
 string UserInput::GetHumanDecision()
 {
 	string response;
@@ -158,6 +207,17 @@ string UserInput::GetHumanDecision()
 	return response;
 }
 
+/* *********************************************************************
+Function Name: GetComputerDecision
+Purpose: To determine what the human would like to do during the computer's turn.
+Parameters: None
+Return Value: The user's choice, a string.
+Algorithm:
+			1) Ask the user whether they want to let the computer place a tile, or save and exit the game.
+			2) Verify their response.
+			3) Repeat until a valid response is given.
+Assistance Received: None
+********************************************************************* */
 string UserInput::GetComputerDecision()
 {
 	string response;
@@ -188,6 +248,14 @@ string UserInput::GetComputerDecision()
 	return response;
 }
 
+/* *********************************************************************
+Function Name: GetFileNameLoad
+Purpose: To obtain the name of the file the user wishes to load the game from.
+Parameters: None
+Return Value: The user's choice, a string.
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 string UserInput::GetFileNameLoad()
 {
 	//Note: No input validation required for the file name.
@@ -201,6 +269,14 @@ string UserInput::GetFileNameLoad()
 	return response + ".txt";
 }
 
+/* *********************************************************************
+Function Name: GetFileNameSave
+Purpose: To obtain the name of the file to save and exit the game to.
+Parameters: None
+Return Value: The user's choice, a string.
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 string UserInput::GetFileNameSave()
 {
 	//Note: No input validation required for the file name.
@@ -214,6 +290,17 @@ string UserInput::GetFileNameSave()
 	return response + ".txt";
 }
 
+/* *********************************************************************
+Function Name: GetContinueDecision
+Purpose: To determine if the user would like to play another round of the tournament.
+Parameters: None
+Return Value: The user's choice, a string.
+Algorithm:
+			1) Ask the user whether they would like to keep playing and start another round of the tournament.
+			2) Verify their response.
+			3) Repeat until a valid response is given.
+Assistance Received: None
+********************************************************************* */
 string UserInput::GetContinueDecision()
 {
 	string response;
