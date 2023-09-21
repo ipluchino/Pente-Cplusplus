@@ -1,18 +1,37 @@
 #include "Board.h"
 
-//Default Constructor
-Board::Board() : m_board(vector<vector<char>>(19, vector<char>(19, '-')))
+/* *********************************************************************
+Function Name: Board - Default constructor
+Purpose: To construct a Board object.
+Parameters: None
+Return Value: None
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
+Board::Board() : m_board(vector<vector<char>>(StrategyConstants::BOARD_SIZE, vector<char>(StrategyConstants::BOARD_SIZE, '-')))
 {
 }
 
+/* *********************************************************************
+Function Name: SetBoard
+Purpose: To set the Board object's board information.
+Parameters:
+			a_board, a vector<vector<char>> representing all of the locations of the board, and what piece (if any) are there.
+Return Value: Whether or not the board was successfully set, a boolean value.
+Algorithm:
+			1) Make sure the board passed to the function is 19x19 in size.
+			2) Make sure all of the locations are valid, that is they are either empty, or have white or black pieces on them.
+			3) If all is sufficient, set the board.
+Assistance Received: None
+********************************************************************* */
 bool Board::SetBoard(vector<vector<char>> a_board)
 {
 	//The board must be 19x19 to be considered valid.
-	if (a_board.size() != 19) return false;
+	if (a_board.size() != StrategyConstants::BOARD_SIZE) return false;
 
 	for (int i = 0; i < a_board.size(); i++)
 	{
-		if (a_board[i].size() != 19) return false;
+		if (a_board[i].size() != StrategyConstants::BOARD_SIZE) return false;
 	}
 
 	//The only valid characters for the board are White ('W'), Black ('B'), and empty locations ('-')
@@ -31,8 +50,20 @@ bool Board::SetBoard(vector<vector<char>> a_board)
 
 	return true;
 }
-
-//Places a stone, given a row, column and color onto the board.
+/* *********************************************************************
+Function Name: PlaceStone
+Purpose: To place a stone on to the board.
+Parameters:
+			a_column, a character reperesenting the column on the board to place the stone on.
+			a_row, an integer representing the the row on the board to place the stone on.
+			a_pieceColor, a character representing the color of the stone to be placed on to the board.
+Return Value: Whether or not the stone was successfully placed, a boolean value.
+Algorithm:
+			1) Make sure the column and row provided are valid in terms of the board size constraints.
+			2) Convert the column and row from its board view representation to its vector index representation.
+			3) Set the location of the board to be equal to the stone's color.
+Assistance Received: None
+********************************************************************* */
 bool Board::PlaceStone(char a_column, int a_row, char a_pieceColor)
 {
 	if (a_column < 'A' || a_column > 'S') return false;
@@ -50,6 +81,19 @@ bool Board::PlaceStone(char a_column, int a_row, char a_pieceColor)
 	return true;
 }
 
+/* *********************************************************************
+Function Name: RemoveStone
+Purpose: To remove a stone on the board.
+Parameters: 
+			a_column, a character reperesenting the column on the board to place the stone on.
+			a_row, an integer representing the the row on the board to place the stone on.
+Return Value: Whether or not the stone was successfully removed from the board.
+Algorithm:
+			1) Make sure the column and row provided are valid in terms of the board size constraints.
+			2) Convert the column and row from its board view representation to its vector index representation.
+			3) Set the location of the board to be empty.
+Assistance Received: None
+********************************************************************* */
 bool Board::RemoveStone(char a_column, int a_row)
 {
 	if (a_column < 'A' || a_column > 'S') return false;
@@ -67,7 +111,17 @@ bool Board::RemoveStone(char a_column, int a_row)
 	return true;
 }
 
-//Displays the entire board to the screen
+/* *********************************************************************
+Function Name: DisplayBoard
+Purpose: To display the entire board to the screen.
+Parameters: None
+Return Value: None
+Algorithm:
+			1) Print the column headers A-S to the screen.
+			2) Loop through each location on the board and print it to the screen.
+				2a) Row headers are printed before the board locations for each row.
+Assistance Received: None
+********************************************************************* */
 void Board::DisplayBoard()
 {
 	//Print the column headers at the top of the board (A-S going from left to right)
@@ -81,7 +135,7 @@ void Board::DisplayBoard()
 	//Print the entire board and the row headers to the left of each row (1-19 going from bottom to top)
 	for (int row = 0; row < StrategyConstants::BOARD_SIZE; row++)
 	{
-		cout << StrategyConstants::BOARD_SIZE - row << "   ";
+		cout << ConvertRowIndex(row) << "   ";
 		if (row >= 10) cout << " ";
 
 		for (int col = 0; col < StrategyConstants::BOARD_SIZE; col++)
@@ -93,19 +147,50 @@ void Board::DisplayBoard()
 	cout << "\n";
 }
 
-//Determins if a column and row passed is valid within the constraints of the board.
+/* *********************************************************************
+Function Name: IsValidIndices
+Purpose: To determine if a row and column are valid within the constraints of the board size.
+Parameters:
+			a_row, an integer representing a row's vector index on the board.
+			a_column, an integer representing a column's vector index on the board. 
+Return Value: Whether or not the row and column passed is a valid location on the board, a boolean value.
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 bool Board::IsValidIndices(int a_row, int a_column)
 {
 	return (a_row >= 0 && a_row <= 18) && (a_column >= 0 && a_column <= 18);
 }
 
-//Checks to see whether a board location is empty or not.
+/* *********************************************************************
+Function Name: IsEmptyLocation
+Purpose: To check whether a location on the board is empty or not.
+Parameters:
+			a_column, a character representing the column of a location on the board.
+			a_row, an integer representing  the row of a location on the board.
+Return Value: Whether or not the location on the board is empty, a boolean value.
+Algorithm:
+			1) Convert the passed column and row from its board view representation to its vector index representation.
+			2) Return true if the location is empty, false if otherwise.
+Assistance Received: None
+********************************************************************* */
 bool Board::IsEmptyLocation(char a_column, int a_row)
 {
 	return m_board[ConvertRowIndex(a_row)][CharacterToInt(a_column)] == '-';
 }
 
-//Counts the number of pieces on the board that corresponds to the color passed.
+/* *********************************************************************
+Function Name: CountPieces
+Purpose: To count the number of pieces on the board that are the color passed.
+Parameters:
+			a_color, a character representing the color to be counted.
+Return Value: The number of pieces on the board, an integer.
+Algorithm:
+			1) Loop through every location on the board.
+				1a) If the location contains a piece of the desired color, increment a running total.
+			2) Return the running total.
+Assistance Received: None
+********************************************************************* */
 int Board::CountPieces(char a_color)
 {
 	int total = 0;
@@ -125,13 +210,40 @@ int Board::CountPieces(char a_color)
 	return total;
 }
 
-//Determines if the entire board is empty.
+/* *********************************************************************
+Function Name: IsEmptyBoard
+Purpose: To determine if the entire board is empty.
+Parameters: None
+Return Value: Whether or not the board is completely empty, a boolean value. 
+Algorithm:
+			1) Count the number of pieces on the board for both white and black.
+			2) If the number of pieces placed for each color is both zero, the board is empty. If they aren't, the board is not empty.
+Assistance Received: None
+********************************************************************* */
 bool Board::IsEmptyBoard()
 {
 	return CountPieces('W') == 0 && CountPieces('B') == 0;
 }
 
-//Clears captured pieces off the board, and returns the number of captures cleared.
+/* *********************************************************************
+Function Name: ClearCaptures
+Purpose: To clear the captured pairs off of the board after a stone has been placed.
+Parameters:
+			a_column, a character representing the column of the stone just placed. 
+			a_row, an integer representing the row of the stone was just placed.
+			a_color, a character representing the color of the stone just placed.
+Return Value: The number of captured pairs removed from the board, an integer.
+Algorithm:
+			1) Determine the opponent's stone color.
+			2) Convert the row and column passed from their board view representation to their vector index representation.
+			3) Loop through all eight possible directions.
+			4) For each direction, store the locations of three spaces out in the current direction. 
+			5) If there are three valid locations in the current direction being evaluated, check to see if a capture has been made.
+				5a) For example, if the color passed was white, a capture follows the pattern * B B W where * is the location passed to this function.
+			6) If there is a capture that has been made in the direction being evaluated, remove the captured pieces from the board and increment the capture counter.
+			7) Return the total number of captures that have been made after placing a stone at the location passed to this function.
+Assistance Received: None
+********************************************************************* */
 int Board::ClearCaptures(char a_column, int a_row, char a_color)
 {
 	//Represents the total number of pairs captured after placing a stone at this current location.
@@ -170,6 +282,7 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 				numCaptures++;
 
 				//Remove the two captured pieces from the board. The first and second row/col pairs of 'newLocations' are the two pieces being captured.
+				//The column and row need to be converted to their board view representations when passed to the RemoveStone function.
 				RemoveStone(IntToCharacter(newLocations[0][1]), ConvertRowIndex(newLocations[0][0]));
 				RemoveStone(IntToCharacter(newLocations[1][1]), ConvertRowIndex(newLocations[1][0]));
 			}
@@ -179,7 +292,17 @@ int Board::ClearCaptures(char a_column, int a_row, char a_color)
 	return numCaptures;
 }
 
-//Given a color, returns the color of the opponent.
+/* *********************************************************************
+Function Name: OpponentColor
+Purpose: To determine the stone color of the opponent.
+Parameters:
+			a_color, a character representing the stone color of the current player.
+Return Value: The stone color of the opponent, a character. 
+Algorithm:
+			1) If the current player's stone color is white, the opponent's stone color must be black.
+			2) If the current player's stone color is black, the opponent's stone color must be white.
+Assistance Received: None
+********************************************************************* */
 char Board::OpponentColor(char a_color)
 {
 	if (a_color == 'W')
@@ -192,7 +315,16 @@ char Board::OpponentColor(char a_color)
 	}
 }
 
-//Returns true if the board is full, false otherwise.
+/* *********************************************************************
+Function Name: IsBoardFull
+Purpose: To determine if the board is full.
+Parameters: None
+Return Value: Whether or not the board is full, a boolean value.
+Algorithm:
+			1) Loop through every location on the board.
+			2) If any location on the board is empty, the board is not full, otherwise the board is full.
+Assistance Received: None
+********************************************************************* */
 bool Board::IsBoardFull()
 {
 	//Loop through every piece on the board, and if one is empty the board is not full. Otherwise, it is.
@@ -207,7 +339,22 @@ bool Board::IsBoardFull()
 	return true;
 }
 
-//Returns true if either player has achieved a 5 in a row.
+/* *********************************************************************
+Function Name: FiveConsecutive
+Purpose: To determine if a player has achieved a consecutive five pieces. Used by the Round object to determine if the current round is over.
+Parameters:
+			a_color, a character representing the color of the stone to check for five consecutive pieces.
+Return Value: Whether or not five consecutive pieces has been achieved, a boolean value.
+Algorithm:
+			1) Loop through every location on the board.
+			2) For every location, loop through the four main directions (horizontally, vertically, and both diagonals).
+			3) Check the current location and four additional locations out in the current direction being evaluated.
+				3a) If any of the locations being evaluated go out of the board's bounds, move on to the next direction.
+				3b) If the piece at any of these locations is the color being evaluated, increment a consecutive piece counter.
+			4) If the consecutive piece counter is five, return true. Otherwise reset the consecutive counter and continue searching.
+			5) If there are no consecutive five pieces found, return false.
+Assistance Received: None
+********************************************************************* */
 bool Board::FiveConsecutive(char a_color)
 {
 	//From every position on the board, every horizontal, vertical, and diagonal needs to be searched.
@@ -215,8 +362,8 @@ bool Board::FiveConsecutive(char a_color)
 	{
 		for (int col = 0; col < StrategyConstants::BOARD_SIZE; col++)
 		{
-			//Only have to loop through 4 of the directions, since searching opposite directions (left&right, up&down, etc. is redundant)
-            //All horizontals are checked with just left, all verticals with just up, etc.
+			//Only have to loop through main directions, since searching opposite directions (left&right, up&down, etc. is redundant)
+            //All horizontals are checked with just the left direction, all verticals with just the up direction, and so on.
 			for (int direction = 0; direction < StrategyConstants::NUM_DIRECTIONS; direction += StrategyConstants::DIRECTIONAL_OFFSET)
 			{
 				int consecutiveCounter = 0;
@@ -241,7 +388,32 @@ bool Board::FiveConsecutive(char a_color)
 	return false;
 }
 
-//Returns the tallied up score of a provided color based on the current board and number of captured pairs they have.
+/* *********************************************************************
+Function Name: ScoreBoard
+Purpose: To tally up the score for a provided stone color based on the current board layout and the number of captured pairs they have.
+Parameters:
+			a_color, a character representing the stone color of the current player being evaluated.
+			a_numCaptures, an integer representing the number of captured pairs the current player being evaluated has.
+Return Value: The score for the round, an integer.
+Algorithm:
+			1) Loop through the four main directions (horizontally, vertically, and both diagonals). Create and use copy of the board for each direction.
+			2) First, check for any consecutive chains of the stone color passed that are five or greater.
+				3a) Loop through every location on the board.
+				3b) From the current location, continue going to new locations on the board in the current direction being evaluated.
+					If the new location is valid and has a stone of the correct color, incremement a consecutive stone counter.
+				3c) Stop checking new locations once the new location is either invalid or does not have a stone of the correct color.
+				3d) If the consecutive stone counter is greater than or equal to five, add five points to the total score.
+					Also, mark these locations as seen, so that the consecutive five or more is not recounted as consecutive fours later on.
+			3) Next, check for any consecutive chains of the stone color passed that are equal to four.
+				3a) Loop through every location on the board.
+				3b) From the current location, search three locations out in current direction being evaluated.
+					If the new location is valid and has a stone of the correct color, incremement a consecutive stone counter.
+				3c) If the consecutive stone counter is equal to four, add one point to the total score.
+			4) Add one point for each captured pair the player has. 
+			5) Return the overall total score earned for the round.
+
+Assistance Received: None
+********************************************************************* */
 int Board::ScoreBoard(char a_color, int a_numCaptures)
 {
 	//Holds the overall score for a provided color (a_color).
@@ -251,7 +423,6 @@ int Board::ScoreBoard(char a_color, int a_numCaptures)
 	{
 		//The first step in scoring is the find all 5 or more consecutives in each horizontal, vertical, and diagonal.
 		//NOTE: There can be multiple 5 or more consecutives in an L shape if the last piece placed connects the L together.
-
 		vector<vector<char>> boardCopy = GetBoard();
 
 		//Loop through every piece and search the current direction for any consecutive 5 or more stones. This is considered a "winning move".
@@ -321,27 +492,58 @@ int Board::ScoreBoard(char a_color, int a_numCaptures)
 	return totalScore;
 }
 
-//Clears the entire board.
+/* *********************************************************************
+Function Name: ClearBoard
+Purpose: To clear the board and make every location empty.
+Parameters: None
+Return Value: None
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 void Board::ClearBoard()
 {
-	m_board = vector<vector<char>>(19, vector<char>(19, '-'));
+	m_board = vector<vector<char>>(StrategyConstants::BOARD_SIZE, vector<char>(StrategyConstants::BOARD_SIZE, '-'));
 }
 
-//Converts a alphabetical column to its numerical counterpart.
+/* *********************************************************************
+Function Name: CharacterToInt
+Purpose: To convert an alphabetical column into its numerical counterpart.
+Parameters:
+			a_column, a character representing the column to be converted.
+Return Value: The converted column, as an integer.
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 int Board::CharacterToInt(char a_column)
 {
 	return a_column - 'A';
 }
 
-//Converts a numerical column into its alphabetical counterpart.
+/* *********************************************************************
+Function Name: IntToCharacter
+Purpose: To convert a numerical column into its alphabetical counterpart.
+Parameters:
+			a_column, an integer representing the column to be converted.
+Return Value: The converted column, as a character.
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 char Board::IntToCharacter(int a_column)
 {
 	return a_column + 'A';
 }
 
-//Converts a row from its vector index to board view index or vice verca.
+/* *********************************************************************
+Function Name: ConvertRowIndex
+Purpose: To convert a row from its vector index to board view index or vice verca.
+Parameters:
+			a_row, an integer representing the row to be converted.
+Return Value: The row's converted index, an integer.
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 int Board::ConvertRowIndex(int a_row)
 {
-	return 19 - a_row;
+	return StrategyConstants::BOARD_SIZE - a_row;
 }
 
