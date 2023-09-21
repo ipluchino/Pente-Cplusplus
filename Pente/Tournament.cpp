@@ -2,7 +2,7 @@
 
 /* *********************************************************************
 Function Name: Tournament - Default constructor
-Purpose: To construct a tournament object.
+Purpose: To construct a Tournament object.
 Parameters: None
 Return Value: None
 Algorithm: None

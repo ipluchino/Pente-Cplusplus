@@ -1,10 +1,32 @@
 #include "Computer.h"
 
-//Default Constructor
+/* *********************************************************************
+Function Name: Computer - Default constructor
+Purpose: To construct a Computer object.
+Parameters: None
+Return Value: None
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 Computer::Computer()
 {
 }
 
+/* *********************************************************************
+Function Name: MakePlay
+Purpose: To let the computer make its play.
+Parameters:
+			a_board, a Board object passed by reference. The board is passed by reference so it is updated with the computer's move.
+Return Value: Whether the computer successfully made a move or the game was suspended to be saved, a boolean value.
+Algorithm:
+			1) Ask the user if they would like to let the computer place it's tile or save the game.
+				1a) If they would like to save the game, return false. Otherwise continue.
+			2) Determine the optimal play based on the OptimalPlay function in the Player class.
+			3) Place the stone on the passed Board object.
+			4) Display the reasoning for the computer's play.
+			5) Remove and captured pairs, if they occur, and add them to the computer's captured pair count.
+Assistance Received: None
+********************************************************************* */
 bool Computer::MakePlay(Board& a_board)
 {
 	string decision = m_userInput.GetComputerDecision();
