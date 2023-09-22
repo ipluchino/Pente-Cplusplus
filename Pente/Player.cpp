@@ -15,10 +15,11 @@ Player::Player() : m_color('W'), m_score(0), m_capturedPairs(0)
 
 /* *********************************************************************
 Function Name: SetColor
-Purpose:
+Purpose: To set the color of a Player.
 Parameters:
-Return Value:
-Algorithm:
+			a_color, a character representing the color to set the Player's color to.
+Return Value: Whether or not the color was successfully set, a boolean value.
+Algorithm: None
 Assistance Received: None
 ********************************************************************* */
 bool Player::SetColor(char a_color)
@@ -32,10 +33,11 @@ bool Player::SetColor(char a_color)
 
 /* *********************************************************************
 Function Name: SetScore
-Purpose:
+Purpose: To set the score of a Player.
 Parameters:
-Return Value:
-Algorithm:
+			a_score, an integer representing the score to set the Player's score to.
+Return Value: Whether or not the score was successfully set, a boolean value.
+Algorithm: None
 Assistance Received: None
 ********************************************************************* */
 bool Player::SetScore(int a_score)
@@ -49,10 +51,11 @@ bool Player::SetScore(int a_score)
 
 /* *********************************************************************
 Function Name: SetCapturedPairs
-Purpose:
+Purpose: To set the captured pair count of a Player.
 Parameters:
-Return Value:
-Algorithm:
+			a_capturedPairs, an integer representing the captured pair count to set the Player's captured pair count to.
+Return Value: Whether or not the captured pair count was successfully set, a boolean value.
+Algorithm: None
 Assistance Received: None
 ********************************************************************* */
 bool Player::SetCapturedPairs(int a_capturedPairs)
@@ -66,10 +69,11 @@ bool Player::SetCapturedPairs(int a_capturedPairs)
 
 /* *********************************************************************
 Function Name: MakePlay
-Purpose:
+Purpose: Virtual function that is redefined in the Human and Computer class. This function does nothing.
 Parameters:
-Return Value:
-Algorithm:
+			a_board, a reference to a Board object. It is a reference and not a copy since pieces will be placed on the board.  
+Return Value: Whether or not the player has successfully placed a stone, a boolean value.
+Algorithm: None
 Assistance Received: None
 ********************************************************************* */
 bool Player::MakePlay(Board& a_board)
@@ -79,16 +83,22 @@ bool Player::MakePlay(Board& a_board)
 
 /* *********************************************************************
 Function Name: ExtractLocation
-Purpose:
+Purpose: To convert a vector index row/col to a board view representation in the format: "J10".
 Parameters:
-Return Value:
+			a_row, an integer representing the vector index of a row.
+			a_col, an integer representing the vector index of a column.
+			a_board, a Board object representing the current board of the round.
+Return Value: The board view representation of the provided location, a string.
 Algorithm:
+			1) Convert the vector index of the row to its board view represenation.
+			2) Convert the vector index of the column to its board view representation as a character.
+			3) Concatenate the values from step 1 and 2 into a string, and return it. 
 Assistance Received: None
 ********************************************************************* */
-string Player::ExtractLocation(int row, int col, Board a_board)
+string Player::ExtractLocation(int a_row, int a_col, Board a_board)
 {
-	int boardRow = a_board.ConvertRowIndex(row);
-	char boardCol = a_board.IntToCharacter(col);
+	int boardRow = a_board.ConvertRowIndex(a_row);
+	char boardCol = a_board.IntToCharacter(a_col);
 
 	string location = boardCol + to_string(boardRow);
 	return location;
@@ -96,10 +106,11 @@ string Player::ExtractLocation(int row, int col, Board a_board)
 
 /* *********************************************************************
 Function Name: GetDirection
-Purpose:
+Purpose: To convert a directional index into its string representation.
 Parameters:
-Return Value:
-Algorithm:
+			a_directionIndex, an integer representing 
+Return Value: The name of the direction, as a string.
+Algorithm: None
 Assistance Received: None
 ********************************************************************* */
 string Player::GetDirection(int a_directionIndex)
@@ -258,10 +269,19 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 //Returns an empty vector if there are no potential captures to be made.
 /* *********************************************************************
 Function Name: MakeCapture
-Purpose:
+Purpose: To find a location on the board that results in the most captures possible, if any exist.
 Parameters:
-Return Value:
+			a_board, a Board object representing the current board of the round.
+			a_color, a character representing the player's stone color.
+Return Value: A vector<int> containing the row and column of the best possible location that results in the most captures.
 Algorithm:
+			1) Loop through every possible location on the board.
+			2) If the location is empty, obtain the number of captures that would occur if the player places their stone here. 
+				2a) This number is calculated through the CanCaptureIfPlaced function.
+			3) If the number of captures possible when placing a stone at the location being evaluated is greater than zero,
+			   log its information to a result vector, including the number of captures that will occur.
+			4) After all the possible capture locations are found and saved, sort the result vector by its capture count.
+			5) Return the first vector within the result vector, since it will be the location that captures the most stones at one time.
 Assistance Received: None
 ********************************************************************* */
 vector<int> Player::MakeCapture(Board a_board, char a_color)
@@ -673,8 +693,19 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 Function Name: CounterInitiative
 Purpose: To find a location on the board that counters the initiative of the opponent.
 Parameters:
-Return Value:
+			a_board, a Board object representing the current board of the round.
+			a_numPlaced, an integer representing the amount of stones placed by the opponent in an open five consecutive locations to search for.
+			a_color, a character representing the player's stone color.
+Return Value: A vector<int> containing the row, column, and direction being blocked of the best location to counter initiative, if any exist.
 Algorithm:
+			1) Determine the opponent's stone color.
+			2) IF a_numPlaced is equal to 2:
+				2a) Find any locations on the board that would initiate a flank. For example, if the opponent has two consecutive stones placed that have
+				    an empty location on either side, an attempt to capture them over two turns can occur.
+				2b) If any location exists on the board that can initiate a flank, return it.
+			3) IF a_numPlaced is equal to 1 OR 3:
+				3a) Call the BuildInitiative function with the opponent's color to find the opponent's next best possible move when building initiative.
+				3b) If a location is returned from the function above, return this location as it is the most optimal location to block.
 Assistance Received: None
 ********************************************************************* */
 vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_color)
@@ -715,8 +746,10 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 Function Name: MakeWinningMove
 Purpose: To find a location on the board that would cause the player to win the round.
 Parameters:
-Return Value:
-Algorithm:
+			a_board, a Board object representing the current board of the round.
+			a_color, a character representing the player's stone color.
+Return Value: A vector<int> containing the row and column of the location that would result in the player winning the game.
+Algorithm: TO DO.
 Assistance Received: None
 ********************************************************************* */
 vector<int> Player::MakeWinningMove(Board a_board, char a_color)
@@ -758,8 +791,14 @@ vector<int> Player::MakeWinningMove(Board a_board, char a_color)
 Function Name: PreventWinningMove
 Purpose: To find a location on the board that prevents the opponent from winning the round.
 Parameters:
-Return Value:
+			a_board, a Board object representing the current board of the round.
+			a_color, a character representing the player's stone color.
+Return Value: A vector<int> containing the row and column of the location that would result in the player preventing the opponent from winning the game.
 Algorithm:
+			1) Determine the opponent's stone color.
+			2) Find all possible sets of five consecutive locations in which the opponent has four stones placed and one empty location.
+			3) If any of these sets of locations exist, find the index of the empty location.
+			4) Return the empty location, since this location must be blocked or the opponent can win on their following turn.
 Assistance Received: None
 ********************************************************************* */
 vector<int> Player::PreventWinningMove(Board a_board, char a_color)

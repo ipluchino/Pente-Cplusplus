@@ -31,7 +31,7 @@ public:
 
 	//Utility Functions
 	virtual bool MakePlay(Board& a_board);
-	string ExtractLocation(int row, int col, Board a_board);
+	string ExtractLocation(int a_row, int a_col, Board a_board);
 	string GetDirection(int a_directionIndex);
 	
 	//Strategy Functions
