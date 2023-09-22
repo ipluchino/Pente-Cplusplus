@@ -327,7 +327,7 @@ Algorithm:
 			2) Generate a random number, either 1 (Heads) or 2 (Tails).
 			3) Display the result of the coin toss.
 			4) Determine if the player called the toss correctly and return the result.
-Assistance Received: None
+Assistance Received: https://cplusplus.com/reference/cstdlib/rand/
 ********************************************************************* */
 bool Round::CoinToss()
 {

@@ -1,11 +1,26 @@
 #include "Player.h"
 
-//Default Constructor - If no color is provided, by default the color is set to white.
+/* *********************************************************************
+Function Name: Player - Default constructor
+Purpose: To construct a Player object.
+Parameters: None
+Return Value: None
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
 Player::Player() : m_color('W'), m_score(0), m_capturedPairs(0)
 {
 	srand(unsigned(time(NULL)));
 }
 
+/* *********************************************************************
+Function Name: SetColor
+Purpose:
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 bool Player::SetColor(char a_color)
 {
 	if (a_color != 'W' && a_color != 'B') return false;
@@ -15,6 +30,14 @@ bool Player::SetColor(char a_color)
 	return true;
 }
 
+/* *********************************************************************
+Function Name: SetScore
+Purpose:
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 bool Player::SetScore(int a_score)
 {
 	if (a_score < 0) return false;
@@ -24,6 +47,14 @@ bool Player::SetScore(int a_score)
 	return true;
 }
 
+/* *********************************************************************
+Function Name: SetCapturedPairs
+Purpose:
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 bool Player::SetCapturedPairs(int a_capturedPairs)
 {
 	if (a_capturedPairs < 0) return false;
@@ -33,13 +64,27 @@ bool Player::SetCapturedPairs(int a_capturedPairs)
 	return true;
 }
 
-//Virtual function - It has its own definition in both the Human and Computer class.
+/* *********************************************************************
+Function Name: MakePlay
+Purpose:
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 bool Player::MakePlay(Board& a_board)
 {
 	return true;
 }
 
-//Converts a row and col in integer form into its respective board intersection as a string.
+/* *********************************************************************
+Function Name: ExtractLocation
+Purpose:
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 string Player::ExtractLocation(int row, int col, Board a_board)
 {
 	int boardRow = a_board.ConvertRowIndex(row);
@@ -49,7 +94,14 @@ string Player::ExtractLocation(int row, int col, Board a_board)
 	return location;
 }
 
-//Converts a direction index into the direction it represents: horizontal, vertical, main diagonal, and anti diagonal.
+/* *********************************************************************
+Function Name: GetDirection
+Purpose:
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 string Player::GetDirection(int a_directionIndex)
 {
 	if (a_directionIndex == 0 || a_directionIndex == 1)
@@ -75,7 +127,14 @@ string Player::GetDirection(int a_directionIndex)
 }
 
 //Determines the optimal play and returns its location as well as the reasoning why it is the optimal play.
-//Assistance Received: https://www.digitalocean.com/community/tutorials/random-number-generator-c-plus-plus
+/* *********************************************************************
+Function Name: OptimalPlay
+Purpose:
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: https://cplusplus.com/reference/algorithm/random_shuffle/
+********************************************************************* */
 pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 {
 	//Location represents the location on the board of the most optimal play, while reasoning represents the explanation why it is the most optimal.
@@ -197,6 +256,14 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 
 //Returns a vector<int> that contains {row, col} of best possible location to place your piece to make the most captures.
 //Returns an empty vector if there are no potential captures to be made.
+/* *********************************************************************
+Function Name: MakeCapture
+Purpose:
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::MakeCapture(Board a_board, char a_color)
 {
 	vector<vector<char>> board = a_board.GetBoard();
@@ -239,7 +306,25 @@ vector<int> Player::MakeCapture(Board a_board, char a_color)
 	return allPossibleCaptures[0];
 }
 
-//Given a board and location, determines the number of captures that would happen if you place it here.
+/* *********************************************************************
+Function Name: CanCaptureIfPlaced
+Purpose: To determine the number of captures that would occur if 
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_color, a character representing the player's stone color.
+			a_row, an integer representing a row for a player to place their stone.
+			a_col, an integer representing a column for a player to place their stone.
+Return Value: The number of captured pairs that would occur if a player plays their stone at a specified location, an integer.
+Algorithm:
+			1) Determine the opponent's stone color.
+			2) Loop through all eight possible directions.
+			3) For each direction, store the locations of three spaces out in the current direction. 
+			4) If all location are valid, check to see if a capture can be made. For example, if the color passed was white, a capture follows 
+			   the pattern * B B W where * is the location passed to this function.
+			5) If there is a capture that has been made in the direction being evaluated, increment a capture counter.
+			6) Return the total number of captures that can be made if a player's stone is placed at the location passed to this function.
+Assistance Received: None
+********************************************************************* */
 int Player::CanCaptureIfPlaced(Board a_board, char a_color, int a_row, int a_col)
 {
 	vector<vector<char>> board = a_board.GetBoard();
@@ -277,7 +362,19 @@ int Player::CanCaptureIfPlaced(Board a_board, char a_color, int a_row, int a_col
 	return numCaptures;
 }
 
-//Returns a vector<int> in the form {row, col} if a potential block is available.
+/* *********************************************************************
+Function Name: PreventCapture
+Purpose: To find a location on the board that prevents the opponent from making a capture on their following turn.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_color, a character representing the player's stone color.
+Return Value: A vector<int> containing the row and column of the location that blocks the opponent from making a capture on their next turn.
+Algorithm:
+			1) Find the opponent's stone color. 
+			2) Determine if the opponent can make any captures based on the current board (using the MakeCapture function).
+			3) Return the location that prevents the most possible captures, if any exists.
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::PreventCapture(Board a_board, char a_color)
 {
 	char opponentColor = a_board.OpponentColor(a_color);
@@ -288,24 +385,44 @@ vector<int> Player::PreventCapture(Board a_board, char a_color)
 	return possiblePreventCapture;
 }
 
-//Finds all possible set of 5 locations that has numPlaced stones of the provided color placed, and 5-numPlaced empty locations.
-//Returns a vector<vector<vector<int>>> in the format {{{1,2}, {1,3}, {1,4}, {1,5}, {1,6}}, ...}
+/* *********************************************************************
+Function Name: FindAllMoves
+Purpose: To find all possible sets of locations given constraints regarding the stone color, stone count, and a number of consecutive locations.
+		 This function is used to search for a variety of different situations and is used in several different functions.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_numPlaced, an integer representing the number of a player's stone to search for.
+			a_color, a character representing the player's stone color to search for.
+			a_distance, an integer representing the number of consecutives locations to be included in the search.
+Return Value: A vector<vector<vector<int>>> possible sets of consecutive a_distance locations that has a_numPlaced pieces of the specified color, 
+			  and a_distance - a_numPlaced empty locations. 
+Algorithm:
+			1) Loop through every possible location on the board.
+			2) For each location on the board, loop through each of the main directions: horizontals, verticals, and diagonals.
+			3) Search and store a_distance locations in the current direction being evaluated.
+				3a) If any of the locations are invalid in terms of board size constraints, stop searching and skip to the next direction.
+			4) If all of the locations are valid, tally up the number of empty locations and the number of locations that have a stone of the specified color placed.
+			5) If the number of empty locations is equal to a_distance - a_numPlaced and the number of placed stones of a_color is equal to a_numPlaced,
+			   add this set of locations to the final result vector.
+			6) After searching through every location on the board and every location, return the final result vector.
+Assistance Received: None
+********************************************************************* */
 vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced, char a_color, int a_distance)
 {
 	//A copy of the board's data.
 	vector<vector<char>> board = a_board.GetBoard();
 
-	//Will hold all possible sets of consecutive 5s that has a_numPlaced pieces of the specified color, and 5-numPlaced empty locations.
+	//Will hold all possible sets of consecutive a_distance locations that has a_numPlaced pieces of the specified color, and a_distance - a_numPlaced empty locations.
 	vector<vector<vector<int>>> result;
 
-	//To be apart of a possible winning consecutive 5 in the future, there must be at least 5-a_numPlaced empty spaces.
+	//The empty locations required to be valid is a_distance - a_numPlaced. 
 	int emptyRequired = a_distance - a_numPlaced;
 
 	for (int row = 0; row < StrategyConstants::BOARD_SIZE; row++)
 	{
 		for (int col = 0; col < StrategyConstants::BOARD_SIZE; col++)
 		{
-			//Only need to search the horizontals, verticals, main diagonals, and anti-diagonals to cover all possible sets of 5.
+			//Only need to search the main directions: horizontals, verticals, main diagonals, and anti-diagonals.
 			for (int direction = 0; direction < StrategyConstants::NUM_DIRECTIONS; direction += StrategyConstants::DIRECTIONAL_OFFSET)
 			{
 				int pieceCounter = 0;
@@ -333,6 +450,7 @@ vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced,
 					locations.push_back({ newRow, newCol, direction });
 				}
 
+				//If the number of pieces and empty locations satisfy their conditions, record this set of locations to the result vector.
 				if (pieceCounter == a_numPlaced && emptyCounter == emptyRequired)
 				{
 					result.push_back(locations);
@@ -344,13 +462,25 @@ vector<vector<vector<int>>> Player::FindAllMoves(Board a_board, int a_numPlaced,
 	return result;
 }
 
-//Given a set of 5 locations, returns the indices of the empty locations. This will be used later in determining the optimal placements.
+/* *********************************************************************
+Function Name: FindEmptyIndices
+Purpose: To find all of the indices that are empty, given a set of locations.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_locations, a vector<vector<int>> representing a set of locations on the board.
+Return Value: A vector<int> containing the indices of a_locations that are empty locations on the board.
+Algorithm:
+			1) Loop through each location in a_locations. 
+			2) If the location is empty, log the index of a_locations being evaluated.
+			3) After looping through each location, return the vector containing all the empty indices.
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::FindEmptyIndices(Board a_board, vector<vector<int>> a_locations)
 {
 	vector<vector<char>> board = a_board.GetBoard();
 	vector<int> emptyIndices;
 
-	//Search through the set of 5 locations and mark the empty indices.
+	//Search through the set of locations and mark the empty indices.
 	for (int i = 0; i < a_locations.size(); i++)
 	{
 		int row = a_locations[i][0];
@@ -365,7 +495,20 @@ vector<int> Player::FindEmptyIndices(Board a_board, vector<vector<int>> a_locati
 	return emptyIndices;
 }
 
-//Given a possible set of 5, finds the number of consecutive pieces that would be achievevd if placed in the empty index.
+/* *********************************************************************
+Function Name: FindConsecutiveIfPlaced
+Purpose: To find the number of consecutive pieces that would be placed on the board given a set of locations and an index to place the stone.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_locations, a vector<vector<int>> representing a set of locations on the board.
+			a_emptyIndex, an integer representing the index in a_locations that is empty on the board.
+Return Value: The number of consecutive pieces that will occur if a stone is placed a_locations[emptyIndex], an integer.
+Algorithm:
+			1) From the empty index, count the number of consecutive pieces that come immediately before the empty index.
+			2) From the empty index, count the number of consecutive pieces that come immediately after the empty index.
+			3) Sum the two numbers from steps 1 and 2, and add one to the sum to represent the piece being placed. Return this sum.
+Assistance Received: None
+********************************************************************* */
 int Player::FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locations, int emptyIndex)
 {
 	vector<vector<char>> board = a_board.GetBoard();
@@ -410,6 +553,14 @@ int Player::FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locatio
 }
 
 //Returns the most optimal play when building initiative that already has a_numPlaced pieces of a_color placed.
+/* *********************************************************************
+Function Name: BuildInitiative
+Purpose: To find a location on the board that builds initiative for the player.
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color, char a_dangerColor)
 {
 	vector<vector<char>> board = a_board.GetBoard();
@@ -518,6 +669,14 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 	}
 }
 
+/* *********************************************************************
+Function Name: CounterInitiative
+Purpose: To find a location on the board that counters the initiative of the opponent.
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_color)
 {
 	char opponentColor = a_board.OpponentColor(a_color);
@@ -552,6 +711,14 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 }
 
 //Checks if it is possible to win, given the current board circumstances.
+/* *********************************************************************
+Function Name: MakeWinningMove
+Purpose: To find a location on the board that would cause the player to win the round.
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::MakeWinningMove(Board a_board, char a_color)
 {
 	//First check if there are any moves that allow for 5 in a row.
@@ -587,6 +754,14 @@ vector<int> Player::MakeWinningMove(Board a_board, char a_color)
 	return {};
 }
 
+/* *********************************************************************
+Function Name: PreventWinningMove
+Purpose: To find a location on the board that prevents the opponent from winning the round.
+Parameters:
+Return Value:
+Algorithm:
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::PreventWinningMove(Board a_board, char a_color)
 {
 	//If the opponent has any winning moves they can do on their next turn, this is the location that you should block.
@@ -606,7 +781,27 @@ vector<int> Player::PreventWinningMove(Board a_board, char a_color)
 	}
 }
 
-//Returns true if placing a piece in a_location will put the player at risk of being captured.
+/* *********************************************************************
+Function Name: InDangerOfCapture
+Purpose: To determine if placing a stone in a specified location would put the player in danger of being captured on the following turn.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_location, a vector<int> representing the row and column being checked.
+			a_color, a character representing the stone color of the player placing the stone at a_location.
+Return Value: Whether or not the player is at risk of being captured the following turn, a boolean value.
+Algorithm:
+			1) Find the stone color of the opponent.
+			2) Loop through all eight possible directions.
+			3) For each direction, find the opposite direction by multiplying the direction instructions by -1. Ex: up's opposite direction is down.
+			4) Search two spaces out in the current direction and one space in the opposite direction.
+			5) If all locations in the previous step are valid, evaluate if the opponent can make a capture if the player places their stone at a_location.
+				5a) If the stones are in the pattern: - * P O, where * represents a_location, P is the player's stone, O is the opponent's stone, 
+					and - is an empty location, the player is in danger of being captured if they place their stone at a_location. Return true.
+				5b) If the stones are in the pattern: - P * O where * represents a_location, P is the player's stone, O is the opponent's stone, 
+					and - is an empty location, the player is in danger of being captured if they place their stone at a_location. Return true.
+			6) Otherwise, return false if the player is not in danger of being captured on their following turn if they place their stone at a_location.
+Assistance Received: None
+********************************************************************* */
 bool Player::InDangerOfCapture(Board a_board, vector<int> a_location, char a_color)
 {
 	vector<vector<char>> board = a_board.GetBoard();
@@ -661,6 +856,23 @@ bool Player::InDangerOfCapture(Board a_board, vector<int> a_location, char a_col
 }
 
 //Finds potential flanks where you can initiate a capture. Searches for the pattern: * W W * on the board.
+/* *********************************************************************
+Function Name: FindFlanks
+Purpose: To find a location on the board that will initiate a flank.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_color, a character representing the stone color to search for flanks.
+Return Value: A vector<int> containing the row, column, and direction being built in, if it exists.
+Algorithm:
+			1) Find the stone color of the opponent.
+			2) Find all valid consecutive four locations that have two of the opponent's stone color and two empty locations.
+			3) Loop through each of the possible sets of four locations.
+			4) For each set of locations, find the indices of the empty locations.
+			5) If the empty indices are 0 and 3, representing the ends of the consecutive four locations, a flank can be initiated.
+			   Return one of these empty locations if they do not put the player in danger of being captured.
+			6) Otherwise, return an empty vector if nothing was found.
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::FindFlanks(Board a_board, char a_color)
 {
 	char opponentColor = a_board.OpponentColor(a_color);
@@ -689,7 +901,22 @@ vector<int> Player::FindFlanks(Board a_board, char a_color)
 	return {};
 }
 
-//Searches for possible Deadly Tesseras given a color.
+/* *********************************************************************
+Function Name: FindDeadlyTessera
+Purpose: To find a location on the board that would create a deadly tessera (four consecutive pieces with an empty location on either side).
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_color, a character representing the stone color to search for deadly tesseras.
+Return Value: A vector<int> containing the row, column, and direction being built in, if it exists.
+Algorithm:
+			1) Find all valid consecutive six locations that have three of the specified piece color and three empty locations.
+			2) Loop through each of the possible sets of six locations.
+			3) For each set of locations, find the indices of the empty locations.
+			4) If two of the empty indices are 0 and 5, representing the ends of the consecutive six locations, a deadly tessera can be built.
+			   Return the empty location that is not on either of the ends, as it will create four consecutive pieces with two empty ends.
+			5) Otherwise, return an empty vector if nothing was found.
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::FindDeadlyTessera(Board a_board, char a_color)
 {
 	//Search for all valid consecutive 6 locations that have 3 of the specified piece color and 3 empty locations.
@@ -712,7 +939,22 @@ vector<int> Player::FindDeadlyTessera(Board a_board, char a_color)
 	return {};
 }
 
-//Given multiple sets of possible 5's to build on, find if building three consecutive stones is possible.
+/* *********************************************************************
+Function Name: FindThreeConsecutive
+Purpose: To find a location on the board that would create three consecutive pieces, if any are possible, given multiple sets of possible locations to build on.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_possibleMoves, a vector<vector<vector<int>>> containing sets of locations. Example: {{{row1, col1, direction}, {row2, col2, direction}}, {{}}, ...}}}
+			a_dangerColor, a character representing the stone color to check if it is in danger of being captured.
+Return Value: A vector<int> containing the row, column, and direction being built in, if it exists.
+Algorithm:
+			1) Loop through every set of possible locations within a_possibleMoves.
+			2) For each set, find the indices of the empty locations.
+			3) For each empty index, find the number of consecutive pieces that would occur if a stone was placed there.
+			4) If the number of consecutive pieces that would occur is three, return this location if it does not put the player in danger of being captured.
+			5) Otherwise, return an empty vector if nothing was found.
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::FindThreeConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor)
 {
 	//Search for possible 3 in a rows. If there is one, that is the most optimal play.
@@ -731,7 +973,22 @@ vector<int> Player::FindThreeConsecutive(Board a_board, vector<vector<vector<int
 	return {};
 }
 
-//Given multiple sets of possible 5's to build on, find if building four consecutive stones is possible.
+/* *********************************************************************
+Function Name: FindFourConsecutive
+Purpose: To find a location on the board that would create four consecutive pieces, if any are possible, given multiple sets of possible locations to build on.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+			a_possibleMoves, a vector<vector<vector<int>>> containing sets of locations. Example: {{{row1, col1, direction}, {row2, col2, direction}}, {{}}, ...}}}
+			a_dangerColor, a character representing the stone color to check if it is in danger of being captured.
+Return Value: A vector<int> containing the row, column, and direction being built in, if it exists.
+Algorithm:
+			1) Loop through every set of possible locations within a_possibleMoves.
+			2) For each set, find the indices of the empty locations.
+			3) For each empty index, find the number of consecutive pieces that would occur if a stone was placed there.
+			4) If the number of consecutive pieces that would occur is four, return this location if it does not put the player in danger of being captured.
+			5) Otherwise, return an empty vector if nothing was found.
+Assistance Received: None
+********************************************************************* */
 vector<int> Player::FindFourConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor)
 {
 	//Search for possible 4 in a rows. If there is one, that is the most optimal play.

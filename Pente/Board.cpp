@@ -238,9 +238,9 @@ Algorithm:
 			2) Convert the row and column passed from their board view representation to their vector index representation.
 			3) Loop through all eight possible directions.
 			4) For each direction, store the locations of three spaces out in the current direction. 
-			5) If there are three valid locations in the current direction being evaluated, check to see if a capture has been made.
-				5a) For example, if the color passed was white, a capture follows the pattern * B B W where * is the location passed to this function.
-			6) If there is a capture that has been made in the direction being evaluated, remove the captured pieces from the board and increment the capture counter.
+			5) If there are three valid locations in the current direction being evaluated, check to see if a capture has been made. For example, 
+			   if the color passed was white, a capture follows the pattern * B B W where * is the location passed to this function.
+			6) If there is a capture that has been made in the direction being evaluated, remove the captured pieces from the board and increment a capture counter.
 			7) Return the total number of captures that have been made after placing a stone at the location passed to this function.
 Assistance Received: None
 ********************************************************************* */
@@ -396,14 +396,14 @@ Parameters:
 			a_numCaptures, an integer representing the number of captured pairs the current player being evaluated has.
 Return Value: The score for the round, an integer.
 Algorithm:
-			1) Loop through the four main directions (horizontally, vertically, and both diagonals). Create and use copy of the board for each direction.
+			1) Loop through the four main directions (horizontally, vertically, and both diagonals). Create a copy of the board for each direction.
 			2) First, check for any consecutive chains of the stone color passed that are five or greater.
 				3a) Loop through every location on the board.
 				3b) From the current location, continue going to new locations on the board in the current direction being evaluated.
 					If the new location is valid and has a stone of the correct color, incremement a consecutive stone counter.
 				3c) Stop checking new locations once the new location is either invalid or does not have a stone of the correct color.
 				3d) If the consecutive stone counter is greater than or equal to five, add five points to the total score.
-					Also, mark these locations as seen, so that the consecutive five or more is not recounted as consecutive fours later on.
+					Also, mark these locations as seen on the copied board, so that the consecutive five or more is not recounted as consecutive fours later on.
 			3) Next, check for any consecutive chains of the stone color passed that are equal to four.
 				3a) Loop through every location on the board.
 				3b) From the current location, search three locations out in current direction being evaluated.
