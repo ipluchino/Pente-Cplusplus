@@ -179,6 +179,26 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
+	//Attempt to build a deadly tessera, aka four consecutive stones with an empty location on either side.
+	possiblePlay = FindDeadlyTessera(a_board, a_color);
+	if (possiblePlay.size() != 0)
+	{
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
+		reasoning += location + " to build a deadly tessera in the " + GetDirection(possiblePlay[2]) + " direction.";
+
+		return pair<string, string>(location, reasoning);
+	}
+
+	//Attempt to block a deadly tessera.
+	possiblePlay = FindDeadlyTessera(a_board, a_board.OpponentColor(a_color));
+	if (possiblePlay.size() != 0)
+	{
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
+		reasoning += location + " to block deadly tessera from forming " + GetDirection(possiblePlay[2]) + " direction.";
+
+		return pair<string, string>(location, reasoning);
+	}
+
 	//Attempt to make the most possible captures, if possible.
 	possiblePlay = MakeCapture(a_board, a_color);
 	if (possiblePlay.size() != 0)
@@ -577,8 +597,33 @@ int Player::FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locatio
 Function Name: BuildInitiative
 Purpose: To find a location on the board that builds initiative for the player.
 Parameters:
-Return Value:
+			a_board, a Board object representing the current board of the round.
+			a_numPlaced, an integer representing the amount of stones placed by the player in an open five consecutive locations.
+			a_color, a character representing the player's stone color.
+			a_dangerColor, a character representing the stone color to check if placing it at a location would put it at risk of being captured.
+Return Value:  A vector<int> containing the row, column, and direction being built in of the best location to build initiative, if any exist.	
 Algorithm:
+			1) Find all possible moves consecutive five locations that satisfy the conditions passed to this function (using the FindAllMoves function).
+				1a) If there are no possible moves given the search parameters, simply return an empty vector.
+			2) If a_numPlaced is equal to 1:
+				2a) Loop through each possible set of five consecutive locations.
+				2b) For each possible set of locations, find the sets where the single placed stone is on one of the ends. Ex: B - - - - OR - - - - B
+				2c) Store the middle location in a vector, to ensure the stone is placed a distance of one away of the current stone. Ex: B - * - - OR - - * - - B
+				2d) After finding all potential build locations, shuffle the result vector to build in a new location each time. 
+					This is so the player builds in all directions and not only one specific direction each time.
+				2e) Return the 
+			3) If a_numPlaced is equal to 2:
+				3a) Search for possible locations that would form three consecutive stones placed. If one exists, return this location.
+				3b) If it isn't possible to get three consecutive stones placed, prefer to place the stone in a location that results in the least consecutive pieces. 
+					1. Loop through each possible set of five consecutive locations found in step 1.
+					2. For each set of locations, find the indices of the empty locations.
+					3. For each location that is empty, find the number of consecutive pieces that would occur if the player places their stone there. 
+					4. If the number of consecutive pieces is the least seen so far, log it.
+					5. After looping through all possible sets of locations and repeating the above steps, return the location that results in the least consecutive pieces.
+					   This puts the player in the least risk of getting captured in the future. Ex: B - * - B
+			4) If a_numPlaced is equal to 3:
+				4a) Search for possible locations that will form four consecutive pieces. If one exists, return this location. Ex : B B B * - 
+				4b) Search for possible locations that will form three consecutive pieces. If one exists, return this location. Ex: B * B - B
 Assistance Received: None
 ********************************************************************* */
 vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color, char a_dangerColor)
@@ -660,13 +705,6 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 	}
 	else if (a_numPlaced == 3)
 	{
-		//Search for possible deadly tesseras. Deadly tesseras are 4 in a row with empty location on both sides, basically counting as a win.
-		vector<int> possibleDeadlyTessera = FindDeadlyTessera(a_board, a_color);
-		if (possibleDeadlyTessera.size() > 0)
-		{
-			return possibleDeadlyTessera;
-		}
-
 		//Search for possible 4 in a rows. If there is one, that is the most optimal play.
 		vector<int> possibleFourConsecutive = FindFourConsecutive(a_board, possibleMoves, a_dangerColor);
 		if (possibleFourConsecutive.size() != 0)
@@ -694,7 +732,7 @@ Function Name: CounterInitiative
 Purpose: To find a location on the board that counters the initiative of the opponent.
 Parameters:
 			a_board, a Board object representing the current board of the round.
-			a_numPlaced, an integer representing the amount of stones placed by the opponent in an open five consecutive locations to search for.
+			a_numPlaced, an integer representing the amount of stones placed by the opponent in an open five consecutive locations.
 			a_color, a character representing the player's stone color.
 Return Value: A vector<int> containing the row, column, and direction being blocked of the best location to counter initiative, if any exist.
 Algorithm:

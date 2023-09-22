@@ -12,7 +12,7 @@ Assistance Received: None
 ********************************************************************* */
 Round::Round() : m_nextPlayerIndex(-1)
 {
-	m_playerList.push_back(new Human());
+	m_playerList.push_back(new Computer());
 	m_playerList.push_back(new Computer());
 
 	srand(time(NULL));
