@@ -162,11 +162,12 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	}
 
 	//Attempt to win the game, if possible.
-	possiblePlay = MakeWinningMove(a_board, a_color);
+	string winReason = "";
+	possiblePlay = MakeWinningMove(a_board, a_color, winReason);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to win the round!";
+		reasoning += location + winReason;
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -175,7 +176,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to prevent the opponent from winning.";
+		reasoning += location + " to block the opponent from getting five consecutive stones in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -189,7 +190,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
-	//Attempt to block a deadly tessera.
+	//Attempt to block a deadly tessera from forming.
 	possiblePlay = FindDeadlyTessera(a_board, a_board.OpponentColor(a_color));
 	if (possiblePlay.size() != 0)
 	{
@@ -204,7 +205,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to capture the opponent's pieces.";
+		reasoning += location + " to capture the opponent's stones.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -609,21 +610,25 @@ Algorithm:
 				2a) Loop through each possible set of five consecutive locations.
 				2b) For each possible set of locations, find the sets where the single placed stone is on one of the ends. Ex: B - - - - OR - - - - B
 				2c) Store the middle location in a vector, to ensure the stone is placed a distance of one away of the current stone. Ex: B - * - - OR - - * - - B
+					Only locations that do not put the player in danger of being captured is stored.
 				2d) After finding all potential build locations, shuffle the result vector to build in a new location each time. 
 					This is so the player builds in all directions and not only one specific direction each time.
 				2e) Return the 
 			3) If a_numPlaced is equal to 2:
-				3a) Search for possible locations that would form three consecutive stones placed. If one exists, return this location.
+				3a) Search for possible locations that would form three consecutive stones placed and does not put the player in danger of being captured. 
+					If one exists, return this location.
 				3b) If it isn't possible to get three consecutive stones placed, prefer to place the stone in a location that results in the least consecutive pieces. 
 					1. Loop through each possible set of five consecutive locations found in step 1.
 					2. For each set of locations, find the indices of the empty locations.
 					3. For each location that is empty, find the number of consecutive pieces that would occur if the player places their stone there. 
-					4. If the number of consecutive pieces is the least seen so far, log it.
+					4. If the number of consecutive pieces is the least seen so far and does not put the player at risk of being captured, log it.
 					5. After looping through all possible sets of locations and repeating the above steps, return the location that results in the least consecutive pieces.
 					   This puts the player in the least risk of getting captured in the future. Ex: B - * - B
 			4) If a_numPlaced is equal to 3:
-				4a) Search for possible locations that will form four consecutive pieces. If one exists, return this location. Ex : B B B * - 
-				4b) Search for possible locations that will form three consecutive pieces. If one exists, return this location. Ex: B * B - B
+				4a) Search for possible locations that will form four consecutive pieces and does not put the player in danger of being captured. 
+					If one exists, return this location. Ex : B B B * - 
+				4b) Search for possible locations that will form three consecutive pieces and does not put the player in danger of being captured. 
+					If one exists, return this location. Ex: B * B - B
 Assistance Received: None
 ********************************************************************* */
 vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color, char a_dangerColor)
@@ -786,25 +791,42 @@ Purpose: To find a location on the board that would cause the player to win the 
 Parameters:
 			a_board, a Board object representing the current board of the round.
 			a_color, a character representing the player's stone color.
+			a_winReason, a string passed by reference to explain the reasoning of the win, or if the win is being delayed, since there are multiple ways to win.
 Return Value: A vector<int> containing the row and column of the location that would result in the player winning the game.
 Algorithm: TO DO.
 Assistance Received: None
 ********************************************************************* */
-vector<int> Player::MakeWinningMove(Board a_board, char a_color)
+vector<int> Player::MakeWinningMove(Board a_board, char a_color, string& a_winReason)
 {
-	//First check if there are any moves that allow for 5 in a row.
+	//First check if there are any moves that allow for five consecutive pieces.
 	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 4, a_color, StrategyConstants::CONSECUTIVE_5_DISTANCE);
 
 	if (possibleMoves.size() > 1)
 	{
-		//Delay win if multiple win moves to score more points? 
-		cout << "Multiple! Delay?" << endl;
+		//If there are multiple win moves, see if the win can be delayed to earn additional points.
+		//The win will only be delayed if the player is not in danger of getting captured and giving more points to the opponent.
+		vector<int> opponentCaptures = PreventCapture(a_board, a_color);
+		if (opponentCaptures.size() == 0)
+		{
+			//Check if any captures can be made to score additional points.
+			vector<int> potentialCaptures = MakeCapture(a_board, a_color);
+
+			if (potentialCaptures.size() > 0)
+			{
+				a_winReason = " to capture the opponent's stones. The win is being delayed to score additional points.";
+				return potentialCaptures;
+			}
+		}
+
 	}
 	
 	if (possibleMoves.size() > 0)
 	{
-		//If there's only one possible move that creates a 5 in a row, make it.
+		//If there's only one possible move that creates five consecutive pieces, make it and win the round.
 		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[0]);
+
+		//Note: The vector containing the empty location is in the format {row, col, directionIndex},
+		a_winReason = " to make five consecutive piece in the " + GetDirection(possibleMoves[0][emptyIndices[0]][2]) + " direction and win the round.";
 		return possibleMoves[0][emptyIndices[0]];
 	}
 
@@ -818,6 +840,7 @@ vector<int> Player::MakeWinningMove(Board a_board, char a_color)
 
 		if (numCaptures + m_capturedPairs >= 5)
 		{
+			a_winReason = " to capture the opponent's pieces and have at least five captured pairs to win the round.";
 			return potentialCaptures;
 		}
 	}
@@ -841,10 +864,10 @@ Assistance Received: None
 ********************************************************************* */
 vector<int> Player::PreventWinningMove(Board a_board, char a_color)
 {
-	//If the opponent has any winning moves they can do on their next turn, this is the location that you should block.
 	char opponentColor = a_board.OpponentColor(a_color);
+	
+	//If the opponent has any winning moves they can do on their next turn, this is the location that you should block.
 	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 4, opponentColor, StrategyConstants::CONSECUTIVE_5_DISTANCE);
-
 
 	if (possibleMoves.size() > 0)
 	{
@@ -1040,7 +1063,7 @@ vector<int> Player::FindThreeConsecutive(Board a_board, vector<vector<vector<int
 
 		for (int j = 0; j < emptyIndices.size(); j++) {
 			int possibleConsectutive = FindConsecutiveIfPlaced(a_board, a_possibleMoves[i], emptyIndices[j]);
-			if (possibleConsectutive == 3 && !InDangerOfCapture(a_board, a_possibleMoves[i][emptyIndices[j]], a_dangerColor))
+			if (possibleConsectutive == StrategyConstants::CONSECUTIVE_3_DISTANCE && !InDangerOfCapture(a_board, a_possibleMoves[i][emptyIndices[j]], a_dangerColor))
 			{
 				return a_possibleMoves[i][emptyIndices[j]];
 			}
@@ -1074,7 +1097,7 @@ vector<int> Player::FindFourConsecutive(Board a_board, vector<vector<vector<int>
 
 		for (int j = 0; j < emptyIndices.size(); j++) {
 			int possibleConsectutive = FindConsecutiveIfPlaced(a_board, a_possibleMoves[i], emptyIndices[j]);
-			if (possibleConsectutive == 4 && !InDangerOfCapture(a_board, a_possibleMoves[i][emptyIndices[j]], a_dangerColor))
+			if (possibleConsectutive == StrategyConstants::CONSECUTIVE_4_DISTANCE && !InDangerOfCapture(a_board, a_possibleMoves[i][emptyIndices[j]], a_dangerColor))
 			{
 				return a_possibleMoves[i][emptyIndices[j]];
 			}

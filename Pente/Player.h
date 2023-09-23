@@ -44,7 +44,7 @@ public:
 	int FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locations, int emptyIndex);
 	vector<int> BuildInitiative(Board a_board, int a_numPlaced, char a_color, char a_dangerColor);
 	vector<int> CounterInitiative(Board a_board, int a_numPlaced, char a_color);
-	vector<int> MakeWinningMove(Board a_board, char a_color);
+	vector<int> MakeWinningMove(Board a_board, char a_color, string& a_winReason);
 	vector<int> PreventWinningMove(Board a_board, char a_color);
 	bool InDangerOfCapture(Board a_board, vector<int> a_location, char a_color);
 	vector<int> FindFlanks(Board a_board, char a_color);

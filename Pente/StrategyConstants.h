@@ -23,10 +23,13 @@ public:
 	//Represents the incremement required to skip over opposite directions. Ex: When searching horizontals, left & right directions searches would be the same.
 	static const int DIRECTIONAL_OFFSET = 2;
 
-	//Represents the total number of spaces needed to search when searching for a consecutive 4 of the same piece.
+	//Represents the total number of spaces required to make three consecutive pieces.
+	static const int CONSECUTIVE_3_DISTANCE = 3;
+
+	//Represents the total number of spaces required to make four consecutive pieces.
 	static const int CONSECUTIVE_4_DISTANCE = 4;
 
-	//Represents the total number of spaces needed to search when searching for a consecutive 5 of the same piece.
+	//Represents the total number of spaces required to make five consecutive pieces.
 	static const int CONSECUTIVE_5_DISTANCE = 5;
 };
 
