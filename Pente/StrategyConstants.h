@@ -8,6 +8,9 @@ using namespace std;
 class StrategyConstants
 {
 public:
+	//Default Constructor
+	StrategyConstants();
+	
 	//Size of the board will always be 19x19.
 	static const int BOARD_SIZE = 19;
 
