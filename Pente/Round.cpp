@@ -337,7 +337,7 @@ bool Round::CoinToss()
 	int coin = 1 + (rand() % 2);
 
 	//Output the coin toss result to the screen so the user can see if it was heads or tails.
-	if (coin == 1)
+	if (coin == HEADS)
 	{
 		cout << "The result of the coin toss was Heads!";
 	}
@@ -347,7 +347,7 @@ bool Round::CoinToss()
 	}
 
 	//If the user correctly called the toss, return true, otherwise return false.
-	if ((choice == "H" && coin == 1) || (choice == "T" && coin == 2))
+	if ((choice == "H" && coin == HEADS) || (choice == "T" && coin == TAILS))
 	{
 		return true;
 	}

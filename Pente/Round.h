@@ -16,6 +16,8 @@ class Round
 public:
 	//Constants
 	const int NUM_PLAYERS = 2;
+	const int HEADS = 1;
+	const int TAILS = 2;
 
 	//Default Constructor
 	Round();

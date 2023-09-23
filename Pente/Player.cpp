@@ -140,10 +140,29 @@ string Player::GetDirection(int a_directionIndex)
 //Determines the optimal play and returns its location as well as the reasoning why it is the optimal play.
 /* *********************************************************************
 Function Name: OptimalPlay
-Purpose:
+Purpose: To determine 
 Parameters:
-Return Value:
-Algorithm:
+			a_board, a Board object representing the current board of the round.
+			a_color, a character representing the player's stone color.
+Return Value: A pair<string, string> where the first string is the location of the most optimal play, and the second string is the reasoning behind the play.
+Algorithm: Several functions are used to determine the most optimal play. The priorities are as follows:
+			1) If the board is empty, the only possible move is the center of the board, or J10.
+			2) If it's possible to win the round with the player's next move, by either making five consecutive stones or by capture, win the round.
+				2a) If it's possible to delay the win the earn more points, the win will be delayed (see MakeWinningMove function).
+			3) If the opponent is about to win the round by making five consecutive pieces on their following turn, prevent it.
+			4) If it's possible to build a deadly tessera, build one.
+			5) If the opponent can build a deadly tessera on their next turn, block it.
+			6) If the player can make a capture, make the move that results in the most captured pairs.
+			7) If the opponent can make a capture on their following turn, make the move that prevents the most captured pairs.
+			8) If the player can build initiative with three of their stones already placed, do it.  
+			9) If the opponent can build initiative with three of their stones already placed on their following turn, block it.
+			10) If the player can build initiative with two of their stones already placed, do it.
+			11) If the opponent has placed two consecutive stones that can be captured, initiate a flank.
+			12) If the player can build initiative with two of their stones already placed, do it.
+			13) If the opponent can build initiative with two of their stones already placed on their following turn, block it.
+				13a) This also is used to begin a player's initiative when they do not have any stones placed on the board.
+			14) As a failsafe, return any empty location on the board. This is only used when the board is nearly full and none of the above moves apply.
+
 Assistance Received: https://cplusplus.com/reference/algorithm/random_shuffle/
 ********************************************************************* */
 pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
@@ -195,7 +214,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to block deadly tessera from forming " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to block deadly tessera from forming in the " + GetDirection(possiblePlay[2]) + " direction.";
 
 		return pair<string, string>(location, reasoning);
 	}
@@ -218,31 +237,31 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
-	//Attempt to build initiative with 3 pieces already placed.
+	//Attempt to build initiative with 3 stones already placed.
 	possiblePlay = BuildInitiative(a_board, 3, a_color, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to build initiative and have 4 pieces in an open 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to build initiative and have 4 stones in an open consecutive 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
 
 		return pair<string, string>(location, reasoning);
 	}
 
-	//Attempt to counter initiative if the opponent has 3 pieces already placed.
+	//Attempt to counter initiative if the opponent has 3 stones already placed.
 	possiblePlay = CounterInitiative(a_board, 3, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to block the opponent from getting 4 pieces in an open 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to block the opponent from getting 4 stones in an open consecutive 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
-	//Attempt to build initiative with 2 pieces already placed.
+	//Attempt to build initiative with 2 stones already placed.
 	possiblePlay = BuildInitiative(a_board, 2, a_color, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to build initiative and have 3 pieces in an open 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to build initiative and have 3 stones in an open consecutive 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -255,21 +274,21 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		return pair<string, string>(location, reasoning);
 	}
 
-	//Attempt to build initiative with 1 piece already placed.
+	//Attempt to build initiative with 1 stone already placed.
 	possiblePlay = BuildInitiative(a_board, 1, a_color, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to build initiative and have 2 pieces in an open 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to build initiative and have 2 stones in an open consecutive 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
-	//Attempt to counter initiative with 1 piece already placed - used for the first move when going second.
+	//Attempt to counter initiative with stone piece already placed - used for the first move when going second.
 	possiblePlay = CounterInitiative(a_board, 1, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to counter initiative and start its own initiative.";
+		reasoning += location + " to counter the opponent's initiative and start building initiative.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -793,7 +812,16 @@ Parameters:
 			a_color, a character representing the player's stone color.
 			a_winReason, a string passed by reference to explain the reasoning of the win, or if the win is being delayed, since there are multiple ways to win.
 Return Value: A vector<int> containing the row and column of the location that would result in the player winning the game.
-Algorithm: TO DO.
+Algorithm: 
+			1) Find all consecutive five locations that have four of the player's stone already placed, and one empty location.
+			2) If there are multiple sets of five locations, the win may be delayed to earn additional points.
+				2a) If the player is not in danger of being captured on their following turn, and they can capture the opponents pieces,
+					opt to capture the most opponent's stones possible to earn additional points.
+			3) If there is only one location that would result in five consecutive stones and win the round for the player, return this location.
+			4) If it isn't possible to make five consecutive stones, check to see if its possible to win by obtaining at least five captured pairs.
+				4a) If the number of captured pairs already obtained plus the maximum number of captured pairs that can be acquired is at least five,
+					make the capture(s) to win the round.
+			5) If there are no winning moves, return an empty vector.
 Assistance Received: None
 ********************************************************************* */
 vector<int> Player::MakeWinningMove(Board a_board, char a_color, string& a_winReason)
@@ -984,7 +1012,7 @@ vector<int> Player::FindFlanks(Board a_board, char a_color)
 	{
 		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
 
-		//If the empty indices are on the ends of the consecutive 4 locations (* W W *), it means that a flank can be initiated.
+		//If the empty indices are 0 and 3, they are on the ends of the consecutive 4 locations (* W W *), and it means that a flank can be initiated.
 		if (emptyIndices[0] == 0 && emptyIndices[1] == 3)
 		{
 			if (!InDangerOfCapture(a_board, possibleMoves[i][0], a_color))
@@ -1027,7 +1055,7 @@ vector<int> Player::FindDeadlyTessera(Board a_board, char a_color)
 	{
 		vector<int> emptyIndices = FindEmptyIndices(a_board, possibleMoves[i]);
 
-		//If both ends of the set of 6 locations are empty, this means that a deadly tessera can be formed.
+		//If both ends of the set of 6 locations are empty (the empty indices are 0 and 5), this means that a deadly tessera can be formed.
 		if (emptyIndices[0] == 0 && emptyIndices[2] == 5)
 		{
 			//emptyIndices[1] is the empty location that is NOT on one of the ends. This creates a 4 in a row with two open ends when a stone is placed there.
@@ -1063,6 +1091,8 @@ vector<int> Player::FindThreeConsecutive(Board a_board, vector<vector<vector<int
 
 		for (int j = 0; j < emptyIndices.size(); j++) {
 			int possibleConsectutive = FindConsecutiveIfPlaced(a_board, a_possibleMoves[i], emptyIndices[j]);
+			
+			//If it's possible to create four consecutive stones, and it doesn't put the player in danger of being captured, return it.
 			if (possibleConsectutive == StrategyConstants::CONSECUTIVE_3_DISTANCE && !InDangerOfCapture(a_board, a_possibleMoves[i][emptyIndices[j]], a_dangerColor))
 			{
 				return a_possibleMoves[i][emptyIndices[j]];
@@ -1097,6 +1127,8 @@ vector<int> Player::FindFourConsecutive(Board a_board, vector<vector<vector<int>
 
 		for (int j = 0; j < emptyIndices.size(); j++) {
 			int possibleConsectutive = FindConsecutiveIfPlaced(a_board, a_possibleMoves[i], emptyIndices[j]);
+			
+			//If it's possible to create four consecutive stones, and it doesn't put the player in danger of being captured, return it.
 			if (possibleConsectutive == StrategyConstants::CONSECUTIVE_4_DISTANCE && !InDangerOfCapture(a_board, a_possibleMoves[i][emptyIndices[j]], a_dangerColor))
 			{
 				return a_possibleMoves[i][emptyIndices[j]];
