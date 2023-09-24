@@ -14,7 +14,7 @@ public:
 	//Size of the board will always be 19x19.
 	static const int BOARD_SIZE = 19;
 
-	////Represents the "instructions" for the 8 possible directions on the board. Left, Right, Down, Up, and the four possible diagonals.
+	//Represents the instructions for the 8 possible directions on the board. Left, Right, Down, Up, and the four possible diagonals.
 	static const vector<vector<int>> DIRECTIONS;
 
 	//Represents the total number of possible directions, in this case 8.

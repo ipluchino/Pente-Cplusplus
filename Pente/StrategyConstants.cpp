@@ -12,5 +12,6 @@ StrategyConstants::StrategyConstants()
 {
 }
 
+//Represents the instructions for the 8 possible directions on the board. Left, Right, Down, Up, and the four possible diagonals.
 const vector<vector<int>> StrategyConstants::DIRECTIONS = { {0,-1}, {0,1}, {1,0}, {-1,0}, {1, 1}, {-1,-1}, {1,-1}, {-1,1} };
 

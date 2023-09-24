@@ -387,11 +387,29 @@ void Round::DisplayGame()
 	//Display who will be playing next.
 	if (m_nextPlayerIndex == 0)
 	{
-		cout << "Next Turn: Human" << endl << endl;
+		cout << "Next Turn: Human - "; 
+
+		if (GetHumanColor() == 'W')
+		{
+			cout << "White" << endl << endl;
+		}
+		else
+		{
+			cout << "Black" << endl << endl;
+		}
 	}
 	else
 	{
-		cout << "Next Turn: Computer" << endl << endl;
+		cout << "Next Turn: Computer - ";
+		
+		if (GetComputerColor() == 'W')
+		{
+			cout << "White" << endl << endl;
+		}
+		else
+		{
+			cout << "Black" << endl << endl;
+		}
 	}
 }
 
@@ -513,11 +531,28 @@ void Round::SaveGame()
 	m_file << "Next Player: ";
 	if (m_nextPlayerIndex == 0)
 	{
-		m_file << "Human - " << GetHumanColor();
+		m_file << "Human - "; 
+		if (GetHumanColor() == 'W')
+		{
+			m_file << "White";
+		}
+		else
+		{
+			m_file << "Black";
+		}
+		
 	}
 	else
 	{
-		m_file << "Computer - " << GetComputerColor();
+		m_file << "Computer - ";
+		if (GetComputerColor() == 'W')
+		{
+			m_file << "White";
+		}
+		else
+		{
+			m_file << "Black";
+		}
 	}
 
 	m_file.close();
@@ -627,35 +662,33 @@ bool Round::LoadGameData()
 				//Human plays next
 				nextPlayerIndex = 0;
 
-				char nextPlayerColor = line[line.size() - 1];
-
-				if (nextPlayerColor == 'B')
-				{
-					humanColor = 'B';
-					computerColor = 'W';
-				}
-				else
+				//Determine the colors of the players.
+				if (line.find("White") != string::npos)
 				{
 					humanColor = 'W';
 					computerColor = 'B';
 				}
-
+				else
+				{
+					humanColor = 'B';
+					computerColor = 'W';
+				}
 			}
 			else
 			{
 				//Computer plays next
 				nextPlayerIndex = 1;
 
-				char nextPlayerColor = line[line.size() - 1];
-
-				if (nextPlayerColor == 'B')
+				//Determine the colors of the players.
+				if (line.find("White") != string::npos)
+				{
+					computerColor = 'W';
+					humanColor = 'B';
+				}
+				else
 				{
 					computerColor = 'B';
 					humanColor = 'W';
-				}
-				else {
-					computerColor = 'W';
-					humanColor = 'B';
 				}
 			}
 		}
