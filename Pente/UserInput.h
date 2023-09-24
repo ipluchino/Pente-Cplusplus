@@ -22,8 +22,5 @@ public:
 	string GetFileNameLoad();
 	string GetFileNameSave();
 	string GetContinueDecision();
-
-private:
-
 };
 

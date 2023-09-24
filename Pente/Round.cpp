@@ -488,7 +488,7 @@ Algorithm:
 			4) Write the computer's information to the file.
 			5) Write who's turn is next to the file.
 			6) Close the file, and terminate the program.
-Assistance Received: None
+Assistance Received: https://cplusplus.com/reference/fstream/fstream/
 ********************************************************************* */
 void Round::SaveGame()
 {
@@ -576,7 +576,7 @@ Algorithm:
 			4) Read in the computer's information from the file.
 			5) Read in who is playing next from the file.
 			6) Set all the information read in into the Round's member variables.
-Assistance Received: None
+Assistance Received: https://cplusplus.com/reference/fstream/fstream/
 ********************************************************************* */
 bool Round::LoadGameData()
 {

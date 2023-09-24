@@ -13,6 +13,19 @@ Board::Board() : m_board(vector<vector<char>>(StrategyConstants::BOARD_SIZE, vec
 }
 
 /* *********************************************************************
+Function Name: Board - Copy constructor
+Purpose: To construct a Board object from an existing one.
+Parameters: None
+Return Value: None
+Algorithm: None
+Assistance Received: None
+********************************************************************* */
+Board::Board(Board& a_otherBoard)
+{
+	m_board = a_otherBoard.m_board;
+}
+
+/* *********************************************************************
 Function Name: SetBoard
 Purpose: To set the Board object's board information.
 Parameters:

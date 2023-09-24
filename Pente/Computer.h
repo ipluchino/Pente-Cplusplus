@@ -12,14 +12,8 @@ public:
 	//Destructor
 	~Computer() {};
 
-	//Selectors
-	
-	//Mutators
-
 	//Utility Functions
 	bool MakePlay(Board& a_board);
-
-
 
 private:
 	//UserInput object used to obtain input from the human player and is used when determining if the player wants to save before the computer places a stone.

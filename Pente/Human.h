@@ -13,10 +13,6 @@ public:
 	//Destructor
 	~Human() {};
 
-	//Selectors
-
-	//Mutators
-
 	//Utility Functions
 	bool MakePlay(Board& a_board);
 	string AskForHelp(Board a_board);

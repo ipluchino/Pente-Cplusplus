@@ -13,6 +13,9 @@ public:
 	//Default Constructor
 	Board();
 
+	//Copy Constructor
+	Board(Board& a_otherBoard);
+
 	//Destructor
 	~Board() {};
 
