@@ -230,7 +230,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to build initiative and have 4 stones in an open consecutive 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to build initiative and have 4 stones in an open 5 consecutive locations in the " + GetDirection(possiblePlay[2]) + " direction.";
 
 		return pair<string, string>(location, reasoning);
 	}
@@ -240,7 +240,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to block the opponent from getting 4 stones in an open consecutive 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to block the opponent from getting 4 stones in an open 5 consecutive locations in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -249,7 +249,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to build initiative and have 3 stones in an open consecutive 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to build initiative and have 3 stones in an open 5 consecutive locations in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -267,7 +267,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
-		reasoning += location + " to build initiative and have 2 stones in an open consecutive 5 in the " + GetDirection(possiblePlay[2]) + " direction.";
+		reasoning += location + " to build initiative and have 2 stones in an open 5 consecutive locations in the " + GetDirection(possiblePlay[2]) + " direction.";
 		return pair<string, string>(location, reasoning);
 	}
 
