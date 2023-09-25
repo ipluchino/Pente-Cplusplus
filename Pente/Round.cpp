@@ -483,11 +483,12 @@ Parameters: None
 Return Value: None
 Algorithm:
 			1) Obtain the file name the user wishes to save the game to.
-			2) Write the board's information to the file.
-			3) Write the human's information to the file.
-			4) Write the computer's information to the file.
-			5) Write who's turn is next to the file.
-			6) Close the file, and terminate the program.
+			2) Validate that the file was successfully created.
+			3) Write the board's information to the file.
+			4) Write the human's information to the file.
+			5) Write the computer's information to the file.
+			6) Write who's turn is next to the file.
+			7) Close the file, and terminate the program.
 Assistance Received: https://cplusplus.com/reference/fstream/fstream/
 ********************************************************************* */
 void Round::SaveGame()
@@ -495,6 +496,14 @@ void Round::SaveGame()
 	string fileName = m_userInput.GetFileNameSave();
 
 	m_file.open(fileName, ios::out);
+
+	//Validate that the file was successfully created.
+	while (!m_file.is_open())
+	{
+		cout << "Invalid file name, please enter a valid file name to save the game to." << endl;
+		fileName = m_userInput.GetFileNameSave();
+		m_file.open(fileName, ios::out);
+	}
 
 	//Write the board to the file.
 	vector<vector<char>> board = m_board.GetBoard();

@@ -254,15 +254,16 @@ Purpose: To obtain the name of the file the user wishes to load the game from.
 Parameters: None
 Return Value: The user's choice, a string.
 Algorithm: None
-Assistance Received: None
+Assistance Received: https://cplusplus.com/reference/string/string/getline/
 ********************************************************************* */
 string UserInput::GetFileNameLoad()
 {
-	//Note: No input validation required for the file name.
 	string response;
 	
 	cout << "Please enter a file name to load the game from (without the .txt): ";
-	cin >> response;
+	
+	cin.ignore();
+	getline(cin, response);
 
 	cout << endl;
 
@@ -275,15 +276,16 @@ Purpose: To obtain the name of the file to save and exit the game to.
 Parameters: None
 Return Value: The user's choice, a string.
 Algorithm: None
-Assistance Received: None
+Assistance Received: https://cplusplus.com/reference/string/string/getline/
 ********************************************************************* */
 string UserInput::GetFileNameSave()
 {
-	//Note: No input validation required for the file name.
 	string response;
 	
 	cout << "Please enter a file name to save the game to (without the .txt): ";
-	cin >> response;
+	
+	cin.ignore();
+	getline(cin, response);
 
 	cout << endl;
 
