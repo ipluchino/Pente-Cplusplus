@@ -122,26 +122,7 @@ Assistance Received: None
 ********************************************************************* */
 string Player::GetDirection(int a_directionIndex)
 {
-	if (a_directionIndex == 0 || a_directionIndex == 1)
-	{
-		return "horizontal";
-	}
-	else if (a_directionIndex == 2 || a_directionIndex == 3)
-	{
-		return "vertical";
-	}
-	else if (a_directionIndex == 4 || a_directionIndex == 5)
-	{
-		return "main-diagonal";
-	}
-	else if (a_directionIndex == 6 || a_directionIndex == 7)
-	{
-		return "anti-diagonal";
-	}
-	else
-	{
-		return "unknown direction";
-	}
+	return StrategyConstants::DIRECTION_NAMES[a_directionIndex];
 }
 
 //Determines the optimal play and returns its location as well as the reasoning why it is the optimal play.

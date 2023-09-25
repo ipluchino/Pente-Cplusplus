@@ -24,6 +24,9 @@ public:
 	//Represents the instructions for the 8 possible directions on the board. Left, Right, Down, Up, and the four possible diagonals.
 	static const vector<vector<int>> DIRECTIONS;
 
+	//Represents the names of each of the eight directions.
+	static const vector<string> DIRECTION_NAMES;
+
 	//Represents the total number of possible directions, in this case 8.
 	static const int NUM_DIRECTIONS = 8;
 
