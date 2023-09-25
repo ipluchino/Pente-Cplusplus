@@ -1,3 +1,10 @@
+/************************************************************
+* Name:  Ian Pluchino
+* Project : OPL Project 1 C++
+* Class : Computer class - header file.
+* Date : 9/27/23
+************************************************************/
+
 #pragma once
 
 #include "Player.h"

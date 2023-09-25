@@ -1,3 +1,10 @@
+/************************************************************
+* Name:  Ian Pluchino
+* Project : OPL Project 1 C++
+* Class : StrategyConstants class - implementation file.
+* Date : 9/27/23
+************************************************************/
+
 #include "StrategyConstants.h"
 
 /* *********************************************************************

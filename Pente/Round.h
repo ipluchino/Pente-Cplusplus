@@ -1,3 +1,10 @@
+/************************************************************
+* Name:  Ian Pluchino
+* Project : OPL Project 1 C++
+* Class : Round class - header file.
+* Date : 9/27/23
+************************************************************/
+
 #pragma once
 
 #include <iostream>
