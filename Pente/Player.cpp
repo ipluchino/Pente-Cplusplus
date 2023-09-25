@@ -200,7 +200,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	}
 
 	//Attempt to build a deadly tessera, aka four consecutive stones with an empty location on either side.
-	possiblePlay = FindDeadlyTessera(a_board, a_color);
+	possiblePlay = FindDeadlyTessera(a_board, a_color, a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
@@ -210,7 +210,7 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	}
 
 	//Attempt to block a deadly tessera from forming.
-	possiblePlay = FindDeadlyTessera(a_board, a_board.OpponentColor(a_color));
+	possiblePlay = FindDeadlyTessera(a_board, a_board.OpponentColor(a_color), a_color);
 	if (possiblePlay.size() != 0)
 	{
 		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
@@ -1035,21 +1035,26 @@ Purpose: To find a location on the board that would create a deadly tessera (fou
 Parameters:
 			a_board, a Board object representing the current board of the round.
 			a_color, a character representing the stone color to search for deadly tesseras.
+			a_dangerColor, a character representing the stone color to check if it is in danger of being captured.
 Return Value: A vector<int> containing the row, column, and direction being built in, if it exists.
 Algorithm:
 			1) Find all valid consecutive six locations that have three of the specified piece color and three empty locations.
 			2) Loop through each of the possible sets of six locations.
 			3) For each set of locations, find the indices of the empty locations.
-			4) If two of the empty indices are 0 and 5, representing the ends of the consecutive six locations, a deadly tessera can be built.
-			   Return the empty location that is not on either of the ends, as it will create four consecutive pieces with two empty ends.
-			5) Otherwise, return an empty vector if nothing was found.
+			4) If two of the three empty indices are 0 and 5, representing the ends of the consecutive six locations, a deadly tessera can be built.
+			5) Store the empty location that is NOT on either of the ends of the consecutive six locations so it can be used later.
+			6) Loop through all possible placements (if any exist) and search if any do not put the player at risk of capture. If any do not, return this location.
+			7) If all result in capture, return any of the possible placements regardless as deadly tesseras are still worth building. 
+			5) Otherwise, if there are no deadly tesseras to be built, return an empty vector if nothing was found.
 Assistance Received: None
 ********************************************************************* */
-vector<int> Player::FindDeadlyTessera(Board a_board, char a_color)
+vector<int> Player::FindDeadlyTessera(Board a_board, char a_color, char a_dangerColor)
 {
 	//Search for all valid consecutive 6 locations that have 3 of the specified piece color and 3 empty locations.
 	//Deadly tesseras are in the form: - B B * B - , where both ends of the set of six are empty.
 	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 3, a_color, 6);
+
+	vector<vector<int>> possiblePlacements;
 
 	for (int i = 0; i < possibleMoves.size(); i++)
 	{
@@ -1058,13 +1063,31 @@ vector<int> Player::FindDeadlyTessera(Board a_board, char a_color)
 		//If both ends of the set of 6 locations are empty (the empty indices are 0 and 5), this means that a deadly tessera can be formed.
 		if (emptyIndices[0] == 0 && emptyIndices[2] == 5)
 		{
-			//emptyIndices[1] is the empty location that is NOT on one of the ends. This creates a 4 in a row with two open ends when a stone is placed there.
-			//Note: It does not matter if placing it here results in the capture, as it will still lead to a win after placing it in the same location the following turn.
-			return possibleMoves[i][emptyIndices[1]];
+			//emptyIndices[1] is the empty location that is NOT on one of the ends. 
+			//This creates four consecutive stones with two open ends when a stone is placed there. Store it for later.
+			possiblePlacements.push_back(possibleMoves[i][emptyIndices[1]]);
 		}
 	}
 
-	return {};
+	if (possiblePlacements.size() > 0)
+	{
+		//Return the location that does NOT put the player in danger of getting captured.
+		for (int i = 0; i < possiblePlacements.size(); i++)
+		{
+			if (!InDangerOfCapture(a_board, possiblePlacements[i], a_dangerColor))
+			{
+				return possiblePlacements[i];
+			}
+		}
+
+		//If all possible locations result in capture, deadly tesseras should still be built/blocked as it likely results in a win in the following turns.
+		return possiblePlacements[0];
+	}
+	else
+	{
+		return {};
+	}
+
 }
 
 /* *********************************************************************

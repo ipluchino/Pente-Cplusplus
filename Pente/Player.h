@@ -48,7 +48,7 @@ public:
 	vector<int> PreventWinningMove(Board a_board, char a_color);
 	bool InDangerOfCapture(Board a_board, vector<int> a_location, char a_color);
 	vector<int> FindFlanks(Board a_board, char a_color);
-	vector<int> FindDeadlyTessera(Board a_board, char a_color);
+	vector<int> FindDeadlyTessera(Board a_board, char a_color, char a_dangerColor);
 	vector<int> FindThreeConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor);
 	vector<int> FindFourConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor);
 
