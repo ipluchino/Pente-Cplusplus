@@ -125,7 +125,6 @@ string Player::GetDirection(int a_directionIndex)
 	return StrategyConstants::DIRECTION_NAMES[a_directionIndex];
 }
 
-//Determines the optimal play and returns its location as well as the reasoning why it is the optimal play.
 /* *********************************************************************
 Function Name: OptimalPlay
 Purpose: To determine 
