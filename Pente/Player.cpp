@@ -292,8 +292,6 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 	return pair<string, string>(location, reasoning);
 }
 
-//Returns a vector<int> that contains {row, col} of best possible location to place your piece to make the most captures.
-//Returns an empty vector if there are no potential captures to be made.
 /* *********************************************************************
 Function Name: MakeCapture
 Purpose: To find a location on the board that results in the most captures possible, if any exist.
@@ -599,7 +597,6 @@ int Player::FindConsecutiveIfPlaced(Board a_board, vector<vector<int>> a_locatio
 	return beforeTotal + afterTotal + 1;
 }
 
-//Returns the most optimal play when building initiative that already has a_numPlaced pieces of a_color placed.
 /* *********************************************************************
 Function Name: BuildInitiative
 Purpose: To find a location on the board that builds initiative for the player.
@@ -790,7 +787,6 @@ vector<int> Player::CounterInitiative(Board a_board, int a_numPlaced, char a_col
 	return {};
 }
 
-//Checks if it is possible to win, given the current board circumstances.
 /* *********************************************************************
 Function Name: MakeWinningMove
 Purpose: To find a location on the board that would cause the player to win the round.
@@ -970,7 +966,6 @@ bool Player::InDangerOfCapture(Board a_board, vector<int> a_location, char a_col
 	return false;
 }
 
-//Finds potential flanks where you can initiate a capture. Searches for the pattern: * W W * on the board.
 /* *********************************************************************
 Function Name: FindFlanks
 Purpose: To find a location on the board that will initiate a flank.
