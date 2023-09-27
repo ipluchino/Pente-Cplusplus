@@ -74,7 +74,7 @@ string UserInput::GetPlayLocation(Board a_board)
 		//Column must be from G-M and location must be from 7-13.
 		else if (handicap && (location[0] < 'G' || location[0] > 'M' || stoi(location.substr(1, 2)) < 7 || stoi(location.substr(1, 2)) > 13))
 		{
-			cout << "The location must be no more than three intersections away from the center piece on this turn. Please re-enter a location to place a stone: ";
+			cout << "The location must be no more than three intersections away from the center (J10) on this turn. Please re-enter a location to place a stone: ";
 			cin >> location;
 		}
 		//Lastly, a valid location has to be empty on the game board.
