@@ -58,6 +58,7 @@ public:
 	vector<int> FindDeadlyTessera(Board a_board, char a_color, char a_dangerColor);
 	vector<int> FindThreeConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor);
 	vector<int> FindFourConsecutive(Board a_board, vector<vector<vector<int>>> a_possibleMoves, char a_dangerColor);
+	vector<int> FindHandicapPlay(Board a_board);
 
 protected:
 	//The color of the stones (black or white) that the player is playing as.

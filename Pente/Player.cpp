@@ -17,7 +17,7 @@ Assistance Received: None
 ********************************************************************* */
 Player::Player() : m_color('W'), m_score(0), m_capturedPairs(0)
 {
-	srand(unsigned(time(NULL)));
+	srand(time(NULL));
 }
 
 /* *********************************************************************
@@ -164,6 +164,16 @@ pair<string, string> Player::OptimalPlay(Board a_board, char a_color)
 		location = "J10";
 		reasoning += location + " because the first stone must be placed there.";
 
+		return pair<string, string>(location, reasoning);
+	}
+
+	//There is a handicap for the second turn of the first player. The play must be within three intersections of the center piece.
+	bool handicap = a_board.CountPieces('W') == 1 && a_board.CountPieces('B') == 1;
+	if (handicap)
+	{
+		possiblePlay = FindHandicapPlay(a_board);
+		location = ExtractLocation(possiblePlay[0], possiblePlay[1], a_board);
+		reasoning += location + " to counter the opponent's initiative and start building initiative. The location must be at least three intersections away from the center (J10).";
 		return pair<string, string>(location, reasoning);
 	}
 
@@ -607,12 +617,12 @@ Parameters:
 			a_dangerColor, a character representing the stone color to check if placing it at a location would put it at risk of being captured.
 Return Value:  A vector<int> containing the row, column, and direction being built in of the best location to build initiative, if any exist.	
 Algorithm:
-			1) Find all possible moves consecutive five locations that satisfy the conditions passed to this function (using the FindAllMoves function).
+			1) Find all possible consecutive five locations that satisfy the conditions passed to this function (using the FindAllMoves function).
 				1a) If there are no possible moves given the search parameters, simply return an empty vector.
 			2) If a_numPlaced is equal to 1:
 				2a) Loop through each possible set of five consecutive locations.
 				2b) For each possible set of locations, find the sets where the single placed stone is on one of the ends. Ex: B - - - - OR - - - - B
-				2c) Store the middle location in a vector, to ensure the stone is placed a distance of one away of the current stone. Ex: B - * - - OR - - * - - B
+				2c) Store the middle location in a result vector, to ensure the stone is placed a distance of one away of the current stone. Ex: B - * - - OR - - * - - B
 					Only locations that do not put the player in danger of being captured is stored.
 				2d) After finding all potential build locations, shuffle the result vector to build in a new location each time. 
 					This is so the player builds in all directions and not only one specific direction each time.
@@ -658,7 +668,7 @@ vector<int> Player::BuildInitiative(Board a_board, int a_numPlaced, char a_color
 			//Find the possible set of 5 where the piece found one one of the ends to make it easier to find the middle. Ex: W - - - - OR - - - - W
 			if ((board[firstRow][firstCol] != '-' || board[lastRow][lastCol] != '-') && !InDangerOfCapture(a_board, possibleMoves[i][2], a_dangerColor))
 			{
-				//possibleMoves[i][2] represents the middle of the set of 5 locations. Ex: W - * - W where * represents the middle.
+				//possibleMoves[i][2] represents the middle of the set of 5 locations. Ex: W - * - - where * represents the middle.
 				//This ensures the new pieces is placed one away from the placed piece and not at risk of capture. 
 				playLocations.push_back(possibleMoves[i][2]);
 			}
@@ -1142,5 +1152,56 @@ vector<int> Player::FindFourConsecutive(Board a_board, vector<vector<vector<int>
 	}
 
 	return {};
+}
+
+/* *********************************************************************
+Function Name: FindHandicapPlay
+Purpose: To find a location on the board when it is the second turn of the player that went first.
+Parameters:
+			a_board, a Board object representing the current board of the round.
+Return Value: A vector<int> containing the row and column of the location to place the stone.
+Algorithm:
+			1) Find all possible consecutive five locations that have one white piece placed and four empty locations.
+			2) Loop through each possible set of five consecutive locations.
+			3) For each possible set of locations, find the sets where the single placed stone is on one of the ends. Ex: W - - - - OR - - - - W
+			4) Store the location a distance of three away from the placed stone in a result vector to ensure the location is optimal within the handicap. 
+			   Ex: W - - * - OR - * - - - W
+			5) After finding all potential locations to place the stone, shuffle the result vector to build in a new location each time. 
+			   This is so the player builds in all directions and not only one specific direction each time.
+Assistance Received: None
+********************************************************************* */
+vector<int> Player::FindHandicapPlay(Board a_board)
+{
+	vector<vector<vector<int>>> possibleMoves = FindAllMoves(a_board, 1, 'W', StrategyConstants::CONSECUTIVE_5_DISTANCE);
+
+	vector<vector<char>> board = a_board.GetBoard();
+	vector<vector<int>> playLocations;
+	for (int i = 0; i < possibleMoves.size(); i++)
+	{
+		//There are 5 locations within each list of possiblemoves
+		//The index 0 represents the beginning of the set of 5 locations and index 4 represents the end. Ex: * - - - - and - - - - *
+		int firstRow = possibleMoves[i][0][0];
+		int firstCol = possibleMoves[i][0][1];
+		int lastRow = possibleMoves[i][4][0];
+		int lastCol = possibleMoves[i][4][1];
+
+		//Handles the W - - - - case.
+		if (board[firstRow][firstCol] != '-')
+		{
+			//possibleMoves[i][3] represents a location on the edge of the handicap. Ex: W - - * - where * represents the play location.
+			playLocations.push_back(possibleMoves[i][3]);
+		}
+
+		//Handles the - - - - W case.
+		else if (board[lastRow][lastCol] != '-')
+		{
+			//possibleMoves[i][3] represents a location on the edge of the handicap. Ex: - * - - W where * represents the play location..
+			playLocations.push_back(possibleMoves[i][1]);
+		}
+	}
+
+	//Shuffle the possible play locations so that the computer plays in different directions in different games when it is playing on the handicap turn.
+	random_shuffle(playLocations.begin(), playLocations.end());
+	return playLocations[0];
 }
 
