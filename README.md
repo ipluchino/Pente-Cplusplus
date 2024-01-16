@@ -61,15 +61,8 @@ The other player can place a black stone anywhere on the board.
 </p><p>
   Thereafter, the two players alternate turns, placing one stone per turn on the board.
 </p><p>
-  A player can capture a pair of the opponent's stones if the opponent's stones are next to each other in a row, column or diagonal and the player places their stones on both sides of the row, column or diagonal. The following illustrates capturing a pair of white stones (in a row, column and diagonal) when a black stone is placed at the location marked by an asterisk. Note that it also illustrates a case where a player captures <b>two</b> pairs of white stones by placing a single black stone.
-  </p><pre>    BWW*
-
-    B     *        BWW*
-    W      W          W
-    W       W         W
-    *        B        B
-    </pre>
-
+  A player can capture a pair of the opponent's stones if the opponent's stones are next to each other in a row, column or diagonal and the player places their stones on both sides of the row, column or diagonal. 
+  
   <h3>End of a round</h3>
 
   A round ends when a player:
